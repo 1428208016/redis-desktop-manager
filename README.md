@@ -3,7 +3,7 @@
 
 ==============================
 
-create a new repository on the command line
+create a new repository on the command line<br/>
 echo "# autobuild" >> README.md
 git init
 git add README.md
