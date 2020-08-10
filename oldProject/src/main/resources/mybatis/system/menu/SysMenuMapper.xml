@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sysMenuMapper">
+
+	<sql id="tableName">
+		sys_menu
+	</sql>
+
+	<sql id="Field">
+		menuId,
+		menuName,
+		parentId,
+		url,
+		icon,
+		isDisable,
+		sort,
+		createTime,
+		createId,
+		modifyTime,
+		modifyId,
+		deleteflag
+	</sql>
+	
+	<sql id="FieldValue">
+		#{menuId},
+		#{menuName},
+		#{parentId},
+		#{url},
+		#{icon},
+		#{isDisable},
+		#{sort},
+		#{createTime},
+		#{createId},
+		#{modifyTime},
+		#{modifyId},
+		#{deleteflag}
+	</sql>
+	
+	<!-- 通过父级id查询 -->
+	<select id="list" parameterType="pd" resultType="pd">
+		SELECT 
+		  sm1.menuId,
+		  sm1.menuName "menuName",
+		  sm1.parentId,
+		  sm1.url "url",
+		  sm1.icon "icon",
+		  sm1.isDisable,
+		  sm1.sort,
+		  sm1.createTime,
+		  sm1.createId,
+		  sm1.modifyTime,
+		  sm1.modifyId,
+		  sm2.menuName AS "parentName"
+		FROM
+			sys_menu sm1
+		LEFT JOIN
+			sys_menu sm2 ON sm1.parentId = sm2.menuId
+		where
+			sm1.deleteflag = 1
+		<if test="null != menuId and '' != menuId">
+			and sm1.parentId = #{menuId}
+		</if>
+		<if test="null != search and '' != search">
+			and (
+				sm1.menuName like '%${search}%'
+				OR sm2.menuName like '%${search}%'
+				OR sm1.url like '%${search}%'
+				OR sm1.sort like '%${search}%'
+			) 
+		</if>
+	</select>
+	
+	<!-- 通过父级id查询 -->
+	<select id="findByPid" parameterType="pd" resultType="pd">
+		SELECT 
+		  sm1.menuId,
+		  sm1.menuName,
+		  sm1.parentId,
+		  sm1.url,
+		  sm1.icon,
+		  sm1.isDisable,
+		  sm1.sort,
+		  sm1.createTime,
+		  sm1.createId,
+		  sm1.modifyTime,
+		  sm1.modifyId,
+		  sm2.menuName AS "parentName"
+		FROM
+			sys_menu sm1
+		LEFT JOIN
+			sys_menu sm2 ON sm1.parentId = sm2.menuId
+		where
+			sm1.deleteflag = 1
+		and
+			sm1.parentId = #{menuId}
+	</select>
+
+	<!-- 条件查询 -->
+	<select id="findByCondition" parameterType="pd" resultType="pd">
+		select
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include>
+		where
+			deleteflag = 1
+	</select>
+
+	<!-- 通过父级id查询 -->
+	<select id="findByPidAndIsDisable" parameterType="pd" resultType="pd">
+		select
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include>
+		where
+			deleteflag = 1
+		and
+			isDisable = 1
+		and
+			parentId = #{menuId}
+		ORDER BY 
+			sort ASC
+	</select>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 逻辑删除-->
+	<update id="deletes" parameterType="pd">
+		update 
+			<include refid="tableName"></include> 
+		set deleteFlag = 0,
+		modifyTime = #{modifyTime},
+		modifyId = #{modifyId}
+		where 
+			menuId in
+		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</update>
+	
+</mapper>

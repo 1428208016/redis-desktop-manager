@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sysUserMapper">
+
+	<sql id="fields">
+		userid,
+		userName,
+		password,
+		realName
+	</sql>
+	
+		<!-- 查询代理商信息 -->
+	<select id="findUserByUserAndPwd" parameterType="pd" resultType="pd">
+		select
+			* 
+		from 
+			sys_user
+		where
+			userName = #{userName}
+		and 
+			password = #{password}
+	</select>
+
+	<insert id="saveAgency" parameterType="pd">
+		INSERT INTO cpm_agency
+		VALUES
+			(
+				#{agencyId},
+				#{ifCode},
+				#{blCode},
+				#{address},
+				#{companyaddress},
+				#{business},
+				#{plan},
+				#{excess},
+				#{BUname},
+				#{Bname},
+				#{Baddress},
+				#{Btag},
+				#{Bcode},
+				#{Bcodefile},
+				1,
+				#{aegncerank},
+				#{userId},
+				#{sLogo},
+				#{domain}
+			)
+	</insert>
+	
+	<!-- 修改代理商的信息 -->
+	<update id="updateAgency" parameterType="pd">
+		update cpm_agency set 
+		<if test=" ifCode!=null and ifCode !=''">     
+			ifCode = #{ifCode},
+		</if>
+		<if test=" blCode!=null and blCode !=''">     
+			blCode = #{blCode},
+		</if>
+		<if test=" address!=null and address !=''">     
+			address = #{address},
+		</if>
+		<if test=" companyaddress!=null and companyaddress !=''">     
+			companyaddress = #{companyaddress},
+		</if>
+		<if test=" business!=null and business !=''">     
+			business = #{business},
+		</if>
+		<if test=" plan!=null and plan !=''">     
+			plan = #{plan},
+		</if>
+		<if test=" excess!=null and excess !=''">     
+			excess = #{excess},
+		</if>
+		<if test=" BUname!=null and BUname !=''">     
+			BUname = #{BUname},
+		</if>
+		<if test=" Bname!=null and Bname !=''">     
+			Bname = #{Bname},
+		</if>
+		<if test=" Baddress!=null and Baddress !=''">     
+			Baddress = #{Baddress},
+		</if>
+		<if test=" Btag!=null and Btag !=''">     
+			Btag = #{Btag},
+		</if>
+		<if test=" Bcode!=null and Bcode !=''">     
+			Bcode = #{Bcode},
+		</if>
+		<if test=" Bcodefile!=null and Bcodefile !=''">     
+			Bcodefile = #{Bcodefile},
+		</if>
+		<if test=" aegncerank!=null and aegncerank !=''">     
+			aegncerank = #{aegncerank},
+		</if>
+		<if test=" sLogo!=null and sLogo !=''">     
+			sLogo = #{sLogo},
+		</if>
+		<if test=" domain!=null and domain !=''">     
+			domain = #{domain},
+		</if>
+		userId = #{userId}
+		where userId = #{userId}
+	</update>	
+	
+</mapper>
