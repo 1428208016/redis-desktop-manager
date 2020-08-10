@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>tcs</title>
+
+        <script src="../js/jquery-3.4.1.min.js"></script>
+        <style>
+            .main {
+                position: absolute;
+                left:200px;
+                top:100px;
+                border: 1px solid black;
+            }
+            .block{
+                position: absolute;
+            }
+                .snake_skin{
+                background-color: red;
+            }
+            .food{
+                background-color: green;
+            }
+        </style>
+    </head>
+<body>
+
+    <button id="start" onclick="start()">start</button>
+    <script>
+        var map = new Array();
+        var snakeArr = new Array();
+        var snake = {
+            head_h:2,
+            head_w:5,
+            len:3,
+            dire:"r",
+            speed:0.1
+        }
+        var block_h = 8;
+        var block_w = 8;
+
+        var height = 50;
+        var width = 50;
+
+        var moveInterval;
+        var boolMoveInterval = false;
+
+        var score = 0;
+        //启动方法
+        function start() {
+            //0.设置参数
+            boolMoveInterval = true;
+            var h = height;
+            var w = width;
+            for (var i = 0; i < h; i ++) {
+                map[i] = new Array();
+                for (var j = 0; j < w; j ++) {
+                    map[i][j] = 0;
+                }
+            }
+            //1.绘制表格
+            drawTable(h,w);
+            //2.绘制蛇
+            drawSnake(h,w,snake);
+            //3.绘制食物
+            drawFood();
+            //4.绑定事件
+            bindOperEvent();
+            //5.启动
+            moveInterval = setInterval(function () {
+                move();
+            },snake.speed*1000);
+            //6.隐藏按钮
+            $("#start").hide();
+        }
+
+        //绘制表格
+        function drawTable(h,w) {
+            var row = '<div class="main" style="width:'+(w*block_w)+'px;height:'+(h*block_h)+'px;">';
+            for (var i = 0; i < h; i ++) {
+                for (var j = 0; j < w; j ++) {
+                    row += '<div class="block" style="width:'+block_w+'px;height:'+block_h+'px;left:'+(j*block_w)+'px;top:'+(i*block_h)+'px;"></div>';
+                }
+            }
+            row += '</div>';
+            $("body").append(row);
+
+            //分数
+            row = "<div id='score'></div>";
+            $("body").append(row);
+        }
+
+        //绘制蛇
+        function drawSnake(h,w,snake){
+            for(var i = 0; i < snake.len; i++) {
+                $(".block:eq("+(snake.head_h*w + snake.head_w-snake.len+i+1 )+")").addClass("snake_skin");
+                map[snake.head_h][snake.head_w-snake.len+i+1] = 1;
+                snakeArr.unshift({
+                    h:snake.head_h,
+                    w:snake.head_w-snake.len+i+1
+                });
+            }
+        }
+        //绘制食物
+        function drawFood() {
+            do {
+                var max = height * width;
+                var rand = parseInt(Math.random() * (max + 1));
+
+                var h = parseInt(rand/width);
+                if (rand <= width) {
+                    h = 0;
+                }
+
+                var w = parseInt(rand%width);
+                if (w == 0) {
+                    w = width-1;
+                } else {
+                    w = w -1;
+                }
+
+                if (map[h][w] == 0) {
+                    map[h][w] = 2;
+                    $(".block:eq("+(rand-1)+")").addClass("food");
+                    break;
+                }
+            } while (true);
+        }
+        //绑定键盘事件
+        function bindOperEvent() {
+            $(document).keydown(function(event){
+                var code = event.keyCode;
+                if (code == 37) {
+                    //<-
+                    if (snake.dire != "r") {
+                        snake.dire = "l";
+                    }
+                } else if (code == 38) {
+                    //上
+                    if (snake.dire != "d") {
+                        snake.dire = "u";
+                    }
+                } else if (code == 39) {
+                    //右
+                    if (snake.dire != "l") {
+                        snake.dire = "r";
+                    }
+                } else if (code == 40) {
+                    //下
+                    if (snake.dire != "u") {
+                        snake.dire = "d";
+                    }
+                } else if (code == 32) {
+                    if (boolMoveInterval) {
+                        clearInterval(moveInterval);//停止
+                    } else {
+                        moveInterval = setInterval(function () {
+                            move();
+                        },snake.speed*1000);
+                    }
+
+                    boolMoveInterval = !boolMoveInterval;
+                }
+            });
+        }
+        //运行
+        function move() {
+            //1.判断
+            var h;
+            var w;
+            //1.1撞墙
+            switch (snake.dire) {
+                case "u":
+                    if (snake.head_h == 0) {
+                        gameOver();
+                        return;
+                    } else {
+                        h = snake.head_h-1;
+                        w = snake.head_w;
+                    }
+                    break;
+                case "r":
+                    if (snake.head_w == width-1) {
+                        gameOver();
+                        return;
+                    } else {
+                        h = snake.head_h;
+                        w = snake.head_w+1;
+                    }
+                    break;
+                case "d":
+                    if (snake.head_h == height-1) {
+                        gameOver();
+                        return;
+                    } else {
+                        h = snake.head_h+1;
+                        w = snake.head_w;
+                    }
+                    break;
+                case "l":
+                    if (snake.head_w == 0) {
+                        gameOver();
+                        return;
+                    } else {
+                        h = snake.head_h;
+                        w = snake.head_w-1;
+                    }
+                    break;
+            }
+
+            if (map[h][w] == 1) {
+                //1.2.吃自己
+                gameOver();
+                return;
+            }
+
+            if (map[h][w] == 2) {
+                //吃食物
+                score++;
+                snake.len++;
+                $(".block").removeClass("food");
+                //$(".block:eq("+(h*width + w )+")").removeClass("food");
+                drawFood();
+                $("#score").html("得分："+score);
+            } else {
+                //删除最后一个
+                var obj = snakeArr.pop();
+                $(".block:eq("+(obj.h*width + obj.w )+")").removeClass("snake_skin");
+                map[obj.h][obj.w] = 0;
+            }
+
+            //移动（渲染）
+            snake.head_h = h;
+            snake.head_w = w;
+            $(".block:eq("+(snake.head_h*width + snake.head_w )+")").addClass("snake_skin");
+            snakeArr.unshift({h:h,w:w});    //添加到数组第一个位置
+            map[h][w] = 1;
+
+            console.info(map);
+        }
+        
+        function gameOver() {
+            clearInterval(moveInterval);//停止
+            console.error("--game over--");
+            $("body").append("<h1>Game Over</h1>");
+        }
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /jiqun
+
+spring:
+  #配置redis
+  redis:
+    pool:
+      max-idle: 200
+      min-idle: 100
+      max-active: 1024
+      max-wait: -1
+      testOnBorrow: false
+    master:
+      database: 8
+      host: r-uf60b1h0qxy6vuwx5hpd.redis.rds.aliyuncs.com
+      port: 6379
+      password: Hz#3968%zy&7
+      timeout: 0
