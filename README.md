@@ -5,6 +5,12 @@
 jiqun:<br/>
 自己都不知道是干什么的了，先留着吧。哄哄哄<br/>
 
+entertainment:<br/>
+游戏、娱乐类
+
+enlightenmentStar:<br/>
+启蒙星
+
 
 ==============================
 

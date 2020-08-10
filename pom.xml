@@ -21,6 +21,7 @@
         <module>entertainment</module>
         <module>jiqun</module>
         <module>mybatis</module>
+        <module>enlightenmentStar</module>
     </modules>
 
     <properties>

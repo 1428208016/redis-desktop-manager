@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+    id="schedule-console" version="3.0">
+     <display-name>Archetype Created Web Application</display-name>
+     
+     <!-- 暂时定义首页的访问方式,之后将由springMVC替代 -->
+     <servlet>
+     	<servlet-name>jsp</servlet-name>
+     	<jsp-file>/WEB-INF/jsp/system/index-bg.jsp</jsp-file>
+     </servlet>
+     <servlet-mapping>
+     	<servlet-name>jsp</servlet-name>
+     	<url-pattern>/system/index-bg.jsp</url-pattern>
+     </servlet-mapping>
+
+</web-app>
