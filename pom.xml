@@ -20,6 +20,7 @@
         <module>main</module>
         <module>entertainment</module>
         <module>jiqun</module>
+        <module>mybatis</module>
     </modules>
 
     <properties>
