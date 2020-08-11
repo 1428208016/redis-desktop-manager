@@ -23,6 +23,7 @@
         <module>mybatis</module>
         <module>enlightenmentStar</module>
         <module>oldProject</module>
+        <module>englishWord</module>
     </modules>
 
     <properties>

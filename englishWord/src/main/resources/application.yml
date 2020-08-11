@@ -1,0 +1,27 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /EnglishWord
+
+#数据源配置
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/englishword?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&allowMultiQueries=true
+    username: root
+    #password: sasa
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+
+#mybatis-mapper
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mybatis-mapper/*.xml
+  type-aliases-package: com.lingzhen.myproject.englishword.model
+  check-config-location: true
+
+#logging
+logging:
+  level:
+    root: debug
+    file: "D:/EgnlistWord_log.log"
+

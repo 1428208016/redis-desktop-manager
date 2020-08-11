@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Homo</title>
+    <!-- Basic -->
+    <link rel="stylesheet" href="../plugins/bootstrap-3.3.7/css/bootstrap.min.css">
+    <script src="../static/js/jquery-3.4.1.js" title="jquery"></script>
+    <script src="../plugins/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../static/js/vue-2.6.10.js"></script>
+
+</head>
+<body>
+<div id="paging"></div>
+
+<script>
+$(function(){
+    paging.draw("paging",10,100,0);
+});
+var paging = {
+    lenArr:[10,20,30,40],
+    len:10,
+    count:0
+    now:0,,
+    init : function (len,count,now,lenArr){
+        if (strNotNull(len)) { paging.len = len; }
+        if (strNotNull(count)) { paging.count = count; }
+        if (strNotNull(now)) { paging.now = now; }
+        if (strNotNull(lenArr)) { paging.lenArr = lenArr; }
+    },
+    draw : function (id,len,count,now) {
+        if (!strNotNull(id)){ return; }
+        var paging_div = $("#"+id);
+        paging.init(len,count,now,null);
+        var lenArrs = paging.count % paging.len == 0? paging.count / paging.len : paging.count / paging.len + 1;
+        var lenOption = new Array();
+        if(lenArrs <=5){
+            for (var i = 1; i <= lenArrs;i++) {
+                lenOption.push(i+"");
+            }
+        }else{
+            lenOption.push("1");
+            lenOption.push("2");
+            lenOption.push("...");
+            lenOption.push(lenArrs-1+"");
+            lenOption.push(lenArrs+"");
+        }
+        paging_div.html("");
+        var row = '<ul class="pagination">';
+        var disabled_prev = "";
+        var disabled_next = "";
+        if (now == 0) {
+            disabled_prev = "disabled";
+        }
+        row +=`
+            <li class="`+disabled_prev+`">
+                <a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+            </li>
+        `;
+        row += `
+            <li class="`+disabled_prev+`">
+                <a href="#" aria-label="Previous"><span aria-hidden="true">‹</span></a>
+            </li>
+        `;
+        $(lenOption).each(function (i,temp) {
+            if (lenOption.pop(i) == now+1) {
+                row += '<li class="active"><a href="#" >'+temp+'</a></li>';
+            } else {
+                row += '<li><a href="#">'+temp+'</a></li>';
+            }
+        });
+        if (now+1 == lenArrs) {
+            disabled_next = "disabled";
+        }
+        row += `
+            <li class="`+disabled_next+`">
+                <a href="#" aria-label="Next"><span aria-hidden="true">›</span></a>
+            </li>
+        `;
+        row += `
+            <li class="`+disabled_next+`">
+                <a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+            </li>
+        `;
+        row += "</ul>";
+        paging_div.html(row);
+    }
+};
+function strNotNull(str){
+    return null != str && undefined != str && "" != str && "null" != str && "Null" != str && "NULL" != str;
+}
+</script>
+</body>
+</html>

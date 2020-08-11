@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Homo</title>
+    <!-- Basic -->
+    <link rel="stylesheet" href="../plugins/bootstrap-3.3.7/css/bootstrap.min.css">
+    <script src="../static/js/jquery-3.4.1.js" title="jquery"></script>
+    <script src="../plugins/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../static/js/vue-2.6.10.js"></script>
+
+</head>
+<body>
+<div id="test01">
+        <paging-select
+                v-for="lenTemp in lenArr"
+                v-bink:len="lenTemp"
+        ></paging-select>
+</div>
+
+
+
+<div id="test02">
+    <select>
+    <blog-post
+            v-for="post in posts"
+            v-bind:title="post"
+    ></blog-post>
+    </select>
+</div>
+
+<script>
+$(function(){
+    Vue.component('paging-select', {
+        props: ['len'],
+        template: '<option value="">{{ len }}</option>'
+    });
+
+    Vue.component('blog-post', {
+        props: ['title'],
+        template: '<option value="{{title}}">{{ title }}</option>'
+    })
+
+
+    new Vue({
+        el:"#test01",
+        data:{
+            lenArr:["11","12","13"]
+        }
+    });
+
+    new Vue({
+        el:"#test02",
+        data:{
+            posts:["21","22","23"]
+        }
+    });
+});
+</script>
+</body>
+</html>
