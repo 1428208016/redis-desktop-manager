@@ -1,12 +1,12 @@
 package com.lingzhen.myproject.englishword.service.impl;
 
+import com.lingzhen.myproject.common.util.UuidUtil;
 import com.lingzhen.myproject.englishword.dao.Dao;
 import com.lingzhen.myproject.englishword.service.EnglishwordService;
 import com.lingzhen.myproject.englishword.service.SysConfigService;
 import com.lingzhen.myproject.englishword.util.DateUtil;
 import com.lingzhen.myproject.englishword.util.PageData;
 import com.lingzhen.myproject.englishword.util.Tools;
-import com.lingzhen.myproject.englishword.util.UuidUtil;
 import com.lingzhen.myproject.englishword.util.baidufanyi.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

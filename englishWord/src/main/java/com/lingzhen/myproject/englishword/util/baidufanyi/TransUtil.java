@@ -3,8 +3,8 @@ package com.lingzhen.myproject.englishword.util.baidufanyi;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.lingzhen.myproject.common.util.BeanUtil;
 import com.lingzhen.myproject.englishword.service.SysConfigService;
-import com.lingzhen.myproject.englishword.util.BeanUtil;
 import org.springframework.stereotype.Component;
 
 /**

@@ -1,10 +1,11 @@
-package com.lingzhen.myproject.englishword.util;
+package com.lingzhen.myproject.common.util;
 
 import java.util.UUID;
 
 /**
  * uuid工具类
- * createTime:2019-0619
+ * createTime:2019-06-19
+ * @author lingz
  */
 public class UuidUtil {
 

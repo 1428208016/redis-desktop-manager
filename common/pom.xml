@@ -21,6 +21,12 @@
             <version>1.6.2</version>
         </dependency>
 
+        <!-- web项目整合包 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

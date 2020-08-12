@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.englishword.util;
+package com.lingzhen.myproject.common.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * Spring bean 操作类
  * createTime:2019-06-24
- *
+ * @author lingz
  */
 @Component
 public class BeanUtil implements ApplicationContextAware {
@@ -17,7 +17,7 @@ public class BeanUtil implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        BeanUtil.applicationContext = applicationContext;
     }
 
     public static Object getBean(String name){
