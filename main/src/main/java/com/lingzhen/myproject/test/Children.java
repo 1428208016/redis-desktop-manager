@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.jiqun.test;
+package com.lingzhen.myproject.test;
 
 public class Children extends Parent {
 

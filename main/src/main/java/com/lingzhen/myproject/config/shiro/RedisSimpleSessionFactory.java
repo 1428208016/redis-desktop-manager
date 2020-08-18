@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.jiqun.config.shiro;
+package com.lingzhen.myproject.config.shiro;
 
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.SessionContext;

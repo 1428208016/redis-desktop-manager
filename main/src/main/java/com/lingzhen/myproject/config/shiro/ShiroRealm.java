@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.jiqun.config.shiro;
+package com.lingzhen.myproject.config.shiro;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;

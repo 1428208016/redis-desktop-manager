@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.jiqun.test;
+package com.lingzhen.myproject.test;
 
 import com.alibaba.fastjson.JSON;
 

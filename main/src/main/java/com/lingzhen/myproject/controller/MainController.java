@@ -1,6 +1,6 @@
-package com.lingzhen.myproject.jiqun.controller;
+package com.lingzhen.myproject.controller;
 
-import com.lingzhen.myproject.jiqun.util.PageData;
+import com.lingzhen.myproject.util.PageData;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;

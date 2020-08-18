@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.jiqun.config.redis;
+package com.lingzhen.myproject.config.redis;
 
 
 import org.springframework.beans.factory.annotation.Value;

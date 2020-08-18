@@ -1,10 +1,10 @@
 package com.lingzhen.myproject.englishword.service.impl;
 
+import com.lingzhen.myproject.common.util.DateUtil;
 import com.lingzhen.myproject.common.util.UuidUtil;
 import com.lingzhen.myproject.englishword.dao.Dao;
 import com.lingzhen.myproject.englishword.service.EnglishwordService;
 import com.lingzhen.myproject.englishword.service.SysConfigService;
-import com.lingzhen.myproject.englishword.util.DateUtil;
 import com.lingzhen.myproject.englishword.util.PageData;
 import com.lingzhen.myproject.englishword.util.Tools;
 import com.lingzhen.myproject.englishword.util.baidufanyi.TransUtil;
@@ -173,7 +173,7 @@ public class EnglishwordServiceImpl implements EnglishwordService {
         String time = pd.getString("time");
         String tab = pd.getString("tab");
         userId = Tools.notEmpty(userId)?userId:"1";
-        time = Tools.notEmpty(time)?time:DateUtil.getDay();
+        time = Tools.notEmpty(time)?time:DateUtil.getDay()+"";
         tab = Tools.notEmpty(tab)?tab:"ew_word";
         //通过用户、日期获取单词
         PageData sel = new PageData();

@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.jiqun.config.shiro;
+package com.lingzhen.myproject.config.shiro;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import org.apache.shiro.session.InvalidSessionException;

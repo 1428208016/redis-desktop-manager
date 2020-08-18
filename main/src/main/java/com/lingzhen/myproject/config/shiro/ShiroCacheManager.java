@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.jiqun.config.shiro;
+package com.lingzhen.myproject.config.shiro;
 
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;

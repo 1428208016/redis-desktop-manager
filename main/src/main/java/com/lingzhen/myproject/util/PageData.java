@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.jiqun.util;
+package com.lingzhen.myproject.util;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;

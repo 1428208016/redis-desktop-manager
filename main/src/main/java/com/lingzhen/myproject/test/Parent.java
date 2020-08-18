@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.jiqun.test;
+package com.lingzhen.myproject.test;
 
 public class Parent {
     private transient String id;

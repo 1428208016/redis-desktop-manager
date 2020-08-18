@@ -21,6 +21,8 @@ public class DateUtil {
      */
     public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 
+    public static final String FORMAT_DATE_TIME_MILLISECOND = "yyyy-MM-dd HH:mm:ss.SSS";
+
     /**
      * 获取当前时间的日份
      * @return
@@ -182,6 +184,14 @@ public class DateUtil {
         SimpleDateFormat formatter = new SimpleDateFormat(format);
         String dateString = formatter.format(date);
         return dateString;
+    }
+
+    /**
+     * 获取当前时间：yyyy-MM-dd HH:mm:ss.SSS
+     * @return
+     */
+    public static String getMillisecondTime(){
+        return getDateTime(new Date(),FORMAT_DATE_TIME_MILLISECOND);
     }
 
 }

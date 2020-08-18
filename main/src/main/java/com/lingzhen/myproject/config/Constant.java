@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.jiqun.config;
+package com.lingzhen.myproject.config;
 
 public class Constant {
 

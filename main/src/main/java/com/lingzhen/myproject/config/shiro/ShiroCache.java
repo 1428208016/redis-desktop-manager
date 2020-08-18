@@ -1,6 +1,6 @@
-package com.lingzhen.myproject.jiqun.config.shiro;
+package com.lingzhen.myproject.config.shiro;
 
-import com.lingzhen.myproject.jiqun.config.Constant;
+import com.lingzhen.myproject.config.Constant;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.springframework.data.redis.core.RedisTemplate;
