@@ -21,10 +21,11 @@
             <version>1.6.2</version>
         </dependency>
 
-        <!-- web项目整合包 -->
+        <!-- fastJSON -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.73</version>
         </dependency>
 
     </dependencies>
