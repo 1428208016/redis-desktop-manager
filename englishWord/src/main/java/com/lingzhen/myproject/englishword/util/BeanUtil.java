@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.common.util;
+package com.lingzhen.myproject.englishword.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
