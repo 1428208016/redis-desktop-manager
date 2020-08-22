@@ -1,9 +1,9 @@
-package com.lingzhen.myproject.entertainment.util.ddz;
+package com.lingzhen.myproject.lifefolder.util.ddz;
 
-import com.lingzhen.myproject.entertainment.bo.ddz.Ddz;
-import com.lingzhen.myproject.entertainment.bo.ddz.Player;
-import com.lingzhen.myproject.entertainment.bo.ddz.Poker;
-import com.lingzhen.myproject.entertainment.sort.ddz.PokerAsc;
+
+import com.lingzhen.myproject.lifefolder.pojo.ddz.Ddz;
+import com.lingzhen.myproject.lifefolder.pojo.ddz.Player;
+import com.lingzhen.myproject.lifefolder.pojo.ddz.Poker;
 
 import java.util.ArrayList;
 import java.util.Collections;

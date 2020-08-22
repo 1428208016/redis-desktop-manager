@@ -1,22 +1,17 @@
 # my-project-springboot
 所有想做的东西的集合（springboot项目）
 
-
-jiqun:<br/>
-自己都不知道是干什么的了，先留着吧。哄哄哄<br/>
-
 englishWord:<br/>
 study english word
-
-entertainment:<br/>
-游戏、娱乐类
 
 enlightenmentStar:<br/>
 启蒙星
 
 main:<br/>
-没啥重要的，类似于test项目吧
+没啥重要的，类似于test项目
 
+lifefolder<br/>
+master项目
 
 
 ==============================

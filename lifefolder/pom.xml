@@ -13,6 +13,7 @@
 
     <dependencies>
 
+        <!-- web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -30,6 +31,7 @@
             </exclusions>
         </dependency>
 
+        <!-- 通用类 -->
         <dependency>
             <groupId>com.lingzhen.my-project</groupId>
             <artifactId>common</artifactId>

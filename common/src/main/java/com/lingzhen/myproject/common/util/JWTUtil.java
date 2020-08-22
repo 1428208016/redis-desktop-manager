@@ -22,6 +22,8 @@ public class JWTUtil {
     public static final String JWT_CLAIM_KEY = "key";
     //token过期时间 秒
     private static final int TOKEN_EXPIRE_SECOND = 60 * 30;
+    //key:token
+    public static final String TOKEN = "token";
 
     /**
      * 创建Token

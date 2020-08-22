@@ -1,4 +1,4 @@
-package com.lingzhen.myproject.entertainment.bo.ddz;
+package com.lingzhen.myproject.lifefolder.pojo.ddz;
 
 import java.util.ArrayList;
 import java.util.List;

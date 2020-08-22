@@ -1,6 +1,6 @@
-package com.lingzhen.myproject.entertainment.sort.ddz;
+package com.lingzhen.myproject.lifefolder.util.ddz;
 
-import com.lingzhen.myproject.entertainment.bo.ddz.Poker;
+import com.lingzhen.myproject.lifefolder.pojo.ddz.Poker;
 
 import java.util.Comparator;
 

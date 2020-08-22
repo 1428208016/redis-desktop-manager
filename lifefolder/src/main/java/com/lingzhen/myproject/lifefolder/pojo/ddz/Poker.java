@@ -1,6 +1,4 @@
-package com.lingzhen.myproject.entertainment.bo.ddz;
-
-import java.util.Comparator;
+package com.lingzhen.myproject.lifefolder.pojo.ddz;
 
 /**
  * 牌对象

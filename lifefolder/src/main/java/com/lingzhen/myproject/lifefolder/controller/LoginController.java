@@ -1,15 +1,28 @@
 package com.lingzhen.myproject.lifefolder.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.lingzhen.myproject.common.util.JWTUtil;
+import com.lingzhen.myproject.lifefolder.pojo.Result;
+import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @RestController
 public class LoginController {
 
-    @GetMapping("hello")
-    public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
-        return String.format("Hello %s!", name);
+    @RequestMapping(value = "login", method = RequestMethod.POST)
+    @ResponseBody
+    public Result login(HttpServletResponse response) {
+        Result result = new Result();
+        Map map =  HttpServletUtil.getRequestParameter();
+
+
+        Cookie cookie = new Cookie(JWTUtil.TOKEN,JWTUtil.createToken("1"));
+        response.addCookie(cookie);
+
+        return result;
     }
 
 }

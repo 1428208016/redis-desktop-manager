@@ -3,43 +3,83 @@ package com.lingzhen.myproject.lifefolder.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.lingzhen.myproject.common.util.JWTUtil;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
-@Component
+/**
+ * Token过滤器
+ * createTime:2020-08-22
+ */
+@Configuration
 public class LoginFilter implements Filter {
+
+    private String[] PASS_PATH = {
+            "/main/login.html",
+            "/login",
+            "/css/.*",
+            "/js/.*"
+    };
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-        Cookie[] cookies = httpServletRequest.getCookies();
-        String token = "";
-        if (null != cookies && cookies.length > 0) {
-            for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                }
+
+        //获取请求路径，不包括项目名，会有前缀“/”
+        String path = httpServletRequest.getServletPath();
+        boolean bool = true;
+        for (String str : PASS_PATH) {
+            if (Pattern.matches(str, path)) {
+                bool = false;
+                break;
             }
         }
 
+        //需要过滤
+        if (bool) {
+            //Token验证
+            String token = "";
+            Cookie[] cookies = httpServletRequest.getCookies();
+            if (null != cookies && cookies.length > 0) {
+                for (Cookie cookie : cookies) {
+                    if ("token".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                    }
+                }
+            }
+            bool = JWTUtil.verifyToken(token);
+            if (!bool) {
+                //验证不通过重定向到登录页面
+                httpServletResponse.sendRedirect(httpServletRequest.getContextPath()+"/main/login.html");
+                return ;
+            }
+        }
 
-
-        DecodedJWT jwt = JWT.decode(token);
-        String userId = jwt.getClaim(JWTUtil.JWT_CLAIM_KEY).asString();
-
-
-        boolean bool = JWTUtil.verifyToken(token);
-        token = JWTUtil.createToken("123456");
-
-        Cookie cookie = new Cookie("token",token);
-        httpServletResponse.addCookie(cookie);
         filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    @Bean
+    public FilterRegistrationBean filterRegistrationBean(LoginFilter loginFilter){
+        FilterRegistrationBean frBean = new FilterRegistrationBean();
+        //设置配置的过滤器
+        frBean.setFilter(loginFilter);
+        //设置过滤路径
+        List urlList = new ArrayList();
+        urlList.add("/*");
+        frBean.setUrlPatterns(urlList);
+        //设置优先级
+        frBean.setOrder(1);
+        return frBean;
     }
 
 }
