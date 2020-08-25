@@ -2,7 +2,7 @@ package com.lingzhen.myproject.lifefolder.pojo;
 
 /**
  * 返回类
- * createTime:2020-08-22
+ * @date 2020-08-22
  * @author linz
  */
 public class Result {

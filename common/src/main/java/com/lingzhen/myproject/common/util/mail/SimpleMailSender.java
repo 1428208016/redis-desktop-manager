@@ -10,7 +10,7 @@ import java.util.Properties;
 
 /**
  * 邮件发送Util
- * createTime:2020-08-06
+ * @date 2020-08-06
  * @Author lingz
  */
 public class SimpleMailSender {

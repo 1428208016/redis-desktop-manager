@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * httpServlet工具类
- * createTime:2020-08-23
+ * @date 2020-08-23
  * @author lingz
  */
 public class HttpServletUtil {

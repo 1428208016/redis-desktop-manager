@@ -9,11 +9,9 @@ import java.util.zip.GZIPInputStream;
 
 /**
  * 网络请求工具类
- * createTime:2020-08-18
+ * @date 2020-08-18
  * @author lingz
  */
-
-
 public class NetworkRequestOperator {
 
     private String inputCharset = "UTF-8";

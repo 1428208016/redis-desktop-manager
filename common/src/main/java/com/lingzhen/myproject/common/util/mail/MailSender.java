@@ -9,7 +9,7 @@ import java.util.Properties;
 
 /**
  * 邮件信息对象
- * createTime:2020-08-06
+ * @date 2020-08-06
  * @Author lingz
  */
 public class MailSender {

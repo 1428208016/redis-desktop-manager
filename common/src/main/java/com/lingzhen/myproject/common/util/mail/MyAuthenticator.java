@@ -5,7 +5,7 @@ import javax.mail.PasswordAuthentication;
 
 /**
  * 发送邮件验证对象（用户名、密码）
- * createTime:2020-08-06
+ * @date 2020-08-06
  * @Author lingz
  */
 public class MyAuthenticator extends Authenticator {

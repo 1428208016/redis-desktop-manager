@@ -18,16 +18,18 @@ import java.util.regex.Pattern;
 
 /**
  * Token过滤器
- * createTime:2020-08-22
+ * @date 2020-08-22
+ * @author lingz
  */
 @Configuration
 public class LoginFilter implements Filter {
 
     private String[] PASS_PATH = {
+            "/js/.*",
+            "/css/.*",
             "/main/login.html",
             "/login",
-            "/css/.*",
-            "/js/.*"
+            "/register"
     };
 
     @Override

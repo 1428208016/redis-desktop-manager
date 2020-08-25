@@ -4,7 +4,7 @@ import java.util.UUID;
 
 /**
  * uuid工具类
- * createTime:2019-06-19
+ * @date 2019-06-19
  * @author lingz
  */
 public class UuidUtil {

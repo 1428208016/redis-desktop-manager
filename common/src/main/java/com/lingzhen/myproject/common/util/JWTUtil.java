@@ -10,8 +10,8 @@ import java.util.Date;
 
 /**
  * Json Web Token 工具
- * createTime:2019-10-31
- * author:lingz
+ * @date 2019-10-31
+ * @author lingz
  */
 public class JWTUtil {
     //JWT的secret（密匙）
