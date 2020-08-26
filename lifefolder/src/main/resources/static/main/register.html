@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>登录</title>
+    <title>注册</title>
 
     <script src="../js/jquery-3.5.1.min.js"></script>
 
@@ -21,10 +21,13 @@
         <input type="password" id="password" placeholder="请输入密码" >
     </div>
     <div>
-        <button type="button" onclick="login()" >登录</button>
+        <input type="password" id="rePassword" placeholder="请输入确认密码" >
     </div>
-    <div style="font-size: 12px;">
-        没有账户？<a href="register.html">点击这里</a>注册
+    <div>
+        <input type="text" id="phoneNumber" placeholder="请输入手机号" >
+    </div>
+    <div>
+        <button type="button" onclick="login()" >登录</button>
     </div>
 
 
@@ -33,16 +36,18 @@
 
     function login(){
         $.ajax({
-            url:"../login",
+            url:"../register",
             type:"POST",
             data:{
                 userName:$("#userName").val(),
-                password:$("#password").val()
+                password:$("#password").val(),
+                rePassword:$("#rePassword").val(),
+                phoneNumber:$("#phoneNumber").val()
             },
-            dataType:"JSON",
             success : function(res) {
+                debugger;
                 if(res.code == 200){
-                    window.location.replace("index.html");
+                    window.location.replace("login.html");
                 }else{
                     alert(res.message);
                 }

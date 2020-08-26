@@ -16,6 +16,29 @@
 Hiiiiiiiiiiiiiiiiiiiii
 
 <script>
+$(function () {
+    findById();
+});
+    function findById(){
+        $.ajax({
+            url:"../login",
+            type:"POST",
+            data:{
+                userName:$("#userName").val(),
+                password:$("#password").val()
+            },
+            dataType:"JSON",
+            success : function(res) {
+                if(res.code == 200){
+                    window.location.replace("index.html");
+                }else{
+                    alert(res.message);
+                }
+            },error:function (res) {
+                alert(res.message);
+            }
+        });
+    }
 
 </script>
 

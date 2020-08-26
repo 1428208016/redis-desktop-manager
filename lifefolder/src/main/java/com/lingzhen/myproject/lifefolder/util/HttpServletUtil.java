@@ -1,8 +1,10 @@
 package com.lingzhen.myproject.lifefolder.util;
 
+import com.lingzhen.myproject.common.util.JWTUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +17,21 @@ import java.util.Map;
  */
 public class HttpServletUtil {
 
+    public static String getToken() {
+        String token = "";
+        HttpServletRequest request = HttpServletUtil.getHttpServletRequest();
+        Cookie[] cookies = request.getCookies();
+        if (null != cookies && cookies.length > 0) {
+            for (Cookie cookie : cookies) {
+                if (JWTUtil.TOKEN.equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        return token;
+    }
+
     /**
      * 得到HttpServletRequest对象
      */
@@ -23,6 +40,10 @@ public class HttpServletUtil {
         return request;
     }
 
+    /**
+     * 获取参数
+     * @return
+     */
     public static Map getRequestParameter() {
         Map returnMap = new HashMap();
 
@@ -51,7 +72,5 @@ public class HttpServletUtil {
 
         return returnMap;
     }
-
-
 
 }

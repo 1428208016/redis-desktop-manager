@@ -3,6 +3,7 @@ package com.lingzhen.myproject.lifefolder.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.lingzhen.myproject.common.util.JWTUtil;
+import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,7 @@ public class LoginFilter implements Filter {
             "/css/.*",
             "/main/login.html",
             "/login",
+            "/main/register.html",
             "/register"
     };
 
@@ -50,15 +52,7 @@ public class LoginFilter implements Filter {
         //需要过滤
         if (bool) {
             //Token验证
-            String token = "";
-            Cookie[] cookies = httpServletRequest.getCookies();
-            if (null != cookies && cookies.length > 0) {
-                for (Cookie cookie : cookies) {
-                    if ("token".equals(cookie.getName())) {
-                        token = cookie.getValue();
-                    }
-                }
-            }
+            String token = HttpServletUtil.getToken();
             bool = JWTUtil.verifyToken(token);
             if (!bool) {
                 //验证不通过重定向到登录页面

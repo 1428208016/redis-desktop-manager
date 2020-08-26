@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -72,6 +73,12 @@ public class JWTUtil {
             b = false;
         }
         return b;
+    }
+
+    public static String getValue(String token) {
+        DecodedJWT jwt = JWT.decode(token);
+        String value = jwt.getClaim(JWTUtil.JWT_CLAIM_KEY).asString();
+        return value;
     }
 
 }

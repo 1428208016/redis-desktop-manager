@@ -3,9 +3,27 @@
 <mapper namespace="com.lingzhen.myproject.lifefolder.mapper.UserMapper">
 
     <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="userId" >
-        INSERT INTO sys_user(userName,`password`,nickname,phoneNumber,createTime,createDate)
-        VALUE (#{userName},#{password},#{nickname},#{phoneNumber},#{createTime},#{createDate})
+        INSERT INTO sys_user(userName,`password`,nickname,phoneNumber,state,createTime,createDate)
+        VALUE (#{userName},#{password},#{nickname},#{phoneNumber},1,#{createTime},#{createDate})
     </insert>
 
+    <select id="validUserNameAndPhoneNumber" parameterType="map" resultType="map">
+        SELECT userId,userName,phoneNumber
+        FROM sys_user
+        WHERE userName = #{userName}
+        OR phoneNumber = #{phoneNumber}
+    </select>
+
+    <select id="findByUserName" parameterType="map" resultType="map" >
+        SELECT userId,userName,password,nickname,phoneNumber,state
+        FROM sys_user
+        WHERE userName = #{userName}
+    </select>
+
+    <select id="findById" parameterType="map" resultType="map" >
+        SELECT userId,userName,nickname,phoneNumber,state
+        FROM sys_user
+        WHERE userId = #{userId}
+    </select>
 
 </mapper>

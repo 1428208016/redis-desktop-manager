@@ -20,3 +20,4 @@ mybatis:
   config-location: classpath:mybatis-config.xml
   mapper-locations[0]: classpath:mapper/*.xml
   mapper-locations[1]: classpath:mapper/**/*.xml
+
