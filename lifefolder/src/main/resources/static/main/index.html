@@ -21,16 +21,13 @@ $(function () {
 });
     function findById(){
         $.ajax({
-            url:"../login",
+            url:"../user/findById",
             type:"POST",
-            data:{
-                userName:$("#userName").val(),
-                password:$("#password").val()
-            },
+            data:{userId:5},
             dataType:"JSON",
             success : function(res) {
                 if(res.code == 200){
-                    window.location.replace("index.html");
+                    alert(JSON.stringify(res));
                 }else{
                     alert(res.message);
                 }
