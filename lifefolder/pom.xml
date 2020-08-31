@@ -13,6 +13,13 @@
 
     <dependencies>
 
+        <!-- AOP(aspectJ) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+            <version>2.3.3.RELEASE</version>
+        </dependency>
+
         <!-- springboot整合mybatis包 -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
