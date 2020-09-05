@@ -1,0 +1,24 @@
+<!--<?xml version="1.0" encoding="UTF-8" ?>-->
+<!--&lt;!&ndash; scan 配置文件如果发生改变，将会被重新加载  scanPeriod 检测间隔时间&ndash;&gt;-->
+<!--<configuration scan="true" scanPeriod="60 seconds" debug="false">-->
+<!--    <contextName>lingzhen.myproject.englishword-log</contextName>-->
+
+<!--    <include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+
+<!--    &lt;!&ndash; 控制台 &ndash;&gt;-->
+<!--    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--        &lt;!&ndash; 日志格式 &ndash;&gt;-->
+<!--        <encoder>-->
+<!--            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n</pattern>-->
+<!--            <charset>utf-8</charset>-->
+<!--        </encoder>-->
+<!--        &lt;!&ndash;此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息&ndash;&gt;-->
+<!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+<!--            &lt;!&ndash; 只有这个日志权限才能看，sql语句 &ndash;&gt;-->
+<!--            <level>DEBUG</level>-->
+<!--        </filter>-->
+<!--    </appender>-->
+
+
+
+<!--</configuration>-->

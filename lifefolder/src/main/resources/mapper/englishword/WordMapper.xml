@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wordMapper" >
+
+    <select id="findByWord" parameterType="java.lang.String" resultType="map">
+        SELECT
+            id,
+            word,
+            chinese,
+            phonetic_symbol,
+            phonetic_symbol_file,
+            word_type,
+            other,
+            translate
+        FROM
+            ew_word
+        WHERE
+            word = #{word}
+	</select>
+
+    <update id="updateByWord" parameterType="map">
+        UPDATE ew_word
+        <set>
+            <if test="chinese != null">chinese=#{chinese},</if>
+            <if test="translate != null">translate=#{translate},</if>
+            <if test="modifyId != null">modifyId=#{modifyId},</if>
+            <if test="lastModified != null">lastModified=#{lastModified},</if>
+        </set>
+        WHERE word = #{word}
+    </update>
+
+    <insert id="save" parameterType="map">
+        INSERT INTO ew_word(id,word,chinese,phonetic_symbol,phonetic_symbol_file,word_type,other,translate,creatorId,createTime,modifyId,lastModified)
+        VALUE(#{id},#{word},#{chinese},#{phonetic_symbol},#{phonetic_symbol_file},#{word_type},#{other},#{translate},#{creatorId},#{createTime},#{modifyId},#{lastModified})
+    </insert>
+
+    <select id="findUserTabMaxRow" parameterType="map" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            ${tab} w
+        WHERE
+            w.translate = '1'
+        AND NOT EXISTS(
+            SELECT 1 FROM ew_user_time_word uw WHERE uw.userId = #{userId} AND uw.word = w.word
+        )
+	</select>
+
+    <select id="findRandomWord" parameterType="map" resultType="map">
+        SELECT
+            id,
+            word,
+            chinese
+        FROM
+            ${tab} w
+        WHERE
+            w.translate = '1'
+        AND NOT EXISTS(
+            SELECT 1 FROM ew_user_time_word uw WHERE uw.userId = #{userId} AND uw.word = w.word
+        )
+        LIMIT ${pre},1
+    </select>
+
+    <select id="listWordlistPage" parameterType="map" resultType="map">
+        SELECT
+            w.id,
+            w.word,
+            w.chinese,
+            w.other,
+            w.resource,
+            w.translate,
+            w.used,
+            w.deleteFlag,
+            w.creatorId,
+            u1.realName AS "creatorId_Name",
+            w.createTime,
+            w.modifyId,
+            u2.realName AS "modifyId_Name",
+            w.lastModified
+        FROM
+            ew_word w
+        LEFT JOIN ew_sys_user u1 ON u1.userId = w.creatorId
+        LEFT JOIN ew_sys_user u2 ON u2.userId = w.modifyId
+        WHERE
+            w.deleteFlag = '1'
+        <if test="search != null and search != ''">
+            AND (
+                w.word LIKE CONCAT('%',#{search},'%')
+                OR w.chinese LIKE CONCAT('%',#{search},'%')
+                OR w.other LIKE CONCAT('%',#{search},'%')
+                OR u1.realName LIKE CONCAT('%',#{search},'%')
+                OR w.createTime LIKE CONCAT('%',#{search},'%')
+            )
+        </if>
+        ORDER BY ${order} ${dire}
+    </select>
+
+    <select id="queryBySQL" parameterType="java.lang.String" resultType="map">
+        ${_parameter}
+    </select>
+
+
+</mapper>
