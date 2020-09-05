@@ -26,8 +26,8 @@ docker run \
   jenkinsci/blueocean
   
   
-#!/bin/bash
+#! /bin/bash
 mvn clean package
 cd filefolder
 docker build .
-
+ 
