@@ -25,3 +25,4 @@ mvn clean package
 cd filefolder
 docker build .
  
+3
