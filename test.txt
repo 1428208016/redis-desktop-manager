@@ -25,3 +25,8 @@ docker run \
   -v jenkins-data:/var/docker_jenkins_home \
   jenkinsci/blueocean
   
+  
+mvn clean package
+cd filefolder
+docker build .
+
