@@ -13,6 +13,9 @@ docker container run \
   --publish 50000:50000 \
   --volume jenkins-data:/var/docker_jenkins_home \
   --volume jenkins-docker-certs:/certs/client:ro \
+  --volume jenkins-docker-certs:/certs/client:ro \
+  --volume /home/software/jdk/jdk1.8:/home/software/jdk/jdk1.8 \
+  --volume /home/software/maven/apache-maven:/home/software/maven/apache-maven \
   -u 0 jenkinsci/blueocean
   
 
