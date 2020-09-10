@@ -1,0 +1,26 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /lingzhen
+
+spring:
+  datasource:
+    #url: jdbc:mysql://101.37.78.234:3306/life?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&allowMultiQueries=true
+    url: jdbc:mysql://101.37.78.234:3306/life
+    username: root
+    password: Jingzhidb123!
+
+#mybatis配置
+#http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations[0]: classpath:mapper/*.xml
+  mapper-locations[1]: classpath:mapper/**/*.xml
+
+#springboot-日志
+#https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-custom-log-levels
+logging:
+  level:
+    com.lingzhen.myproject.lifefolder: debug
+  file:
+    path: "filefolder_log"
