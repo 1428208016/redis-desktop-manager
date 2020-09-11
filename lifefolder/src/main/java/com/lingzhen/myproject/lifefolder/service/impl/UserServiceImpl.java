@@ -5,6 +5,7 @@ import com.lingzhen.myproject.common.util.JWTUtil;
 import com.lingzhen.myproject.common.util.PasswordStorage;
 import com.lingzhen.myproject.lifefolder.mapper.UserMapper;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
+import com.lingzhen.myproject.lifefolder.pojo.ResultInfo;
 import com.lingzhen.myproject.lifefolder.service.UserService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,8 @@ public class UserServiceImpl implements UserService {
         //验证token
         String token = HttpServletUtil.getToken();
         if (!"".equals(token) && JWTUtil.verifyToken(token)) {
-            return result.setErrorReturn("重复登录！");
+            result.setResult(ResultInfo.REPEAT_LOGIN);
+            return result;
         }
         //验证用户名密码
         Map data = userMapper.findByUserName(map);

@@ -41,7 +41,7 @@
             },
             dataType:"JSON",
             success : function(res) {
-                if(res.code == 200){
+                if(res.code == 200 || res.code == 1001) {
                     window.location.replace("index.html");
                 }else{
                     alert(res.message);
