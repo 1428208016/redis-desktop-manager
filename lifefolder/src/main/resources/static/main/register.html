@@ -27,7 +27,7 @@
         <input type="text" id="phoneNumber" placeholder="请输入手机号" >
     </div>
     <div>
-        <button type="button" onclick="login()" >登录</button>
+        <button type="button" onclick="login()" >注册</button>
     </div>
 
 
@@ -45,11 +45,9 @@
                 phoneNumber:$("#phoneNumber").val()
             },
             success : function(res) {
-                debugger;
+                alert(res.message);
                 if(res.code == 200){
                     window.location.replace("login.html");
-                }else{
-                    alert(res.message);
                 }
             },error:function (res) {
                 alert(res.message);
