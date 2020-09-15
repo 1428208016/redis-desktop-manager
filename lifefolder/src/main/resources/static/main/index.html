@@ -30,7 +30,7 @@ $(function () {
                 if(res.code == 200){
                     alert(JSON.stringify(res));
                     for (k in res.data) {
-                        $("body").append(k+":"+res.data.k+"<br/>")
+                        $("body").append(k+":"+res.data[k]+"<br/>")
                     }
                 }else{
                     alert(res.message);
