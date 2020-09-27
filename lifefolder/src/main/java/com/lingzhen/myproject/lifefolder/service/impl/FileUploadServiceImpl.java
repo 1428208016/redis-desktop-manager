@@ -46,6 +46,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             map.put("creatorId", HttpServletUtil.getUserId());
             fileMapper.insertFile(map);
         } catch (Exception e) {
+            result.setError(e.getMessage());
         }
         return result;
     }
