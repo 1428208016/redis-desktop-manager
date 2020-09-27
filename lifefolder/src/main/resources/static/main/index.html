@@ -40,6 +40,18 @@ Hiiiiiiiiiiiiiiiiiiiii QAQ~<br/>
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-12" >
+        <input id="show" type="text" >
+        <button onclick="show()">查看</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12" id="showHtml">
+    </div>
+</div>
+
 
 <script>
 $(function () {
@@ -49,7 +61,6 @@ $(function () {
     initFile("upload");
     
     $(".lf-upload input[type=file]").on("change",function () {
-        debugger;
         var files = $(this).prop('files');
         var data = new FormData();
         data.append('file', files[0]);
@@ -70,6 +81,24 @@ $(function () {
         });
     });
 });
+
+function show() {
+    $.post("../file/show",{path:$("#show").val()},function(res){
+        if (res.code == 200) {
+            if (res.data.length > 0) {
+                $("#showHtml").html("");
+                $.each(res.data,function (i,temp) {
+                    $("#showHtml").append(temp+"<br/>");
+                });
+                $("#showHtml").append("---");
+            } else {
+                $("#showHtml").html("无文件或文件夹");
+            }
+        } else {
+            $("#showHtml").html(res.message);
+        }
+    })
+}
 
 function loadProject() {
     $.post("../store/myProject",function(res){
