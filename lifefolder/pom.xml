@@ -13,6 +13,12 @@
 
     <dependencies>
 
+        <!-- LiveReload(热部署) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+
         <!-- AOP(aspectJ) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

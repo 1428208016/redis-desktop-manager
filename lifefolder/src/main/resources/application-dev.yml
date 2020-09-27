@@ -9,6 +9,10 @@ spring:
     url: jdbc:mysql://101.37.78.234:3306/life
     username: root
     password: Jingzhidb123!
+  #配置热部署
+  devtools:
+    restart:
+      enabled: true
 
 #mybatis配置
 #http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/
@@ -24,3 +28,6 @@ logging:
     com.lingzhen.myproject.lifefolder: debug
   file:
     path: "filefolder_log"
+
+# 文件上传地址
+fileUploadPath: F:/03project/temp/

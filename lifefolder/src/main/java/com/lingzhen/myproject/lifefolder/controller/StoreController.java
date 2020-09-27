@@ -3,7 +3,6 @@ package com.lingzhen.myproject.lifefolder.controller;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.service.StoreService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
-import com.lingzhen.myproject.lifefolder.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
