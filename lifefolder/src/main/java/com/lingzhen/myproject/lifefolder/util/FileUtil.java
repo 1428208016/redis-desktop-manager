@@ -1,5 +1,6 @@
 package com.lingzhen.myproject.lifefolder.util;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
@@ -11,9 +12,14 @@ public class FileUtil {
     /**
      *  输出文件到指定路径
      */
-    public static long saveFileFromInputStream(InputStream stream, String path) {
+    public static long saveFileFromInputStream(InputStream stream, String path, String fileName) {
         long bytesum = 0;
-        try (FileOutputStream fs = new FileOutputStream(path)) {
+        // 判断目录是否存在
+        File mlFile = new File(path);
+        if (!mlFile.exists()) {
+            mlFile.mkdirs();
+        }
+        try (FileOutputStream fs = new FileOutputStream(path+"/"+fileName)) {
             int byteread;
             while ((byteread=stream.read(BUFFER))!=-1) {
                 bytesum += byteread;
@@ -21,6 +27,7 @@ public class FileUtil {
             }
             fs.flush();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
         return bytesum;
     }

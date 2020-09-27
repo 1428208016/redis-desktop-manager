@@ -180,7 +180,7 @@ public class DateUtil {
      * @param format
      * @return
      */
-    private static String getDateTime(Date date, String format) {
+    public static String getDateTime(Date date, String format) {
         SimpleDateFormat formatter = new SimpleDateFormat(format);
         String dateString = formatter.format(date);
         return dateString;

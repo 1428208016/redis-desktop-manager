@@ -76,7 +76,9 @@ $(function () {
              */
             processData: false,
             success: function (res) {
-                console.info(res);
+                if (res.code == 200) {
+                    alert("操作成功！");
+                }
             }
         });
     });
@@ -113,7 +115,7 @@ function loadProject() {
     });
 }
 
-    function findById(){
+function findById(){
         $.ajax({
             url:"../user/findById",
             type:"POST",

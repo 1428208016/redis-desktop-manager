@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,21 +32,23 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         try {
             String uuid = UuidUtil.getUuid();
-            String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf(".")+1);
-            String path = FILEUPLOADPATH+uuid+"."+suffix;
-            FileUtil.saveFileFromInputStream(file.getInputStream(),path);
-
+            Date now = new Date();
+            String path = FILEUPLOADPATH+DateUtil.getYear(now)+"/"+DateUtil.getMonth(now)+"/"+DateUtil.getDay(now);
+            // 文件上传
+            FileUtil.saveFileFromInputStream(file.getInputStream(),path,uuid);
+            // 入库
             Map map = new HashMap<>();
             map.put("uuId", uuid);
             map.put("newFileName", uuid);
             map.put("fileName",file.getOriginalFilename());
             map.put("fileType",file.getContentType());
             map.put("fileSize",file.getSize());
-            map.put("filePath",path);
+            map.put("filePath",path+"/"+uuid);
             map.put("createTime",DateUtil.getTime());
             map.put("createDate", DateUtil.getDate());
             map.put("creatorId", HttpServletUtil.getUserId());
             fileMapper.insertFile(map);
+            result.setData(uuid);
         } catch (Exception e) {
             result.setError(e.getMessage());
         }
