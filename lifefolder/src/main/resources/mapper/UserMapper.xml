@@ -20,10 +20,15 @@
         WHERE userName = #{userName}
     </select>
 
-    <select id="findById" parameterType="map" resultType="map" >
+    <select id="findById" parameterType="java.lang.Long" resultType="map" >
         SELECT userId,userName,nickname,phoneNumber,state
         FROM sys_user
-        WHERE userId = #{userId}
+        WHERE userId = #{_parameter}
     </select>
+
+    <insert id="insertAccessLog" parameterType="map" useGeneratedKeys="true">
+        INSERT INTO sys_user_access_log(userId,method,parameter,httpServletRequestAttributes,remark,createTime,createDate)
+        VALUE (#{userId},#{method},#{parameter},#{httpServletRequestAttributes},#{remark},#{createTime},#{createDate})
+    </insert>
 
 </mapper>

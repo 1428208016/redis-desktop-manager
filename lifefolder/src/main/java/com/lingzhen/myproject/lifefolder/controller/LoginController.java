@@ -1,14 +1,11 @@
 package com.lingzhen.myproject.lifefolder.controller;
 
-import com.lingzhen.myproject.common.util.JWTUtil;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
-import com.lingzhen.myproject.lifefolder.service.UserService;
+import com.lingzhen.myproject.lifefolder.service.LoginService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
-import com.lingzhen.myproject.lifefolder.util.ValidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -17,7 +14,7 @@ import java.util.Map;
 public class LoginController {
 
     @Autowired
-    private UserService userService;
+    private LoginService loginService;
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody
@@ -26,7 +23,7 @@ public class LoginController {
         Map map =  HttpServletUtil.getRequestParameter();
 
         try {
-            result = userService.login(map,request,response);
+            result = loginService.login(map,request,response);
         } catch (Exception e) {
             result.setError();
         }
@@ -59,7 +56,7 @@ public class LoginController {
         }
 
         try {
-            result = userService.register(map);
+            result = loginService.register(map);
         } catch (Exception e) {
             result.setError();
         }
@@ -131,7 +128,7 @@ public class LoginController {
         Result result = new Result();
 
         try {
-            result = userService.logout(request,response);
+            result = loginService.logout(request,response);
         } catch (Exception e) {
             result.setError();
         }

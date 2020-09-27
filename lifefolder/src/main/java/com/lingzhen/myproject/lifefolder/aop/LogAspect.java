@@ -14,8 +14,9 @@ public class LogAspect {
 
     // 语法：execution([访问修饰符] 返回类型 [类路径]方法名称(参数类型) [异常类型])
     // *：匹配任何
+    // .. 所有子包
     // (..)：匹配任何参数matches any number (zero or more)
-    // execution(modifiers-pattern? ret-type-pattern declaring-type-pattern?name-pattern(param-pattern) throws-pattern?)
+    // execution(modifiers-pattern? ret-type-pattern declaring-type-pattern? name-pattern(param-pattern) throws-pattern?)
     @Pointcut("execution(* com.lingzhen.myproject.lifefolder.service.UserService.*(..))")
     public void logPointcut(){}
 

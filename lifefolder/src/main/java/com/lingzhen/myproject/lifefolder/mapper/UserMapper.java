@@ -11,6 +11,7 @@ public interface UserMapper {
 
     Map findByUserName(Map map);
 
-    Map findById(Map map);
+    Map findById(Long userId);
 
+    int insertAccessLog(Map map);
 }

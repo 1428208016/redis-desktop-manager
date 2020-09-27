@@ -24,11 +24,9 @@ $(function () {
         $.ajax({
             url:"../user/findById",
             type:"POST",
-            data:{userId:5},
             dataType:"JSON",
             success : function(res) {
                 if(res.code == 200){
-                    alert(JSON.stringify(res));
                     for (k in res.data) {
                         $("body").append(k+":"+res.data[k]+"<br/>")
                     }

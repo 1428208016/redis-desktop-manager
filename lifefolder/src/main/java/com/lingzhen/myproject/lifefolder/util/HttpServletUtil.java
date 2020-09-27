@@ -17,6 +17,15 @@ import java.util.Map;
  */
 public class HttpServletUtil {
 
+    public static Long getUserId() {
+        Long userId = null;
+        String token = getToken();
+        if (!"".equals(token) && JWTUtil.verifyToken(token)) {
+            userId = Long.valueOf(JWTUtil.getValue(token));
+        }
+        return userId;
+    }
+
     public static String getToken() {
         String token = "";
         HttpServletRequest request = HttpServletUtil.getHttpServletRequest();
