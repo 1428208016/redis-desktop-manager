@@ -5,4 +5,6 @@ import java.util.Map;
 public interface FileMapper {
 
     int insertFile(Map map);
+
+    Map findById(String key);
 }

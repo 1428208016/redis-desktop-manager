@@ -7,4 +7,10 @@
         VALUE (#{uuId},#{newFileName},#{fileName},#{fileType},#{fileSize},#{filePath},#{createTime},#{createDate},#{creatorId})
     </insert>
 
+    <select id="findById" parameterType="java.lang.String" resultType="map" >
+        SELECT uuId,newFileName,fileName,fileType,fileSize,filePath,createTime,createDate,creatorId
+        FROM sys_file
+        WHERE uuId = #{_parameter}
+    </select>
+
 </mapper>

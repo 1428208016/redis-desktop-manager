@@ -12,7 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +54,44 @@ public class FileUploadServiceImpl implements FileUploadService {
             result.setError(e.getMessage());
         }
         return result;
+    }
+
+    @Override
+    public void download(String key, HttpServletResponse response) {
+        try {
+            Map data = this.findById(key);
+            if (null != data) {
+                // path是要下载的文件的路径。
+                String filePath = data.get("filePath").toString();
+                // 文件名。
+                String filename = data.get("fileName").toString();
+                // 文件大小
+                String fileSize = data.get("fileSize").toString();
+
+                // 以流的形式下载文件。
+                InputStream fis = new BufferedInputStream(new FileInputStream(filePath));
+                byte[] buffer = new byte[fis.available()];
+                fis.read(buffer);
+                fis.close();
+                // 清空response
+                response.reset();
+                // 设置response的Header
+                response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
+                response.addHeader("Content-Length",fileSize);
+                OutputStream output = new BufferedOutputStream(response.getOutputStream());
+                response.setContentType("application/octet-stream");
+                output.write(buffer);
+                output.flush();
+                output.close();
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Override
+    public Map findById(String key) {
+        return fileMapper.findById(key);
     }
 
 }
