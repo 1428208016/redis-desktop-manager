@@ -23,5 +23,4 @@ logging:
     path: "filefolder_log"
 
 # 文件上传地址
-#fileUploadPath: /home/data/project/lifeFolder/file/ 
-fileUploadPath: home/workspace/lifefolder/
+fileUploadPath: /home/data/project/lifeFolder/file/
