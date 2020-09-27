@@ -18,8 +18,20 @@ Hiiiiiiiiiiiiiiiiiiiii QAQ~<br/>
 
 <script>
 $(function () {
-    findById();
+    loadProject();
+    // findById();
 });
+
+function loadProject() {
+    $.post("../store/myProject",function(res){
+        if (res.code == 200) {
+            $.each(res.data,function(i,temp){
+                $("body").append(JSON.stringify(temp))
+            })
+        }
+    });
+}
+
     function findById(){
         $.ajax({
             url:"../user/findById",

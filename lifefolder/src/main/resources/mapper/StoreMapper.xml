@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingzhen.myproject.lifefolder.mapper.StoreMapper">
+
+    <select id="myProject" parameterType="java.lang.Long" resultType="map" >
+        SELECT
+            up.pkId,
+            up.projectId,
+            sp.projectName,
+            sp.projectSecondName,
+            sp.iconUrl,
+            sp.entrance,
+            sp.description,
+            up.state,
+            sp.type
+        FROM store_user_project up
+        LEFT JOIN store_project sp ON up.projectId = sp.projectId
+        WHERE up.userId = #{_parameter} AND up.state = 1
+    </select>
+
+</mapper>

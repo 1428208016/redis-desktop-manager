@@ -6,4 +6,3 @@
 function strNotNull(str) {
     return undefined != str && null != str && '' !== str && 'undefined' != str;
 }
-
