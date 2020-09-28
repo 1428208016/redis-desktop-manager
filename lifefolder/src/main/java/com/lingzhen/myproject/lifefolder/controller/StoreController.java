@@ -1,5 +1,6 @@
 package com.lingzhen.myproject.lifefolder.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.service.StoreService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
@@ -40,7 +41,8 @@ public class StoreController {
         Map para = HttpServletUtil.getRequestParameter();
         try {
             List data = storeService.projectList(para);
-            result.setData(data);
+            PageInfo pi = new PageInfo(data);
+            result.setData(pi);
         } catch (Exception e) {
             result.setError();
         }

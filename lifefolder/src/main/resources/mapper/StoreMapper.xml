@@ -9,13 +9,30 @@
             sp.projectName,
             sp.projectSecondName,
             sp.iconUrl,
+            sp.entranceType,
             sp.entrance,
             sp.description,
             up.state,
-            sp.type
+            sp.type,
+            sp.description
         FROM store_user_project up
         LEFT JOIN store_project sp ON up.projectId = sp.projectId
         WHERE up.userId = #{_parameter} AND up.state = 1
+    </select>
+
+    <select id="projectList" parameterType="map" resultType="map" >
+        SELECT
+            sp.projectId,
+            sp.projectName,
+            sp.projectSecondName,
+            sp.iconUrl,
+            sp.description,
+            up.state
+        FROM
+            store_project sp
+        LEFT JOIN store_user_project up ON up.projectId = sp.projectId
+        WHERE sp.state = 1
+        AND sp.projectId != 1
     </select>
 
 </mapper>

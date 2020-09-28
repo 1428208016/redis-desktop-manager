@@ -4,6 +4,7 @@ import com.lingzhen.myproject.lifefolder.mapper.StoreMapper;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.service.StoreService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
+import com.lingzhen.myproject.lifefolder.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,8 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public List projectList(Map map) {
-        return null;
+        PageUtil.PageHelper(map);
+        return storeMapper.projectList(map);
     }
 
     @Override

@@ -13,6 +13,13 @@
 
     <dependencies>
 
+        <!-- 分页插件 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+
         <!-- LiveReload(热部署) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

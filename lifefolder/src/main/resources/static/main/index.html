@@ -9,111 +9,37 @@
     <title>首页</title>
 
     <link rel="stylesheet" href="../plugin/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/mystyle.css">
 
     <script src="../js/jquery-3.5.1.min.js"></script>
     <script src="../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="../js/myFileinput.js"></script>
+    <script src="../plugin/layer/3.1.1/layer.js"></script>
 
+    <script src="../js/store/store.js"></script>
+
+    <style>
+        #info li {
+            cursor: pointer;
+        }
+    </style>
 </head>
 
-<body >
-Hiiiiiiiiiiiiiiiiiiiii QAQ~<br/>
-
-<!--<input id="uploadDemo" type="file" class="file" ><br/>-->
+<body class="container-fluid">
 <div class="row">
-    <div class="col-md-4">
-
-        <div class="lf-upload">
-            <i class="glyphicon glyphicon-upload"></i>
-<!--            <div>将文件拖拽到此，或单击<a href="javascript:;">直接上传</a><br>最多支持 10 个文件同时上传</div>-->
-            <div>单击此区域<a href="javascript:;">直接上传</a></div>
-<!--            <label><input type="file" multiple="multiple"></label>-->
-            <label><input type="file"></label>
-        </div>
-
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12" id="info">
-
+    <div class="col-md-4" >
+        Hiiiiiiiiiiiiiiiiiiiii QAQ~
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-12" >
-        <input id="show" type="text" >
-        <button onclick="show()">查看</button>
+    <div class="col-md-4" >
+        <ul id="info"></ul>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-md-12" id="showHtml">
-    </div>
-</div>
-
 
 <script>
 $(function () {
-    // findById();
-    loadProject();
-    // initFile("uploadDemo");
-    initFile("upload");
-    
-    $(".lf-upload input[type=file]").on("change",function () {
-        var files = $(this).prop('files');
-        var data = new FormData();
-        data.append('file', files[0]);
-        $.ajax({
-            type: 'POST',
-            url: "../file/upload",
-            data: data,
-            // 必须false才会自动加上正确的Content-Type
-            contentType: false,
-            /**
-             * 必须false才会避开jQuery对 formdata 的默认处理
-             * XMLHttpRequest会对 formdata 进行正确的处理
-             */
-            processData: false,
-            success: function (res) {
-                if (res.code == 200) {
-                    alert("操作成功！");
-                }
-            }
-        });
-    });
+    loadMyProject("#info");
 });
-
-function show() {
-    $.post("../file/show",{path:$("#show").val()},function(res){
-        if (res.code == 200) {
-            if (res.data.length > 0) {
-                $("#showHtml").html("");
-                $.each(res.data,function (i,temp) {
-                    $("#showHtml").append(temp+"<br/>");
-                });
-                $("#showHtml").append("---");
-            } else {
-                $("#showHtml").html("无文件或文件夹");
-            }
-        } else {
-            $("#showHtml").html(res.message);
-        }
-    })
-}
-
-function loadProject() {
-    $.post("../store/myProject",function(res){
-        if (res.code == 200) {
-            $.each(res.data,function(i,temp){
-                $("#info").append(JSON.stringify(temp))
-            })
-            if (res.data.length <= 0) {
-                $("#info").append("没有项目");
-            }
-        }
-    });
-}
 
 function findById(){
         $.ajax({
