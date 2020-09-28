@@ -13,4 +13,6 @@ public interface FileUploadService {
     void download(String key, HttpServletResponse httpServletResponse);
 
     Map findById(String key);
+
+    void view(String key, HttpServletResponse httpServletResponse);
 }

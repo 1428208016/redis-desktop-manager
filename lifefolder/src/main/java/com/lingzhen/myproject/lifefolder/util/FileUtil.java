@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
+/**
+ * 文件操作工具类
+ * @author lingz
+ * @date 2020-09-27
+ */
 public class FileUtil {
 
     // 缓冲大小
