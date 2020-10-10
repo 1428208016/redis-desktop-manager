@@ -11,6 +11,6 @@ public interface StoreService {
 
     List projectList(Map map);
 
-    Result buyProject(Map map);
+    Result buyProject(String projectId);
 
 }

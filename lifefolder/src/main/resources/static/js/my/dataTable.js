@@ -45,15 +45,18 @@ let dataTable = {
         }
     },
     // 渲染表格数据
-    draw:function () {
+    draw:function (pageNum) {
         var _data = this.data;
+        if (strNotNull(pageNum)) {
+            _data["pageNum"] = pageNum;
+        }
         var data2 = this.beforeAjax();
         if (null != data2) {
             for (var key in data2) {
                 _data[key] = data2[key];
             }
         }
-        loading()
+        loading();
         $.ajax({
             url:this.url,
             data:_data,
@@ -64,7 +67,34 @@ let dataTable = {
                     $(dataTable.target).children("tbody").remove();
                     // 加载分页
                     dataTable.loadPageInfo(res.data);
+                    // 加载数据行
+                    if (!strNotNull(res.data) || res.data.list.length <= 0) {
+                        var row = '<tbody><tr><td colspan="'+dataTable.column.length+'">暂无数据</td></tr></tbody>';
+                        $(dataTable.target).children("tbody").remove();
+                        $(dataTable.target).append(row);
+                        dataTable.nowIndex = 1;
+                        return;
+                    }
 
+                    let html = '';
+                    $.each(res.data.list,function (i,temp) {
+                        html += '<tr>';
+                        $(dataTable.column).each(function (coli,col) {
+                            var _tempColData = '';
+                            if (strNotNull(col.res) && typeof col.res == 'function') {
+                                _tempColData = col.res(i,temp,temp[col.name]);
+                            }
+                            if (strNotNull(_tempColData)) {
+                                html += '<td>'+_tempColData+'</td>';
+                            } else if (strNotNull(temp[col.name])) {
+                                html += '<td>'+temp[col.name]+'</td>';
+                            } else {
+                                html += '<td></td>';
+                            }
+                        });
+                        html += '</tr>';
+                    });
+                    $(dataTable.target).children("thead").after("<tbody>"+html+"</tbody>");
                 } else {
                     message.error(res.message);
                 }
@@ -78,10 +108,11 @@ let dataTable = {
     // 请求前的数据封装
     beforeAjax:function(){return {};},
     loadPageInfo:function (data) {
-        var row = '<nav aria-label="Page navigation" class="text-right">\n' +
+        var row = '<tfoot><tr><td colspan="'+this.column.length+'">' +
+            '<nav aria-label="Page navigation" class="text-right">\n' +
             '       <ul class="pagination">\n';
         if (data.hasPreviousPage) {
-            row += '<li><a onclick="'+funName+'('+data.prePage+')" aria-label="Previous">';
+            row += '<li><a onclick="dataTable.draw('+data.prePage+')" aria-label="Previous">';
         } else {
             row += '<li class="disabled"><a aria-label="Next">';
         }
@@ -93,12 +124,12 @@ let dataTable = {
             if (data.pageNum == temp) {
                 row += '<li class="active"><a>'+temp+'</a></li>';
             } else {
-                row += '<li><a onclick="'+funName+'('+temp+')" >'+temp+'</a></li>';
+                row += '<li><a onclick="dataTable.draw('+temp+')" >'+temp+'</a></li>';
             }
         });
 
         if (data.hasNextPage) {
-            row += '<li><a onclick="'+funName+'('+data.nextPage+')" aria-label="Next">';
+            row += '<li><a onclick="dataTable.draw('+data.nextPage+')" aria-label="Next">';
         } else {
             row += '<li class="disabled"><a aria-label="Next">';
         }
@@ -106,10 +137,10 @@ let dataTable = {
             '               </a>\n' +
             '           </li>\n' +
             '       </ul>\n' +
-            '</nav></td></tr>';
+            '</nav></td></tr></tfoot>';
+
         $(this.target).children("tfoot").remove();
-        // $(this.target).append('<tfoot>'+row+'</tfoot>');
-        console.info(row);
+        $(this.target).append(row);
         return data.pageNum;
     }
 };

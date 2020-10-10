@@ -30,9 +30,15 @@
             up.state
         FROM
             store_project sp
-        LEFT JOIN store_user_project up ON up.projectId = sp.projectId
+        LEFT JOIN store_user_project up ON up.projectId = sp.projectId AND up.userId = #{userId}
         WHERE sp.state = 1
         AND sp.projectId != 1
+    </select>
+
+    <select id="findById" parameterType="string" resultType="map" >
+        SELECT projectId,projectName,projectSecondName,iconUrl,entranceType,entrance,type,state,description
+        FROM store_project
+        WHERE projectId = #{_parameter}
     </select>
 
 </mapper>

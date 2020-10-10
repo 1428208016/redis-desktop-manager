@@ -7,6 +7,7 @@ import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
 import com.lingzhen.myproject.lifefolder.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -26,11 +27,29 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public List projectList(Map map) {
         PageUtil.PageHelper(map);
+        map.put("userId",HttpServletUtil.getUserId());
         return storeMapper.projectList(map);
     }
 
     @Override
-    public Result buyProject(Map map) {
-        return null;
+    @Transactional(rollbackFor = Exception.class)
+    public Result buyProject(String projectId) {
+        Result result = new Result();
+
+        Map data = storeMapper.findById(projectId);
+        if (null == data || data.size() <= 0) {
+            result.setError("项目不存在！");
+            return result;
+        }
+        if (!"1".equals(data.get("state").toString())) {
+            result.setError("项目非正常状态");
+            return result;
+        }
+
+//        data = storeMapper.findMyProject(selMap);
+
+//        storeMapper.insertProject();
+
+        return result;
     }
 }

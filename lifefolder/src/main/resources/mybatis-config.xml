@@ -23,6 +23,7 @@
     </settings>
     <typeAliases>
         <typeAlias type="java.util.Map" alias="map"></typeAlias>
+        <typeAlias type="java.lang.String" alias="string"></typeAlias>
     </typeAliases>
 
 <!--    <plugins>-->

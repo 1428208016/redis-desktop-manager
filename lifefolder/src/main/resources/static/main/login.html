@@ -12,7 +12,7 @@
 
 </head>
 
-<body >
+<body>
 
     <div>
         <input id="userName" placeholder="请输入用户名" >
@@ -30,6 +30,15 @@
 
 
 <script>
+    
+    $(function () {
+        console.info(location)
+        // var nowHref = location.href.substring(location.href.lastIndexOf("/")+1);
+        // debugger;
+        // if (nowHref != "login.html") {
+        //     location.href = "/login.html";
+        // }
+    });
 
     function login(){
         $.ajax({
@@ -51,6 +60,12 @@
             }
         });
     }
+
+    $("body").keyup(function(e){
+        if(e.keyCode===13){
+            login();
+        }
+    });
 </script>
 
 </body>

@@ -11,4 +11,5 @@ public interface StoreMapper {
 
     int addUserProject(Map map);
 
+    Map findById(String projectId);
 }

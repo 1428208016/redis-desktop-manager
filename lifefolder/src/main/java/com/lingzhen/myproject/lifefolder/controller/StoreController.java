@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.service.StoreService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
+import com.lingzhen.myproject.lifefolder.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,8 +56,12 @@ public class StoreController {
     public Result buyProject() {
         Result result = new Result();
         Map para = HttpServletUtil.getRequestParameter();
+        if (VerifyUtil.stringTrimIsEmpty(para.get("projectId"))) {
+            result.setError("项目Id不能为空");
+            return result;
+        }
         try {
-            result = storeService.buyProject(para);
+            result = storeService.buyProject(para.get("projectId").toString());
         } catch (Exception e) {
             result.setError();
         }
