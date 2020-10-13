@@ -9,6 +9,9 @@
     <title>登录</title>
 
     <script src="../js/jquery-3.5.1.min.js"></script>
+    <script src="../plugin/layer/3.1.1/layer.js"></script>
+    <script src="../js/common.js"></script>
+
 
 </head>
 
@@ -30,17 +33,12 @@
 
 
 <script>
-    
-    $(function () {
-        console.info(location)
-        // var nowHref = location.href.substring(location.href.lastIndexOf("/")+1);
-        // debugger;
-        // if (nowHref != "login.html") {
-        //     location.href = "/login.html";
-        // }
-    });
+    if (window != top) {
+        top.location.href = location.href;
+    }
 
     function login(){
+        loading();
         $.ajax({
             url:"../login",
             type:"POST",
@@ -50,12 +48,14 @@
             },
             dataType:"JSON",
             success : function(res) {
+                loadingClose();
                 if(res.code == 200 || res.code == 1001) {
                     window.location.replace("index.html");
                 }else{
                     alert(res.message);
                 }
             },error:function (res) {
+                loadingClose();
                 alert(res.message);
             }
         });

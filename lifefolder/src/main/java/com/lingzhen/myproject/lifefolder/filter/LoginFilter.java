@@ -28,6 +28,8 @@ public class LoginFilter implements Filter {
     private String[] PASS_PATH = {
             "/js/.*",
             "/css/.*",
+            "/plugin/.*",
+            "/img/.*",
             "/main/login.html",
             "/login",
             "/main/register.html",

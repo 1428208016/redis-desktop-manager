@@ -1,7 +1,7 @@
 
 // 渲染我的项目
 function loadMyProject(target) {
-    $.post("../store/myProject",function(res){
+    $.post("../store/myProjectAll",function(res){
         if (res.code == 200) {
             $(target).append("");
             $.each(res.data,function(i,temp){

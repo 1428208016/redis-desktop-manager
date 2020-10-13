@@ -21,12 +21,12 @@ public class StoreController {
     @Autowired
     private StoreService storeService;
 
-    @RequestMapping(value = "myProject", method = RequestMethod.POST)
+    @RequestMapping(value = "myProjectAll", method = RequestMethod.POST)
     @ResponseBody
-    public Result myProject() {
+    public Result myProjectAll() {
         Result result = new Result();
         try {
-            List data = storeService.myProject();
+            List data = storeService.myProjectAll();
             result.setData(data);
         } catch (Exception e) {
             result.setError();

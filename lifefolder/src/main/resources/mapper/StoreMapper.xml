@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lingzhen.myproject.lifefolder.mapper.StoreMapper">
 
-    <select id="myProject" parameterType="java.lang.Long" resultType="map" >
+    <select id="myProjectAll" parameterType="java.lang.Long" resultType="map" >
         SELECT
             up.pkId,
             up.projectId,
@@ -40,5 +40,15 @@
         FROM store_project
         WHERE projectId = #{_parameter}
     </select>
+
+    <select id="findMyProject" parameterType="map" resultType="map" >
+        SELECT pkId,userId,projectId,state FROM store_user_project WHERE userId = #{userId} AND projectId = #{projectId}
+    </select>
+
+    <insert id="addUserProject" parameterType="map" useGeneratedKeys="true" >
+        INSERT INTO store_user_project (userId,projectId,state,createTime,createDate)
+        VALUE (#{userId},#{projectId},1,#{createTime},#{createDate})
+    </insert>
+
 
 </mapper>

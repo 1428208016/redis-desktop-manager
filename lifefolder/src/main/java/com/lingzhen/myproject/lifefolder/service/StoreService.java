@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface StoreService {
 
-    List myProject();
+    List myProjectAll();
 
     List projectList(Map map);
 

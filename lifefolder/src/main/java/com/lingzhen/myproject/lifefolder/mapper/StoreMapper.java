@@ -5,7 +5,9 @@ import java.util.Map;
 
 public interface StoreMapper {
 
-    List myProject(Long userId);
+    List myProjectAll(Long userId);
+
+    Map findMyProject(Map map);
 
     List projectList(Map map);
 

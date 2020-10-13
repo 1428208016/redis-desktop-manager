@@ -1,5 +1,6 @@
 package com.lingzhen.myproject.lifefolder.service.impl;
 
+import com.lingzhen.myproject.common.util.DateUtil;
 import com.lingzhen.myproject.lifefolder.mapper.StoreMapper;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.service.StoreService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +21,9 @@ public class StoreServiceImpl implements StoreService {
     private StoreMapper storeMapper;
 
     @Override
-    public List myProject() {
+    public List myProjectAll() {
         Long userId = HttpServletUtil.getUserId();
-        return storeMapper.myProject(userId);
+        return storeMapper.myProjectAll(userId);
     }
 
     @Override
@@ -32,7 +34,6 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Result buyProject(String projectId) {
         Result result = new Result();
 
@@ -46,9 +47,19 @@ public class StoreServiceImpl implements StoreService {
             return result;
         }
 
-//        data = storeMapper.findMyProject(selMap);
+        Long userId = HttpServletUtil.getUserId();
+        Map selMap = new HashMap();
+        selMap.put("userId",userId);
+        selMap.put("projectId",projectId);
+        data = storeMapper.findMyProject(selMap);
+        if (null != data && data.size() > 0) {
+            result.setError("项目已存在");
+            return result;
+        }
 
-//        storeMapper.insertProject();
+        selMap.put("createTime", DateUtil.getTime());
+        selMap.put("createDate",DateUtil.getDate());
+        storeMapper.addUserProject(selMap);
 
         return result;
     }

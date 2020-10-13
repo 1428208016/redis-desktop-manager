@@ -30,7 +30,7 @@
                     if (strNotNull(res.state)) {
                         return '';
                     } else {
-                        return '<a onclick="addProject('+res.projectId+',\''+res.projectName+'\')">添加</a>';
+                        return '<a href="#" onclick="addProject('+res.projectId+',\''+res.projectName+'\')">添加</a>';
                     }
                 }}
             ],
@@ -44,23 +44,26 @@
     });
 
     function addProject(id,name) {
-        layer.confirm('是否确认添加['+name+']', {
+        var _i = layer.confirm('是否确认添加['+name+']', {
             btn: ['确认', '取消']
         }, function(index, layero){
             loading();
             $.ajax({
-                url:"../../buyProject?tm="+new Date().getTime(),
+                url:"../../store/buyProject?tm="+new Date().getTime(),
                 type:"POST",
                 data:{projectId:id},
                 dataType:"JSON",
                 success : function(res) {
                     if(res.code == 200 || res.code == 1001) {
-                        window.location.replace("index.html");
+                        dataTable.draw();
                     }else{
                         alert(res.message);
                     }
                 },error:function (res) {
                     alert(res.message);
+                },complete(XHR, TS) {
+                    loadingClose();
+                    layer.close(_i);
                 }
             });
             loadingClose();
