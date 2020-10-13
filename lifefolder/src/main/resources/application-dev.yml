@@ -13,6 +13,10 @@ spring:
   devtools:
     restart:
       enabled: true
+  #文件上传
+  servlet:
+    multipart:
+      max-file-size: 1024MB
 
 #mybatis配置
 #http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/

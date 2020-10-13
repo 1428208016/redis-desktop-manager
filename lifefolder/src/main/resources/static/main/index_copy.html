@@ -13,7 +13,7 @@
 
     <script src="../js/jquery-3.5.1.min.js"></script>
     <script src="../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="../js/myFileinput.js"></script>
+    <script src="../js/my/myFileinput.js"></script>
 
 </head>
 
@@ -52,8 +52,6 @@ Hiiiiiiiiiiiiiiiiiiiii QAQ~<br/>
 
 <script>
 $(function () {
-    // findById();
-    loadProject();
     // initFile("uploadDemo");
     initFile("upload");
     
@@ -99,37 +97,6 @@ function show() {
     })
 }
 
-function loadProject() {
-    $.post("../store/myProject",function(res){
-        if (res.code == 200) {
-            $.each(res.data,function(i,temp){
-                $("#info").append(JSON.stringify(temp))
-            })
-            if (res.data.length <= 0) {
-                $("#info").append("没有项目");
-            }
-        }
-    });
-}
-
-function findById(){
-        $.ajax({
-            url:"../user/findById",
-            type:"POST",
-            dataType:"JSON",
-            success : function(res) {
-                if(res.code == 200){
-                    for (k in res.data) {
-                        $("body").append(k+":"+res.data[k]+"<br/>")
-                    }
-                }else{
-                    alert(res.message);
-                }
-            },error:function (res) {
-                alert(res.message);
-            }
-        });
-    }
 
 </script>
 
