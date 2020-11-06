@@ -1,11 +1,10 @@
 package com.lingzhen.myproject.lifefolder.controller;
 
-import com.lingzhen.myproject.lifefolder.service.englishword.EnglishWordService;
+import com.lingzhen.myproject.lifefolder.service.EnglishWordServiceCopy;
 import com.lingzhen.myproject.lifefolder.util.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -13,12 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
-@RequestMapping("englishWord")
-public class EnglishwordController {
+//@RestController
+//@RequestMapping("englishWord")
+public class EnglishWordControllerCopy {
 
     @Autowired
-    private EnglishWordService englishwordService;
+    private EnglishWordServiceCopy englishwordService;
 
     @RequestMapping("init")
     public String init(){

@@ -1,11 +1,10 @@
-package com.lingzhen.myproject.lifefolder.service.englishword.impl;
+package com.lingzhen.myproject.lifefolder.service.impl;
 
 import com.lingzhen.myproject.common.util.DateUtil;
 import com.lingzhen.myproject.common.util.UuidUtil;
 import com.lingzhen.myproject.lifefolder.mapper.englishword.EnglishWordMapper;
 import com.lingzhen.myproject.lifefolder.mapper.englishword.UserTimeWordMapper;
-import com.lingzhen.myproject.lifefolder.service.englishword.EnglishWordService;
-import com.lingzhen.myproject.lifefolder.service.englishword.SysConfigService;
+import com.lingzhen.myproject.lifefolder.service.EnglishWordServiceCopy;
 import com.lingzhen.myproject.lifefolder.util.Tools;
 import com.lingzhen.myproject.lifefolder.util.baidufanyi.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +21,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service("englishWordService")
-public class EnglishWordServiceImpl implements EnglishWordService {
+public class EnglishWordServiceImplCopy implements EnglishWordServiceCopy {
 
     private EnglishWordMapper englishWordMapper;
-
-    @Autowired
-    private SysConfigService sysConfigService;
 
     private UserTimeWordMapper userTimeWordMapper;
 
@@ -186,7 +182,7 @@ public class EnglishWordServiceImpl implements EnglishWordService {
         if(null == list || list.size() <= 0){
             list = new ArrayList<Map>();
             //获取配置的每天单词数
-            String num = sysConfigService.findValueByCode("wordsNumberOfDay");
+            String num = "8";   // sysConfigService.findValueByCode("wordsNumberOfDay");
             int nums = Tools.notEmpty(num)?Integer.valueOf(num):6;
             //通过用户随机获取单词
             Map data = null;

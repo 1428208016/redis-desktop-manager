@@ -1,9 +1,9 @@
-package com.lingzhen.myproject.lifefolder.service.englishword;
+package com.lingzhen.myproject.lifefolder.service;
 
 import java.util.List;
 import java.util.Map;
 
-public interface EnglishWordService {
+public interface EnglishWordServiceCopy {
     /**
      * 读取文件初始化ewWord表
      * @throws Exception
