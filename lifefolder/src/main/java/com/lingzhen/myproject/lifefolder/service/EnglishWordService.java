@@ -21,4 +21,11 @@ public interface EnglishWordService {
      * @throws Exception
      */
     List list(Map map) throws Exception;
+
+    /**
+     * 我的单词列表
+     * @return
+     * @throws Exception
+     */
+    List myWordList(Map map) throws Exception;
 }

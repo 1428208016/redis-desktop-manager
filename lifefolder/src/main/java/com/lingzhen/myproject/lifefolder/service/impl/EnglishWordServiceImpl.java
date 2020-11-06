@@ -2,6 +2,7 @@ package com.lingzhen.myproject.lifefolder.service.impl;
 
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.service.EnglishWordService;
+import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,12 @@ public class EnglishWordServiceImpl implements EnglishWordService {
 
     @Override
     public List list(Map map) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List myWordList(Map map) throws Exception {
+
         return null;
     }
 }
