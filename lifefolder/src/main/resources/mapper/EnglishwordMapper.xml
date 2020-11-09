@@ -6,15 +6,11 @@
         SELECT word,phoneticSigns_uk,phoneticSigns_us,noun,verb,adjective,pluralForm,resentParticiple,pastTense
         FROM ew_lexicon_4500
         <where>
-            <if test="word != null and word != ''">
-                word LIKE '%${word}%'
-            </if>
-            <if test="chinese != null and chinese != ''">
-                AND (
-                    noun LIKE '%${chinese}%'
-                    OR verb LIKE '%${chinese}%'
-                    OR adjective LIKE '%${chinese}%'
-                )
+            <if test="search != null and search != ''">
+                word LIKE '%${search}%'
+                OR noun LIKE '%${search}%'
+                OR verb LIKE '%${search}%'
+                OR adjective LIKE '%${search}%'
             </if>
         </where>
     </select>

@@ -15,16 +15,40 @@
             height:45px;
             line-height: 45px;
         }
-        #search{
+        #searchDiv{
             border: 1px solid #ececec;
-            padding: 0 10px 0 20px;
+            padding: 0 0 0 20px;
             border-radius: 6px;
-            outline: none;
             width: 40%;
             margin-left: 20px;
         }
-        #search:hover{
+        #searchDiv:hover{
             box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 2px 4px 1px rgba(0,0,0,.18);
+        }
+        #search{
+            border: none;
+            outline: none;
+            width: 80%;
+            width: calc(100% - 65px);
+        }
+        #searchBtn{
+            height:45px;
+            line-height: 45px;
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+            color:#00809D;
+            width: 50px;
+            text-align: center;
+        }
+        #removeBtn {
+            height:45px;
+            line-height: 45px;
+            padding:0px;
+            float: right;
+            cursor: pointer;
+            font-size: 14px;
+            width: 14px;
         }
         #content {
             border-top:1px solid #ececec;
@@ -57,7 +81,14 @@
 <body>
     <div class="container-fluid">
         <div class="row" id="top">
-            Search <input type="text" id="search" name="search">
+            <div class="col-md-12 col-sm-12">
+                <div style="display: inline-block"> Search </div>
+                <div id="searchDiv" style="display: inline-block">
+                    <input type="text" id="search" name="search">
+                    <span id="searchBtn" class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    <span id="removeBtn" class="glyphicon glyphicon-remove" aria-hidden="true" style="display: none"></span>
+                </div>
+            </div>
         </div>
         <div  class="row">
             <div class="col-md-8 col-sm-8" id="content"></div>
@@ -65,11 +96,39 @@
     </div>
 <script>
 $(function(){
+    load();
+    // 搜索Div
+    $("#searchDiv").on("mouseover",function(){
+        var a = $("#search").val();
+        if (strNotNull(a)) {
+            $("#removeBtn").show();
+        } else {
+            $("#removeBtn").hide();
+        }
+    }).on("mouseout",function(){
+        $("#removeBtn").hide();
+    });
+    // 搜索框
+    $("#search").on("change",function(){
+        load();
+    });
+    // 搜索按钮
+    $("#searchBtn").on("click",function(){
+        load();
+    });
+    // 删除按钮
+    $("#removeBtn").on("click",function(){
+        $("#search").val("");
+    });
+});
+
+function load(){
     $.ajax({
         url:"../../englishWord/lexicon4500List",
         type:"POST",
         data:{
-            pageSize:40
+            pageSize:40,
+            search:$("#search").val()
         },
         dataType:"JSON",
         success:function (res) {
@@ -106,7 +165,7 @@ $(function(){
             $("body").html(res);
         }
     });
-});
+}
 </script>
 </body>
 </html>
