@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../../plugin/bootstrap/3.3.7/css/bootstrap.css">
     <script src="../../js/jquery-3.5.1.js"></script>
     <script src="../../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../js/common.js"></script>
 
     <style>
         #top{
@@ -27,7 +28,6 @@
         }
         #content {
             border-top:1px solid #ececec;
-            padding-top:10px;
         }
         #content ul {
             padding-left: 0px;
@@ -48,6 +48,10 @@
             min-width: 20%;
             display: inline-block;
         }
+        .word-line {
+            border-bottom: 1px solid #ececec;
+            padding-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -56,17 +60,7 @@
             Search <input type="text" id="search" name="search">
         </div>
         <div  class="row">
-            <div class="col-md-8" id="content">
-                <h1>secure</h1>
-                <ul>
-                    <li><span class="word-pre">noun.</span>保护；取得；保卫；抵押</li>
-                    <li><span class="word-pre">verb.</span>安心的；有把握的；可靠的；牢靠的</li>
-                    <li><span class="word-pre">adjective.</span>安全的；获得；安全性</li>
-                </ul>
-                <span class="participle">plural Form：secures</span>
-                <span class="participle">resent Participle：securing</span>
-                <span class="participle">past Tense：secured</span>
-            </div>
+            <div class="col-md-8 col-sm-8" id="content"></div>
         </div>
     </div>
 <script>
@@ -74,10 +68,40 @@ $(function(){
     $.ajax({
         url:"../../englishWord/lexicon4500List",
         type:"POST",
-        data:{},
+        data:{
+            pageSize:40
+        },
         dataType:"JSON",
         success:function (res) {
-
+            $("#content").html("");
+            if (res.code == 200) {
+                $.each(res.data.list,function(i,temp){
+                    var html = '<div class="col-md-12 col-sm-12 word-line">' +
+                        '<h1>'+temp.word+'</h1>' +
+                        '<ul>';
+                    if (strNotNull(temp.noun)) {
+                        html += '<li><span class="word-pre">noun.</span>'+temp.noun+'</li>';
+                    }
+                    if (strNotNull(temp.verb)) {
+                        html += '<li><span class="word-pre">verb.</span>'+temp.verb+'</li>';
+                    }
+                    if (strNotNull(temp.adjective)) {
+                        html += '<li><span class="word-pre">adjective.</span>'+temp.adjective+'</li>';
+                    }
+                    html += '</ul>';
+                    if (strNotNull(temp.pluralForm)) {
+                        html += '<span class="participle">plural Form：'+temp.pluralForm+'</span>';
+                    }
+                    if (strNotNull(temp.resentParticiple)) {
+                        html += '<span class="participle">resent Participle：'+temp.resentParticiple+'</span>';
+                    }
+                    if (strNotNull(temp.pastTense)) {
+                        html += '<span class="participle">past Tense：'+temp.pastTense+'</span>';
+                    }
+                    html += '</div>';
+                    $("#content").append(html);
+                });
+            }
         },error:function (res) {
             $("body").html(res);
         }

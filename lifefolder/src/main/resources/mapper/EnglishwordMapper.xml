@@ -3,7 +3,7 @@
 <mapper namespace="com.lingzhen.myproject.lifefolder.mapper.EnglishWordMapper" >
 
     <select id="lexicon4500List" resultType="map" parameterType="map" >
-        SELECT word,noun,verb,adjective
+        SELECT word,phoneticSigns_uk,phoneticSigns_us,noun,verb,adjective,pluralForm,resentParticiple,pastTense
         FROM ew_lexicon_4500
         <where>
             <if test="word != null and word != ''">
