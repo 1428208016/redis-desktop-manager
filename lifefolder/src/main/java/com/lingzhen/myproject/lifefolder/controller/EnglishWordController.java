@@ -1,5 +1,6 @@
 package com.lingzhen.myproject.lifefolder.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.service.EnglishWordService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
@@ -19,16 +20,17 @@ public class EnglishWordController {
     private EnglishWordService englishwordService;
 
 
-    @RequestMapping("myWordList")
+    @RequestMapping("lexicon4500List")
     @ResponseBody
-    public Result myWordList(){
+    public Result lexicon4500List(){
         Result result = new Result();
 
         Map para = HttpServletUtil.getRequestParameter();
 
         try {
-            List data = englishwordService.myWordList(para);
-            result.setData(data);
+            List data = englishwordService.lexicon4500List(para);
+            PageInfo pi = new PageInfo(data);
+            result.setData(pi);
         } catch (Exception e) {
             result.setError();
         }

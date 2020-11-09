@@ -2,12 +2,11 @@ package com.lingzhen.myproject.lifefolder.service.impl;
 
 import com.lingzhen.myproject.common.util.DateUtil;
 import com.lingzhen.myproject.common.util.UuidUtil;
-import com.lingzhen.myproject.lifefolder.mapper.englishword.EnglishWordMapper;
+import com.lingzhen.myproject.lifefolder.mapper.englishword.EnglishWordMapperCopy;
 import com.lingzhen.myproject.lifefolder.mapper.englishword.UserTimeWordMapper;
 import com.lingzhen.myproject.lifefolder.service.EnglishWordServiceCopy;
 import com.lingzhen.myproject.lifefolder.util.Tools;
 import com.lingzhen.myproject.lifefolder.util.baidufanyi.TransUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -23,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Service("englishWordService")
 public class EnglishWordServiceImplCopy implements EnglishWordServiceCopy {
 
-    private EnglishWordMapper englishWordMapper;
+    private EnglishWordMapperCopy englishWordMapper;
 
     private UserTimeWordMapper userTimeWordMapper;
 

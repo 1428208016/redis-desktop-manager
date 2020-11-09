@@ -8,24 +8,9 @@ import java.util.Map;
 public interface EnglishWordService {
 
     /**
-     * 保存
-     * @param map
-     * @throws Exception
-     */
-    Result add(Map map) throws Exception;
-
-    /**
-     * 获取单词列表
-     * @param map
+     * 词库4500列表
      * @return
      * @throws Exception
      */
-    List list(Map map) throws Exception;
-
-    /**
-     * 我的单词列表
-     * @return
-     * @throws Exception
-     */
-    List myWordList(Map map) throws Exception;
+    List lexicon4500List(Map map) throws Exception;
 }

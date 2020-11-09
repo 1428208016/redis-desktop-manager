@@ -3,7 +3,6 @@ package com.lingzhen.myproject.lifefolder.util.baidufanyi;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.lingzhen.myproject.lifefolder.service.englishword.SysConfigService;
 import com.lingzhen.myproject.lifefolder.util.BeanUtil;
 import org.springframework.stereotype.Component;
 
@@ -46,10 +45,10 @@ public class TransUtil {
 
     //获取对象
     private static TransApi getTransApi(){
-        SysConfigService sysConfigService = (SysConfigService) BeanUtil.getBean("sysConfig");
-        if(null == TransUtil.api){
-            TransUtil.api = new TransApi(sysConfigService.findValueByCode("baidufanyi_APP_ID"),sysConfigService.findValueByCode("baidufanyi_SECURITY_KEY"));
-        }
+//        SysConfigService sysConfigService = (SysConfigService) BeanUtil.getBean("sysConfig");
+//        if(null == TransUtil.api){
+//            TransUtil.api = new TransApi(sysConfigService.findValueByCode("baidufanyi_APP_ID"),sysConfigService.findValueByCode("baidufanyi_SECURITY_KEY"));
+//        }
         return TransUtil.api;
     }
 

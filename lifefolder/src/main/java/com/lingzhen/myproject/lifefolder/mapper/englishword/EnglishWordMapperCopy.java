@@ -3,7 +3,7 @@ package com.lingzhen.myproject.lifefolder.mapper.englishword;
 import java.util.List;
 import java.util.Map;
 
-public interface EnglishWordMapper {
+public interface EnglishWordMapperCopy {
 
     Map findByWord(String word);
 

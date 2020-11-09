@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lingzhen.myproject.lifefolder.mapper.EnglishWordMapper" >
+
+    <select id="lexicon4500List" resultType="map" parameterType="map" >
+        SELECT word,noun,verb,adjective
+        FROM ew_lexicon_4500
+        <where>
+            <if test="word != null and word != ''">
+                word LIKE '%${word}%'
+            </if>
+            <if test="chinese != null and chinese != ''">
+                AND (
+                    noun LIKE '%${chinese}%'
+                    OR verb LIKE '%${chinese}%'
+                    OR adjective LIKE '%${chinese}%'
+                )
+            </if>
+        </where>
+    </select>
+
+</mapper>

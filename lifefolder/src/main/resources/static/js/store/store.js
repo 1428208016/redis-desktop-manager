@@ -6,11 +6,14 @@ function loadMyProject(target) {
             $(target).append("");
             $.each(res.data,function(i,temp){
                 let cls = "";
-                if (temp.entranceType == "iframe") {
-                    cls = "_iframe";
+                debugger;
+                if ("iframe" == temp.entranceType) {
+                    cls = 'class="_iframe"';
+                } else if ("newView" == temp.entranceType) {
+                    cls = 'class="_newView"';
                 }
-                let html = '<li class="'+cls+'" data-entrance="'+temp.entrance+'" data-name="'+temp.projectName+'">';
-                html += '<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span> '
+                let html = '<li '+cls+' data-entrance="'+temp.entrance+'" data-name="'+temp.projectName+'">';
+                html += '<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span> ';
                 html += '<span class="glyphicon-class">'+temp.projectName+'</span></li>';
                 $(target).append(html)
             });
@@ -24,6 +27,11 @@ function loadMyProject(target) {
                         area : ['800px' , '520px'],
                         content: $(this).data("entrance")
                     });
+                });
+
+                $(target).find("._newView").on("click",function () {
+                    console.info(111);
+                    window.location.href = $(this).data("entrance");
                 });
             } else {
                 $(target).append("没有项目");
