@@ -6,7 +6,6 @@ function loadMyProject(target) {
             $(target).append("");
             $.each(res.data,function(i,temp){
                 let cls = "";
-                debugger;
                 if ("iframe" == temp.entranceType) {
                     cls = 'class="_iframe"';
                 } else if ("newView" == temp.entranceType) {

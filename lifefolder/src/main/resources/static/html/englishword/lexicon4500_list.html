@@ -4,64 +4,82 @@
     <meta charset="UTF-8">
     <title>English word</title>
     <!-- Basic -->
-    <link rel="stylesheet" href="../plugins/bootstrap-3.3.7/css/bootstrap.min.css">
-    <script src="../static/js/jquery-3.4.1.js" title="jquery"></script>
-    <script src="../plugins/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script src="../static/js/vue-2.6.10.js"></script>
-    <script src="../static/js/word-vue.js"></script>
+    <link rel="stylesheet" href="../../plugin/bootstrap/3.3.7/css/bootstrap.css">
+    <script src="../../js/jquery-3.5.1.js"></script>
+    <script src="../../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <style>
+        #top{
+            margin:20px;
+            height:45px;
+            line-height: 45px;
+        }
+        #search{
+            border: 1px solid #ececec;
+            padding: 0 10px 0 20px;
+            border-radius: 6px;
+            outline: none;
+            width: 40%;
+            margin-left: 20px;
+        }
+        #search:hover{
+            box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 2px 4px 1px rgba(0,0,0,.18);
+        }
+        #content {
+            border-top:1px solid #ececec;
+            padding-top:10px;
+        }
+        #content ul {
+            padding-left: 0px;
+        }
+        #content ul li{
+            list-style-type: none;
+            display: table;
+        }
+        .word-pre {
+            font-size: 18px;
+            text-align: right;
+            display: table-cell;
+            width: 100px;
+            font-weight: 700;
+            padding-right: 10px;
+        }
+        .participle {
+            min-width: 20%;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
-<table id="wordTab">
-    <thead>
-        <tr>
-            <th>序列</th>
-            <th>单词</th>
-            <th>中文</th>
-            <th>操作</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr v-for="(item, index) in items">
-            <td>{{index}}</td>
-            <td>{{item.word}}</td>
-            <td>{{item.chinese}}</td>
-            <td>
-                <a href="#">查看</a>
-                <a href="#">修改</a>
-                <a href="#">取消使用</a>
-            </td>
-        </tr>
-    </tbody>
-</table>
-<div id="component-paging">
-    <button-paging></button-paging>
-</div>
-
+    <div class="container-fluid">
+        <div class="row" id="top">
+            Search <input type="text" id="search" name="search">
+        </div>
+        <div  class="row">
+            <div class="col-md-8" id="content">
+                <h1>secure</h1>
+                <ul>
+                    <li><span class="word-pre">noun.</span>保护；取得；保卫；抵押</li>
+                    <li><span class="word-pre">verb.</span>安心的；有把握的；可靠的；牢靠的</li>
+                    <li><span class="word-pre">adjective.</span>安全的；获得；安全性</li>
+                </ul>
+                <span class="participle">plural Form：secures</span>
+                <span class="participle">resent Participle：securing</span>
+                <span class="participle">past Tense：secured</span>
+            </div>
+        </div>
+    </div>
 <script>
 $(function(){
-    var url = "http://127.0.0.1:8090/EnglishWord/englishWord/listWord";
-    var wordTabVue = new Vue({
-        el: '#wordTab',
-        data: {
-            items: []
-        }
-    });
-
-    new Vue({el:"#component-paging"});
-
-
     $.ajax({
-        url:url,
+        url:"../../englishWord/lexicon4500List",
         type:"POST",
         data:{},
         dataType:"JSON",
         success:function (res) {
-            if(res.result == "1"){
-              wordTabVue.items = res.data.list;
-            }
-        },error:function (res) {
 
+        },error:function (res) {
+            $("body").html(res);
         }
     });
 });
