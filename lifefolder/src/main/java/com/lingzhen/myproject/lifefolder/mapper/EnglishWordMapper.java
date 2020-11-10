@@ -6,4 +6,6 @@ import java.util.Map;
 public interface EnglishWordMapper {
 
     List lexicon4500List(Map map);
+
+    int exeUpdateSQL(String sql);
 }

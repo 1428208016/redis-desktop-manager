@@ -36,4 +36,19 @@ public class EnglishWordController {
         }
         return result;
     }
+
+    @RequestMapping("init")
+    @ResponseBody
+    public Result init(){
+        Result result = new Result();
+
+        try {
+            Map data = englishwordService.init();
+            result.setData(data);
+        } catch (Exception e) {
+            result.setError();
+        }
+        return result;
+    }
+
 }

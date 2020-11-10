@@ -15,4 +15,7 @@
         </where>
     </select>
 
+    <update id="exeUpdateSQL" parameterType="java.lang.String" >
+        ${_parameter}
+    </update>
 </mapper>
