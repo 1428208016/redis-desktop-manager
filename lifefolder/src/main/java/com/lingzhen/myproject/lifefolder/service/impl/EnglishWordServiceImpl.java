@@ -29,17 +29,25 @@ public class EnglishWordServiceImpl implements EnglishWordService {
     public Map init() {
         Map map = new HashMap();
         try {
-            File file = new File("C:\\Users\\Administrator\\Desktop\\ew.txt");
+            File file = new File("C:\\Users\\Administrator\\Desktop\\englishWord4500.txt");
             BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
             String line;
             while(null != (line = bufferedReader.readLine())){
-                StringBuffer sql = new StringBuffer("INSERT INTO ew_lexicon_4500(word,createDate,createTime) VALUES ");
-                String date = DateUtil.getDate();
-                String time = DateUtil.getTime();
-                for (String word : line.split(" ")) {
-                    sql.append("('").append(word).append("','").append(date).append("','").append(time).append("'),");
+                try {
+                    StringBuffer sql = new StringBuffer("INSERT INTO ew_lexicon_4500(word,createDate,createTime) VALUES ");
+                    String date = DateUtil.getDate();
+                    String time = DateUtil.getTime();
+                    for (String word : line.split(" ")) {
+                        if (word.isEmpty()) {
+                            continue;
+                        }
+                        sql.append("('").append(word).append("','").append(date).append("','").append(time).append("'),");
+                    }
+                    englishWordMapper.exeUpdateSQL(sql.toString().substring(0,sql.toString().length()-1));
+                } catch (Exception e) {
+                    System.out.println("EXCEPTION ERROR:"+e.getMessage());
+                    e.printStackTrace();
                 }
-                englishWordMapper.exeUpdateSQL(sql.toString().substring(0,sql.toString().length()-1));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
