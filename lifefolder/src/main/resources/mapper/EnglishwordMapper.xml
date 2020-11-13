@@ -13,6 +13,7 @@
                 OR adjective LIKE '%${search}%'
             </if>
         </where>
+        ORDER BY word
     </select>
 
     <update id="exeUpdateSQL" parameterType="java.lang.String" >
