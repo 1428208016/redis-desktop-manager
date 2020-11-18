@@ -27,7 +27,13 @@
     </head>
 <body>
 
-    <button id="start" onclick="start()">start</button>
+    <p><button id="start" onclick="start()">start</button></p>
+    <p><button id="restart" onclick="restart()" style="display: none">restart</button></p>
+    类型<select id="type">
+        <option value="1">一般</option>
+        <option value="2">障碍物</option>
+<!--        <option value="3">道具</option>-->
+    </select>
     <script>
         var map = new Array();
         var snakeArr = new Array();
@@ -50,7 +56,9 @@
         var score = 0;
         //启动方法
         function start() {
-            //0.设置参数
+            // 0.1 按钮不可用
+            $("#start").attr("disabled",true);
+            //0.2 设置参数
             boolMoveInterval = true;
             var h = height;
             var w = width;
@@ -72,8 +80,21 @@
             moveInterval = setInterval(function () {
                 move();
             },snake.speed*1000);
-            //6.隐藏按钮
-            $("#start").hide();
+        }
+
+        // 重新启动方法
+        function restart(){
+            // 0.1 按钮不可用
+            $("#restart").attr("disabled",true);
+
+            // //2.绘制蛇
+            // drawSnake(h,w,snake);
+            // //3.绘制食物
+            // drawFood();
+            // //5.启动
+            // moveInterval = setInterval(function () {
+            //     move();
+            // },snake.speed*1000);
         }
 
         //绘制表格
@@ -243,8 +264,10 @@
         
         function gameOver() {
             clearInterval(moveInterval);//停止
-            console.error("--game over--");
             $("body").append("<h1>Game Over</h1>");
+            $("#start").hide();
+            $("#restart").attr("disabled",false);
+            $("#restart").show();
         }
 
 
