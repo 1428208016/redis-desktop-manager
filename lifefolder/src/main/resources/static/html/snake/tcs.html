@@ -86,15 +86,30 @@
         function restart(){
             // 0.1 按钮不可用
             $("#restart").attr("disabled",true);
-
-            // //2.绘制蛇
-            // drawSnake(h,w,snake);
-            // //3.绘制食物
-            // drawFood();
-            // //5.启动
-            // moveInterval = setInterval(function () {
-            //     move();
-            // },snake.speed*1000);
+            // 1.初始化
+            for (var i = 0; i < height; i ++) {
+                map[i] = new Array();
+                for (var j = 0; j < width; j ++) {
+                    map[i][j] = 0;
+                }
+            }
+            $("#gameOverDiv").html("");
+            $("#score").html("得分：0");
+            // 2.绘制蛇
+            snake = {
+                head_h:2,
+                head_w:5,
+                len:3,
+                dire:"r",
+                speed:0.1
+            }
+            drawSnake(height,width,snake);
+            // 3.绘制食物
+            drawFood();
+            // 4.启动
+            moveInterval = setInterval(function () {
+                move();
+            },snake.speed*1000);
         }
 
         //绘制表格
@@ -106,15 +121,17 @@
                 }
             }
             row += '</div>';
-            $("body").append(row);
-
             //分数
-            row = "<div id='score'></div>";
+            row += "<div id='score'></div>";
+            // gameOver
+            row += "<div id='gameOverDiv'></div>";
             $("body").append(row);
         }
 
         //绘制蛇
         function drawSnake(h,w,snake){
+            snakeArr = new Array();
+            $(".block").removeClass("snake_skin");
             for(var i = 0; i < snake.len; i++) {
                 $(".block:eq("+(snake.head_h*w + snake.head_w-snake.len+i+1 )+")").addClass("snake_skin");
                 map[snake.head_h][snake.head_w-snake.len+i+1] = 1;
@@ -126,6 +143,7 @@
         }
         //绘制食物
         function drawFood() {
+            $(".block").removeClass("food");
             do {
                 var max = height * width;
                 var rand = parseInt(Math.random() * (max + 1));
@@ -264,7 +282,7 @@
         
         function gameOver() {
             clearInterval(moveInterval);//停止
-            $("body").append("<h1>Game Over</h1>");
+            $("#gameOverDiv").html("<h1>Game Over</h1>");
             $("#start").hide();
             $("#restart").attr("disabled",false);
             $("#restart").show();
