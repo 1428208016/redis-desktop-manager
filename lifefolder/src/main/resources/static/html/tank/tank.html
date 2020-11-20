@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>tank</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <script src="../../js/jquery-3.5.1.min.js"></script>
+        <style>
+            .main {
+                position: absolute;
+                left:300px;
+                top:100px;
+                border: 1px solid black;
+            }
+            .block {
+                position: absolute;
+            }
+            .tank_skin {
+                background-color: #919B83;
+            }
+            .bullet_skin {
+                background-color: red;
+            }
+        </style>
+    </head>
+<body>
+
+<script>
+    // 0空 1tank
+    var map = new Array()
+    var mapProp = {
+        max_w:100,
+        max_h:100,
+        block_w:8,
+        block_h:8
+    }
+    var map_wall = -1;  // 墙
+    var map_block = 0;  // 空地
+    // tank对象
+    function Tank(id){
+        if (!id) {
+            throw "object Tank:id is null";
+        }
+        this.id = id;
+        this.width = 5;     // 宽度
+        this.height = 5;    // 高度
+        this.origin_x = 0;  // 原位置
+        this.origin_y = 0;
+        this.current_x = this.origin_x; // 当前位置
+        this.current_y = this.origin_y;
+        this.direction = "u"; // u r d l
+        this.passArr = {   // 不需要绘制的格子
+            u:[0,1,3,4,6,8,21,22,23],
+            r:[4,5,8,9,10,15,18,19,24],
+            d:[1,2,3,16,18,20,21,23,24],
+            l:[0,5,6,9,14,15,16,19,20]
+        };
+        this.moveInterval = null;
+        this.boolMoveInterval = false;
+        this.speed = 200;       //移动速度
+        this.attackSpeed = 500; //攻击间隔
+        this.bulletFlightSpeed = 80;   // 飞行速度
+    }
+
+    // 子弹
+    function Bullet(tankId,direction,speed,x,y){
+        if (!tankId || !direction || !speed) {
+            throw "object bullet 构造参数错误！";
+        }
+        this.x = x;
+        this.y = y;
+        this.id = tankId+"_bullet_"+new Date().getTime();
+        this.tankId = tankId;
+        this.direction = direction;
+        this.speed = speed;
+    }
+
+    $(function (){
+        // 绘制地图
+        drawMap(mapProp.max_w,mapProp.max_h,mapProp.block_w,mapProp.block_h);
+        // 绘制tank
+        var tank1 = new Tank("tankNo1");
+        drawTank(tank1);
+        // 绑定事件
+        bindOperEvent(tank1);
+    });
+
+    function drawMap(max_w,max_h,bk_w,bk_h){
+        var row = '<div class="main" style="width:'+(max_w*bk_w)+'px;height:'+(max_h*bk_h)+'px;">';
+        for (var i = 0; i < max_h; i ++) {
+            map[i] = new Array();
+            for (var j = 0; j < max_w; j ++) {
+                row += '<div class="block" style="width:'+bk_w+'px;height:'+bk_h+'px;left:'+(j*bk_w)+'px;top:'+(i*bk_h)+'px;"></div>';
+                map[i][j] = map_block;
+            }
+        }
+        row += '</div>';
+        $("body").append(row);
+    }
+
+    function drawTank(tankObj){
+        var limit_h = tankObj.current_y + tankObj.height;
+        var limit_w = tankObj.current_x + tankObj.width;
+        var passIndex = 0;
+        var passArr = tankObj.passArr[tankObj.direction];
+        for (var i = tankObj.current_y; i < limit_h; i++) {
+            for (var j = tankObj.current_x; j < limit_w; j++) {
+                if (passArr.indexOf(passIndex) < 0) {
+                    var index = i * mapProp.max_w + j;
+                    $(".block:eq("+index+")").addClass("tank_skin").addClass(tankObj.id);
+                    map[i][j] = tankObj.id;
+                }
+                passIndex++;
+            }
+        }
+        console.info(map);
+    }
+
+    function clearTank(tankObj){
+        var limit_h = tankObj.current_y + tankObj.height;
+        var limit_w = tankObj.current_x + tankObj.width;
+        for (var i = tankObj.current_y; i < limit_h; i++) {
+            for (var j = tankObj.current_x; j < limit_w; j++) {
+                var index = i * mapProp.max_w + j;
+                $(".block:eq("+index+")").removeClass("tank_skin").removeClass(tankObj.id);
+                map[i][j] = map_block;
+            }
+        }
+    }
+
+    function bindOperEvent(tankObj){
+        $(document).keydown(function(event){
+            var code = event.keyCode;
+            console.info(code);
+            // W：87   D：68  S：83   A：65  J：74  K：75  L：76
+            // 左：37  上：38  右：39  下：40  0：96
+            // 空格：32
+            if (code == 37) {
+                //左
+                tankObj.direction = "l";
+            } else if (code == 38) {
+                //上
+                tankObj.direction = "u";
+            } else if (code == 39) {
+                //右
+                tankObj.direction = "r";
+            } else if (code == 40) {
+                //下
+                tankObj.direction = "d";
+            } else if (code == 96) {
+                attack(tankObj);
+                return;
+            } else {
+                return;
+            }
+            if (!tankObj.boolMoveInterval) {
+                tankObj.boolMoveInterval = true;
+                tankObj.moveInterval = setInterval(function () {
+                    move(tankObj);
+                },tankObj.speed);
+                move(tankObj);
+            }
+        });
+
+        $(document).keyup(function(event){
+            var code = event.keyCode;
+            if (code == 37 || code == 38 || code == 39 || code == 40) {
+                tankObj.boolMoveInterval = false;
+                clearInterval(tankObj.moveInterval);    //停止
+            }
+        });
+    }
+
+    function move(tankObj){
+        var _current_y = tankObj.current_y;
+        var _current_x = tankObj.current_x;
+        switch (tankObj.direction) {
+            // 边界
+            case "u":
+                if (tankObj.current_y == 0) {
+                    return;
+                } else {
+                    _current_y = tankObj.current_y-1;
+                }
+                break;
+            case "r":
+                if (tankObj.current_x + tankObj.width >= mapProp.max_w) {
+                    return;
+                } else {
+                    _current_x = tankObj.current_x + 1;
+                }
+                break;
+            case "d":
+                if (tankObj.current_y + tankObj.height >= mapProp.max_h) {
+                    return;
+                } else {
+                    _current_y = tankObj.current_y+1;
+                }
+                break;
+            case "l":
+                if (tankObj.current_x <= 0) {
+                    return;
+                } else {
+                    _current_x = tankObj.current_x - 1;
+                }
+                break;
+        }
+        clearTank(tankObj);
+        tankObj.current_y = _current_y;
+        tankObj.current_x = _current_x;
+        //移动（渲染）
+        drawTank(tankObj);
+    }
+    // 攻击
+    function attack(tankObj) {
+        var x;
+        var y;
+        if ("u" == tankObj.direction) {
+            //上
+            y = tankObj.current_y - 1;
+            x = tankObj.current_x + (parseInt(tankObj.width/2));
+        } else if ("r" == tankObj.direction) {
+            //右
+            y = tankObj.current_y + (parseInt(tankObj.height/2));
+            x = tankObj.current_x + tankObj.width;
+        } else if ("d" == tankObj.direction) {
+            //下
+            y = tankObj.current_y + tankObj.height;
+            x = tankObj.current_x + (parseInt(tankObj.width/2));
+        } else if ("l" == tankObj.direction) {
+            //左
+            y = tankObj.current_y + (parseInt(tankObj.height/2));
+            x = tankObj.current_x - 1;
+        }
+        if (x < 0 || x > mapProp.max_w || y < 0 || y > mapProp.max_h) {
+            return ;
+        }
+        setTimeout(function (){
+            var bullet = new Bullet(tankObj.id,tankObj.direction,tankObj.bulletFlightSpeed,x,y);
+            drawBullet(bullet);
+        },tankObj.attackSpeed);
+    }
+    function drawBullet(bullet){
+        map[bullet.y][bullet.x] = map_block;
+        $("."+bullet.id).removeClass("bullet_skin").removeClass(bullet.id);
+
+        // 先判断事件
+        if (bullet.x <= 0 || bullet.x >= mapProp.max_w
+            || bullet.y <= 0 || bullet.y >= mapProp.max_h
+            || map[bullet.y][bullet.x] == map_wall) {
+            return;
+        }
+        // 再移动
+        if ("u" == bullet.direction) {
+            //上
+            bullet.y--;
+        } else if ("r" == bullet.direction) {
+            //右
+            bullet.x++;
+        } else if ("d" == bullet.direction) {
+            //下
+            bullet.y++;
+        } else if ("l" == bullet.direction) {
+            //左
+            bullet.x--;
+        }
+        map[bullet.y][bullet.x] = bullet.id;
+        var index = bullet.y * mapProp.max_w + bullet.x;
+        $(".block:eq("+index+")").addClass("bullet_skin").addClass(bullet.id);
+        setTimeout(function (){
+            drawBullet(bullet);
+        },bullet.speed);
+    }
+</script>
+</body>
+</html>
