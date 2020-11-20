@@ -60,7 +60,8 @@
         this.moveInterval = null;
         this.boolMoveInterval = false;
         this.speed = 200;       //移动速度
-        this.attackSpeed = 500; //攻击间隔
+        this.attackSpeed = 400; //攻击间隔
+        this.boolAttackSpeed = true;    //攻击间隔
         this.bulletFlightSpeed = 80;   // 飞行速度
     }
 
@@ -215,6 +216,10 @@
     }
     // 攻击
     function attack(tankObj) {
+        if (!tankObj.boolAttackSpeed) {
+            return;
+        }
+        tankObj.boolAttackSpeed = false;
         var x;
         var y;
         if ("u" == tankObj.direction) {
@@ -237,9 +242,10 @@
         if (x < 0 || x > mapProp.max_w || y < 0 || y > mapProp.max_h) {
             return ;
         }
+        var bullet = new Bullet(tankObj.id,tankObj.direction,tankObj.bulletFlightSpeed,x,y);
+        drawBullet(bullet);
         setTimeout(function (){
-            var bullet = new Bullet(tankObj.id,tankObj.direction,tankObj.bulletFlightSpeed,x,y);
-            drawBullet(bullet);
+            tankObj.boolAttackSpeed = true;
         },tankObj.attackSpeed);
     }
     function drawBullet(bullet){
@@ -247,8 +253,8 @@
         $("."+bullet.id).removeClass("bullet_skin").removeClass(bullet.id);
 
         // 先判断事件
-        if (bullet.x <= 0 || bullet.x >= mapProp.max_w
-            || bullet.y <= 0 || bullet.y >= mapProp.max_h
+        if (bullet.x <= 0 || bullet.x >= mapProp.max_w -1
+            || bullet.y <= 0 || bullet.y >= mapProp.max_h  -1
             || map[bullet.y][bullet.x] == map_wall) {
             return;
         }
