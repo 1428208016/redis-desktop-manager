@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>tank</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <script src="../../js/jquery-3.5.1.min.js"></script>
+        <style>
+            #main {
+                position: absolute;
+                left:300px;
+                top:100px;
+                border: 1px solid black;
+            }
+            .block {
+                position: absolute;
+                border-top: 1px solid rebeccapurple;
+                border-left: 1px solid rebeccapurple;
+                background-color: black
+            }
+            .wall {
+                background-color: maroon;
+            }
+            .wallIron {
+                background-color: white;
+            }
+        </style>
+    </head>
+<body>
+
+<p>格子_宽<input id="block_w" type="text" value="8"></p>
+<p>格子_高<input id="block_h" type="text" value="8"></p>
+<p>地图_宽<input id="max_w" type="text" value="100"></p>
+<p>地图_高<input id="max_h" type="text" value="100"></p>
+<p>墙壁类型 <input type="checkbox" name="wall" value="wall"> 砖墙 <input type="checkbox" name="wall" value="wallIron"> 铁墙 </p>
+<p><button onclick="draw()">绘制</button></p>
+<p><button onclick="showMapBtn()">查看Map</button></p>
+<div id="main"></div>
+<script>
+    var wallMap = {
+        wall:-1,
+        wallIron:-2
+    }
+    $(function () {
+        $("[name=wall]").on("click",function (even) {
+            var bool = $(this).prop("checked");
+            $("[name=wall]").prop("checked",false);
+            $(this).prop("checked",bool);
+        });
+    })
+
+    function draw() {
+        var max_w = $("#max_w").val();
+        var max_h = $("#max_h").val();
+        var bk_w = $("#block_w").val();
+        var bk_h = $("#block_h").val();
+        var row = "";
+        for (var i = 0; i < max_h; i ++) {
+            for (var j = 0; j < max_w; j ++) {
+                row += '<div class="block" style="width:'+bk_w+'px;height:'+bk_h+'px;left:'+(j*bk_w)+'px;top:'+(i*bk_h)+'px;"></div>';
+            }
+        }
+        $("#main").html(row);
+        $(".block").on("click",function (){
+            var val = $("[type=checkbox]:checked").val();
+            if(!val) {
+                return;
+            }
+            var curWallType = $(this).data("wallType");
+            if (curWallType) {
+                $(this).removeClass(curWallType).data("wallType","");
+                $(this).next().removeClass(curWallType).data("wallType","");
+                $(this).next().next().removeClass(curWallType).data("wallType","");
+                $(this).next().next().next().removeClass(curWallType).data("wallType","");
+                $(this).next().next().next().next().removeClass(curWallType).data("wallType","");
+            } else {
+                $(this).addClass(val).data("wallType",val);
+                $(this).next().addClass(val).data("wallType",val);
+                $(this).next().next().addClass(val).data("wallType",val);
+                $(this).next().next().next().addClass(val).data("wallType",val);
+                $(this).next().next().next().next().addClass(val).data("wallType",val);
+            }
+        });
+    }
+    
+    function showMapBtn() {
+        var max_w = parseInt($("#max_w").val());
+        var max_h = parseInt($("#max_h").val());
+
+        var retArr = new Array();
+        for (var i = 0; i < max_h; i++) {
+            var childrenArr = new Array(max_w);
+            retArr.push(childrenArr);
+        }
+        var _max_w = max_w -1;
+        var index = 0;
+        $(".block").each(function (i,temp) {
+            var x = parseInt(i%_max_w); // 宽
+            var y = parseInt(i/_max_w);  // 高
+            var wallType = $(temp).data("wallType");
+            var val = 0;
+            if (wallType) {
+                val = wallMap[wallType];
+            }
+            try {
+                retArr[y][x] = val;
+            } catch (e) {
+                debugger;
+            }
+            console.info(index);
+        })
+        console.info(retArr);
+    }
+</script>
+</body>
+</html>
