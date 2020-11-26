@@ -31,12 +31,13 @@
     // 0空 1tank
     var map = new Array()
     var mapProp = {
-        max_w:100,
-        max_h:100,
-        block_w:8,
-        block_h:8
+        max_w:80,
+        max_h:80,
+        block_w:6,
+        block_h:6
     }
-    var map_wall = -1;  // 墙
+    var MAP_WALL = -1;  // 墙(可摧毁)
+    var MAP_WALL_IRON = -2 // 铁墙（不可摧毁）
     var map_block = 0;  // 空地
     // tank对象
     function Tank(id){
@@ -255,7 +256,7 @@
         // 先判断事件
         if (bullet.x <= 0 || bullet.x >= mapProp.max_w -1
             || bullet.y <= 0 || bullet.y >= mapProp.max_h  -1
-            || map[bullet.y][bullet.x] == map_wall) {
+            || map[bullet.y][bullet.x] == MAP_WALL) {
             return;
         }
         // 再移动
