@@ -26,6 +26,40 @@ public class EnglishWordServiceImpl implements EnglishWordService {
     }
 
     @Override
+    public Map findLexicon4500ById(Long elId) throws Exception {
+        return englishWordMapper.findLexicon4500ById(elId);
+    }
+
+    @Override
+    public int lexicon4500Edit(Map map) {
+        return englishWordMapper.lexicon4500Edit(map);
+    }
+
+    @Override
+    public int favorites(Long userId, Long elId) {
+        Map selMap = new HashMap();
+        selMap.put("userId",userId);
+        selMap.put("elId",elId);
+        Map data = englishWordMapper.findFavoritesById(selMap);
+        if (null == data || data.size() <= 0) {
+            selMap.put("createDate",DateUtil.getDate());
+            selMap.put("createTime",DateUtil.getTime());
+            englishWordMapper.insertFavorites(selMap);
+        }
+        return 1;
+    }
+
+    @Override
+    public int cancelFavorites(Long userId, Long elId) {
+        return 0;
+    }
+
+    @Override
+    public List favoritesList(Map map) throws Exception {
+        return null;
+    }
+
+    @Override
     public Map init() {
         Map map = new HashMap();
         try {

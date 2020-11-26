@@ -3,20 +3,63 @@
 <mapper namespace="com.lingzhen.myproject.lifefolder.mapper.EnglishWordMapper" >
 
     <select id="lexicon4500List" resultType="map" parameterType="map" >
-        SELECT word,phoneticSigns_uk,phoneticSigns_us,noun,verb,adjective,pluralForm,resentParticiple,pastTense
-        FROM ew_lexicon_4500
+        SELECT
+            el.elId,el.word,el.phoneticSigns_uk,el.phoneticSigns_us,el.noun,
+            el.verb,el.adjective,el.pluralForm,el.resentParticiple,el.pastTense,
+            ef.efId
+        FROM ew_lexicon_4500 el
+        LEFT JOIN ew_favorites ef ON ef.elId = el.elId
         <where>
             <if test="search != null and search != ''">
-                word LIKE '%${search}%'
-                OR noun LIKE '%${search}%'
-                OR verb LIKE '%${search}%'
-                OR adjective LIKE '%${search}%'
+                el.word LIKE '%${search}%'
+                OR el.noun LIKE '%${search}%'
+                OR el.verb LIKE '%${search}%'
+                OR el.adjective LIKE '%${search}%'
             </if>
         </where>
-        ORDER BY word
+        ORDER BY el.word
     </select>
+
+    <select id="findLexicon4500ById" parameterType="java.lang.Long" resultType="map" >
+        SELECT
+            elId,word,phoneticSigns_uk,phoneticSigns_us,noun,
+            verb,adjective,pluralForm,resentParticiple,pastTense
+        FROM ew_lexicon_4500
+        WHERE elId = #{elId}
+    </select>
+
+    <update id="lexicon4500Edit" parameterType="map" >
+        UPDATE ew_lexicon_4500
+        <set>
+            phoneticSigns_uk = #{phoneticSigns_uk},
+            phoneticSigns_us = #{phoneticSigns_us},
+            noun = #{noun},
+            verb = #{verb},
+            adjective = #{adjective},
+            pluralForm = #{pluralForm},
+            resentParticiple = #{resentParticiple},
+            pastTense = #{pastTense},
+            pastTense = #{pastTense}
+        </set>
+        WHERE elId = #{elId}
+    </update>
 
     <update id="exeUpdateSQL" parameterType="java.lang.String" >
         ${_parameter}
     </update>
+
+    <select id="findFavoritesById" parameterType="map" resultType="map" >
+        SELECT
+            efId,
+            userId
+        FROM
+            ew_favorites
+        WHERE userId = #{userId}
+        AND elId = #{elId}
+    </select>
+
+    <insert id="insertFavorites" parameterType="map" useGeneratedKeys="true" >
+        INSERT INTO ew_favorites(userId,elId,createDate,createTime)
+        VALUE (#{userId},#{elId},#{createDate},#{createTime})
+    </insert>
 </mapper>

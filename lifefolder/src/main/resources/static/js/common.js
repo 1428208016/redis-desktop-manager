@@ -63,3 +63,73 @@ let message = {
         toastr.warning(str);
     }
 };
+
+/**
+ * 填充表单数据
+ * @param target 目标表单
+ * @param obj 数据
+ */
+function loadFormData(obj,callFun){
+    var key,value,tagName,type,arr;
+    for(x in obj){
+        key = x;
+        value = obj[x];
+        $("[name='"+key+"'],[name='"+key+"[]']").each(function(){
+            tagName = $(this)[0].tagName;
+            type = $(this).attr('type');
+
+            if(tagName=='INPUT'){
+                if(type=='radio'){
+                    $(this).attr('checked',$(this).val()==value);
+                }else if(type=='checkbox') {
+                    arr = (value+"").split(',');
+                    for (var i = 0; i < arr.length; i++) {
+                        if ($(this).val() == arr[i]) {
+                            $(this).attr('checked', true);
+                            break;
+                        }
+                    }
+                } else if (type == 'file') {
+                    //不做操作
+                }else{
+                    $(this).val(value);
+                }
+            }else if(tagName=='SELECT' || tagName=='TEXTAREA'){
+                $(this).val(value);
+            } else {
+                $(this).html(value);
+            }
+
+        });
+    }
+    if (strNotNull(callFun) && "function"== typeof callFun) {
+        callFun();
+    }
+}
+
+/**
+ * 清空表单数据
+ * @param target 目标
+ * @param callFun
+ */
+function clearFormData(target,callFun){
+    //清空数据
+    $(target).find("input[type=hidden]").val("");
+    $(target).find("input[type=text]").val("");
+    $(target).find("input[type=number]").val("");
+    $(target).find("input[type=checkbox]").attr('checked', false);
+    $(target).find("input[type=file]").val();
+    $(target).find("TEXTAREA").val("");
+    $(target).find("SELECT option").attr("selected","");
+    if (strNotNull(callFun) && typeof(callFun) == "function") {
+        callFun();
+    }
+}
+
+//获取url中的参数
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+    if (r != null) return unescape(r[2]); return null; //返回参数值
+}
+
