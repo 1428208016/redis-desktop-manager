@@ -10,7 +10,7 @@ public interface EnglishWordService {
      * @return
      * @throws Exception
      */
-    List lexicon4500List(Map map) throws Exception;
+    List lexicon4500List(Map map);
 
     /**
      * 4500词库findById
@@ -18,7 +18,7 @@ public interface EnglishWordService {
      * @return
      * @throws Exception
      */
-    Map findLexicon4500ById(Long elId) throws Exception;
+    Map findLexicon4500ById(Long elId);
 
     /**
      * 修改
@@ -49,7 +49,7 @@ public interface EnglishWordService {
      * @return
      * @throws Exception
      */
-    List favoritesList(Map map) throws Exception;
+    List favoritesList(Map map);
 
     Map init();
 }

@@ -140,10 +140,10 @@ $(function(){
 
 function load(){
     $.ajax({
-        url:"../../englishWord/lexicon4500List",
+        url:"../../englishWord/favoritesList",
         type:"POST",
         data:{
-            pageSize:40,
+            pageSize:20,
             search:$("#search").val()
         },
         dataType:"JSON",
@@ -173,12 +173,7 @@ function load(){
                     if (strNotNull(temp.pastTense)) {
                         html += '<span class="participle">past Tense：'+temp.pastTense+'</span>';
                     }
-                    html += '<div class="word-editor">' +
-                        '<span class="glyphicon glyphicon-edit" aria-hidden="true" style="margin-right: 8px;" onclick="openEdit('+temp.elId+')" ></span>';
-                    if (!strNotNull(temp.efId)) {
-                        html += '<span class="glyphicon glyphicon-star-empty" aria-hidden="true" onclick="favorites_list('+temp.elId+')" ></span>';
-                    }
-                    html += '</div></div>';
+                    html += '</div>';
                     $("#content").append(html);
                 });
                 $(".word-line").on("mouseover",function (){
@@ -193,42 +188,6 @@ function load(){
     });
 }
 
-// 打开编辑页面
-function openEdit(elId) {
-    layer.open({
-        type: 2,    // 1页面层 2弹出层
-        skin: 'layui-layer-rim', //加上边框
-        area: ['640px', '900px'], //宽高
-        content: 'lexicon4500_edit.html?elId='+elId,
-        end:function (){
-            load();
-        }
-    });
-}
-
-// 收藏
-function favorites(elId){
-    loading();
-    $.ajax({
-        url:"../../englishWord/favorites?tm="+ new Date().getTime(),
-        type:"POST",
-        data:{
-            elId:elId
-        },
-        dataType:"JSON",
-        success:function (res) {
-            loadingClose();
-            if(res.code == 200){
-                message.success();
-                load();
-            } else {
-                message.error(res.message);
-            }
-        },error:function (res) {
-            message.error();
-        }
-    });
-}
 </script>
 </body>
 </html>

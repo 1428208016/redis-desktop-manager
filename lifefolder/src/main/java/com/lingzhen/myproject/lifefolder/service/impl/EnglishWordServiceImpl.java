@@ -3,6 +3,7 @@ package com.lingzhen.myproject.lifefolder.service.impl;
 import com.lingzhen.myproject.common.util.DateUtil;
 import com.lingzhen.myproject.lifefolder.mapper.EnglishWordMapper;
 import com.lingzhen.myproject.lifefolder.service.EnglishWordService;
+import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
 import com.lingzhen.myproject.lifefolder.util.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,14 @@ public class EnglishWordServiceImpl implements EnglishWordService {
     private EnglishWordMapper englishWordMapper;
 
     @Override
-    public List lexicon4500List(Map map) throws Exception {
+    public List lexicon4500List(Map map){
         PageUtil.PageHelper(map);
         List data = englishWordMapper.lexicon4500List(map);
         return data;
     }
 
     @Override
-    public Map findLexicon4500ById(Long elId) throws Exception {
+    public Map findLexicon4500ById(Long elId){
         return englishWordMapper.findLexicon4500ById(elId);
     }
 
@@ -55,8 +56,11 @@ public class EnglishWordServiceImpl implements EnglishWordService {
     }
 
     @Override
-    public List favoritesList(Map map) throws Exception {
-        return null;
+    public List favoritesList(Map map) {
+        PageUtil.PageHelper(map);
+        map.put("userId", HttpServletUtil.getUserId());
+        List data = englishWordMapper.favoritesList(map);
+        return data;
     }
 
     @Override

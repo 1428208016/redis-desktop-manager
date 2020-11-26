@@ -62,4 +62,21 @@
         INSERT INTO ew_favorites(userId,elId,createDate,createTime)
         VALUE (#{userId},#{elId},#{createDate},#{createTime})
     </insert>
+
+    <select id="favoritesList" parameterType="map" resultType="map" >
+        SELECT
+            el.elId,el.word,el.phoneticSigns_uk,el.phoneticSigns_us,el.noun,
+            el.verb,el.adjective,el.pluralForm,el.resentParticiple,el.pastTense,
+            ef.efId
+        FROM ew_favorites ef
+        LEFT JOIN ew_lexicon_4500 el ON el.elId = ef.elId
+        WHERE ef.userId = #{userId}
+        <if test="search != null and search != ''">
+            el.word LIKE '%${search}%'
+            OR el.noun LIKE '%${search}%'
+            OR el.verb LIKE '%${search}%'
+            OR el.adjective LIKE '%${search}%'
+        </if>
+        ORDER BY ef.createTime DESC
+    </select>
 </mapper>
