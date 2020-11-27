@@ -7,6 +7,7 @@ import com.lingzhen.myproject.lifefolder.mapper.UserMapper;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.pojo.ResultInfo;
 import com.lingzhen.myproject.lifefolder.service.LoginService;
+import com.lingzhen.myproject.lifefolder.service.UserService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Result register(Map map) {
@@ -48,7 +52,11 @@ public class LoginServiceImpl implements LoginService {
         map.put("nickname",map.get("userName"));
         map.put("createTime", DateUtil.getTime());
         map.put("createDate", DateUtil.getDate());
-        userMapper.save(map);
+        int i = userMapper.save(map);
+        if (i > 0) {
+            userService.initAccount(Long.valueOf(map.get("userId").toString()));
+        }
+
         return result;
     }
 

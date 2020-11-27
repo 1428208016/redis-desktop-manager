@@ -35,6 +35,13 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public Result buyProject(String projectId) {
+        Long userId = HttpServletUtil.getUserId();
+        Result result = this.buyProject(userId,projectId);
+        return result;
+    }
+
+    @Override
+    public Result buyProject(Long userId, String projectId) {
         Result result = new Result();
 
         Map data = storeMapper.findById(projectId);
@@ -47,7 +54,6 @@ public class StoreServiceImpl implements StoreService {
             return result;
         }
 
-        Long userId = HttpServletUtil.getUserId();
         Map selMap = new HashMap();
         selMap.put("userId",userId);
         selMap.put("projectId",projectId);

@@ -7,6 +7,7 @@ import com.lingzhen.myproject.common.util.PasswordStorage;
 import com.lingzhen.myproject.lifefolder.mapper.UserMapper;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.pojo.ResultInfo;
+import com.lingzhen.myproject.lifefolder.service.StoreService;
 import com.lingzhen.myproject.lifefolder.service.UserService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private StoreService storeService;
 
     @Override
     public Map findById(Long userId) {
@@ -48,6 +52,14 @@ public class UserServiceImpl implements UserService {
             i = userMapper.insertAccessLog(map);
         }
         return i;
+    }
+
+    @Override
+    public int initAccount(Long userId) {
+        // 初始化项目
+        storeService.buyProject(userId,"1");
+
+        return 1;
     }
 
 }

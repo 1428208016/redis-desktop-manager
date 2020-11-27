@@ -13,4 +13,6 @@ public interface StoreService {
 
     Result buyProject(String projectId);
 
+    Result buyProject(Long userId, String projectId);
+
 }
