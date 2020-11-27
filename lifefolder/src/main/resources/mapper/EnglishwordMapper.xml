@@ -79,4 +79,9 @@
         </if>
         ORDER BY ef.createTime DESC
     </select>
+
+    <delete id="deleteFavorites" parameterType="map" >
+        DELETE FROM ew_favorites WHERE userId = #{userId} AND elId = #{elId}
+    </delete>
+
 </mapper>

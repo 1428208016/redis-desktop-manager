@@ -6,6 +6,7 @@
     <!-- Basic -->
     <link rel="stylesheet" href="../../plugin/bootstrap/3.3.7/css/bootstrap.css">
     <link rel="stylesheet" href="../../plugin/toastr/toastr.min.css">
+    <link rel="stylesheet" href="../../css/mystyle.css">
     <script src="../../js/jquery-3.5.1.js"></script>
     <script src="../../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="../../plugin/toastr/toastr.min.js"></script>
@@ -82,8 +83,10 @@
             padding-bottom: 10px;
         }
         .word-editor {
-            float: right;
-            font-size: 18px;
+            position: absolute;
+            top: 50%;
+            right: 0px;
+            font-size: 18px !important;
             cursor:pointer;
             display: none;
             color: #6a737d;
@@ -107,6 +110,7 @@
         </div>
         <div  class="row">
             <div class="col-md-8 col-sm-8" id="content"></div>
+            <div class="col-md-8 col-sm-8" id="pagination"></div>
         </div>
     </div>
 
@@ -138,12 +142,13 @@ $(function(){
     });
 });
 
-function load(){
+function load(pageNum){
     $.ajax({
         url:"../../englishWord/favoritesList",
         type:"POST",
         data:{
             pageSize:20,
+            pageNum:strNotNull(pageNum)?pageNum:1,
             search:$("#search").val()
         },
         dataType:"JSON",
@@ -173,7 +178,10 @@ function load(){
                     if (strNotNull(temp.pastTense)) {
                         html += '<span class="participle">past Tense：'+temp.pastTense+'</span>';
                     }
-                    html += '</div>';
+
+                    html += '<div class="word-editor">';
+                    html += '<span class="glyphicon glyphicon-star-empty" aria-hidden="true" onclick="cancelFavorites('+temp.elId+')" title="取消收藏" ></span>';
+                    html += '</div></div>';
                     $("#content").append(html);
                 });
                 $(".word-line").on("mouseover",function (){
@@ -181,6 +189,7 @@ function load(){
                 }).on("mouseout", function (){
                     $(this).children(".word-editor").hide();
                 });
+                pagination("#pagination",res.data,"load");
             }
         },error:function (res) {
             $("body").html(res);
@@ -188,6 +197,36 @@ function load(){
     });
 }
 
+function cancelFavorites(elId) {
+    var _i = layer.confirm('确认取消收藏？', {
+        btn: ['确认', '取消']
+    }, function(index, layero){
+        loading();
+        $.ajax({
+            url:"../../englishWord/cancelFavorites?tm="+ new Date().getTime(),
+            type:"POST",
+            data:{
+                elId:elId
+            },
+            dataType:"JSON",
+            success:function (res) {
+                if(res.code == 200){
+                    message.success();
+                    load();
+                } else {
+                    message.error(res.message);
+                }
+            },error:function (res) {
+                message.error();
+            },complete(XHR, TS) {
+                loadingClose();
+                layer.close(_i);
+            }
+        });
+    });
+
+
+}
 </script>
 </body>
 </html>

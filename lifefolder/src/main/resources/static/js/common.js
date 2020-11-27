@@ -126,10 +126,117 @@ function clearFormData(target,callFun){
     }
 }
 
-//获取url中的参数
+/**
+ * 获取url中的参数
+ * @param name
+ * @returns {string|null}
+ */
 function getUrlParam(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
     var r = window.location.search.substr(1).match(reg);  //匹配目标参数
     if (r != null) return unescape(r[2]); return null; //返回参数值
 }
+
+/**
+ * 分页插件
+ * @param target
+ * @param data
+ * @param loadfun
+ */
+function pagination(target, data, loadfun) {
+    if (strNotNull(data.list) && data.list.length > 0) {
+        var html = '<nav aria-label="Page navigation">' +
+            '   <ul class="pagination">';
+        if (data.prePage == 0) {
+            html += '<li class="disabled"><a aria-label="Next">';
+        } else {
+            html += '<li><a onclick="'+loadfun+'('+data.prePage+')" aria-label="Previous">';
+        }
+        html += '    <span aria-hidden="true">&laquo;</span></a></li>';
+
+        $.each(data.navigatepageNums,function(i,temp){
+            if (data.pageNum == temp) {
+                html += '<li class="active"><a>'+temp+'</a></li>';
+            } else {
+                html += '<li><a onclick="'+loadfun+'('+temp+')" >'+temp+'</a></li>';
+            }
+        });
+
+        if (data.nextPage == 0) {
+            html += '<li class="disabled"><a aria-label="Next">';
+        } else {
+            html += '<li><a onclick="'+loadfun+'('+data.nextPage+')" aria-label="Next">';
+        }
+        html += '    <span aria-hidden="true">&raquo;</span></a></li>'
+        html += '   </ul></nav>';
+
+        $(target).append(html);
+    } else {
+        $(target).find("nav").remove();
+    }
+}
+
+/**
+ * 分页插件
+ * @param id
+ * @param data
+ * @param funName
+ * @param tr
+ * @param dataTableObj
+ * @returns {number}
+ */
+// function loadPageInfo(id,data,funName,tr,dataTableObj) {
+//
+//     var row = '<tr><td colspan="'+$(id).find("thead tr th").length+'">';
+//     row += '<div class="col-sm-4"></div>' +
+//         '<div class="pagination col-sm-3">' +
+//         '<spn class="text-right" >共'+data.total+'条，每页</spn>' +
+//         '       <select name="page_size" onchange="setPageSize(this,'+funName+','+dataTableObj+')">' +
+//         '           <option value="30">30条</option>' +
+//         '           <option value="50">50条</option>' +
+//         '           <option value="100">100条</option>' +
+//         '           <option value="150">150条</option>' +
+//         '           <option value="200">200条</option>' +
+//         '       </select>' +
+//         '<span class="text-right">，跳转到<input onkeyup="'+funName+'(this.value)'+'" type="text" style="outline:none;max-width: 20px;border-left: none;border-right: none;border-top: none;" class="text-center"/></span> '+
+//         '</div>';
+//     row += '<nav aria-label="Page navigation" class="text-right">\n' +
+//         '       <ul class="pagination">\n';
+//     if (data.prePage == 0) {
+//         row += '<li class="disabled"><a aria-label="Next">';
+//     } else {
+//         row += '<li><a onclick="'+funName+'('+data.prePage+')" aria-label="Previous">';
+//     }
+//     row += '    <span aria-hidden="true">&laquo;</span>\n' +
+//         '               </a>\n' +
+//         '           </li>\n';
+//     var active = "";
+//     $.each(data.navigatepageNums,function(i,temp){
+//         if (data.pageNum == temp) {
+//             row += '<li class="active"><a>'+temp+'</a></li>';
+//         } else {
+//             row += '<li><a onclick="'+funName+'('+temp+')" >'+temp+'</a></li>';
+//         }
+//     });
+//
+//     if (data.nextPage == 0) {
+//         row += '<li class="disabled"><a aria-label="Next">';
+//     } else {
+//         row += '<li><a onclick="'+funName+'('+data.nextPage+')" aria-label="Next">';
+//     }
+//     row += '        <span aria-hidden="true">&raquo;</span>\n' +
+//         '               </a>\n' +
+//         '           </li>\n' +
+//         '       </ul>\n' +
+//         '</nav></td></tr>';
+//
+//     $(id+">tfoot").remove();
+//     $(id).append('<tfoot>'+row+'</tfoot>');
+//     if(strNotNull(tr)){
+//         $(id+'>tfoot tr').before('<tr>'+tr+'</tr>');
+//     }
+//     $('body').find('[name=page_size]').val(DEFAULT_PAGE_SIZE);
+//     return data.pageNum;
+// }
+
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <title>English word</title>
@@ -82,7 +82,9 @@
             padding-bottom: 10px;
         }
         .word-editor {
-            float: right;
+            position: absolute;
+            top: 50%;
+            right: 0px;
             font-size: 18px;
             cursor:pointer;
             display: none;
@@ -174,9 +176,9 @@ function load(){
                         html += '<span class="participle">past Tense：'+temp.pastTense+'</span>';
                     }
                     html += '<div class="word-editor">' +
-                        '<span class="glyphicon glyphicon-edit" aria-hidden="true" style="margin-right: 8px;" onclick="openEdit('+temp.elId+')" ></span>';
+                        '<span class="glyphicon glyphicon-edit" aria-hidden="true" style="margin-right: 8px;" onclick="openEdit('+temp.elId+')" title="编辑" ></span>';
                     if (!strNotNull(temp.efId)) {
-                        html += '<span class="glyphicon glyphicon-star-empty" aria-hidden="true" onclick="favorites('+temp.elId+')" ></span>';
+                        html += '<span class="glyphicon glyphicon-star" aria-hidden="true" onclick="favorites('+temp.elId+')" title="收藏" ></span>';
                     }
                     html += '</div></div>';
                     $("#content").append(html);

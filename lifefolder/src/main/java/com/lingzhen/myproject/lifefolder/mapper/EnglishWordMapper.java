@@ -19,5 +19,7 @@ public interface EnglishWordMapper {
 
     List favoritesList(Map map);
 
+    int deleteFavorites(Map map);
+
 
 }

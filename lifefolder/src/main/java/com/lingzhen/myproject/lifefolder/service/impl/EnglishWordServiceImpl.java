@@ -52,7 +52,10 @@ public class EnglishWordServiceImpl implements EnglishWordService {
 
     @Override
     public int cancelFavorites(Long userId, Long elId) {
-        return 0;
+        Map selMap = new HashMap();
+        selMap.put("userId",userId);
+        selMap.put("elId",elId);
+        return englishWordMapper.deleteFavorites(selMap);
     }
 
     @Override
