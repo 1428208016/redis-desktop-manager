@@ -12,6 +12,19 @@
     <artifactId>lifefolder</artifactId>
 
     <dependencies>
+        <!-- jedis连接 -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>2.4.1</version>
+        </dependency>
+
         <!-- 阿里云SDK -->
         <dependency>
             <groupId>com.aliyun</groupId>

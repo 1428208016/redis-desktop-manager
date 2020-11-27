@@ -29,6 +29,9 @@
     <div>
         <input type="text" id="phoneNumber" placeholder="请输入手机号" >
     </div>
+    <div>
+        <input type="text" id="code" placeholder="请输入验证码" > <button onclick="sendYzm()">发送验证码</button>
+    </div>
     <div style="font-size: 12px;">
         <button type="button" onclick="login()" >注册</button> 已有账号去<a href="login.html">登陆</a>
     </div>
@@ -47,13 +50,30 @@
                 userName:$("#userName").val(),
                 password:$("#password").val(),
                 rePassword:$("#rePassword").val(),
-                phoneNumber:$("#phoneNumber").val()
+                phoneNumber:$("#phoneNumber").val(),
+                code:$("#code").val()
             },
             success : function(res) {
                 alert(res.message);
                 if(res.code == 200){
                     window.location.replace("login.html");
                 }
+            },error:function (res) {
+                alert(res.message);
+            }
+        });
+    }
+
+    function sendYzm(){
+
+        $.ajax({
+            url:"../sendRegisterYzm",
+            type:"POST",
+            data:{
+                phoneNumber:$("#phoneNumber").val()
+            },
+            success : function(res) {
+                alert(res.message);
             },error:function (res) {
                 alert(res.message);
             }

@@ -17,6 +17,10 @@ spring:
   servlet:
     multipart:
       max-file-size: 1024MB
+  redis:
+    host: 101.37.78.234
+    port: 6379
+    password: lingzhen.
 
 #mybatis配置
 #http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/

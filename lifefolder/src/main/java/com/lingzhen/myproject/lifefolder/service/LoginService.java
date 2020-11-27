@@ -13,4 +13,6 @@ public interface LoginService {
     Result login(Map map, HttpServletRequest httpServletRequest, HttpServletResponse response);
 
     Result logout(HttpServletRequest httpServletRequest, HttpServletResponse response);
+
+    Result sendRegisterYzm(String mobile);
 }

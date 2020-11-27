@@ -3,18 +3,25 @@ package com.lingzhen.myproject.lifefolder.service.impl;
 import com.lingzhen.myproject.common.util.DateUtil;
 import com.lingzhen.myproject.common.util.JWTUtil;
 import com.lingzhen.myproject.common.util.PasswordStorage;
+import com.lingzhen.myproject.lifefolder.component.RedisComponent;
 import com.lingzhen.myproject.lifefolder.mapper.UserMapper;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.pojo.ResultInfo;
 import com.lingzhen.myproject.lifefolder.service.LoginService;
+import com.lingzhen.myproject.lifefolder.service.SystemService;
 import com.lingzhen.myproject.lifefolder.service.UserService;
+import com.lingzhen.myproject.lifefolder.util.Constant;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
+import com.lingzhen.myproject.lifefolder.util.IPUtil;
+import com.lingzhen.myproject.lifefolder.util.RandomUtil;
+import com.lingzhen.myproject.lifefolder.util.sms.SmsAliyun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +34,20 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RedisComponent redisComponent;
+
+    @Autowired
+    SystemService systemService;
+
     @Override
     public Result register(Map map) {
         Result result = new Result();
+
+        String redisCode = redisComponent.get(Constant.REGISTER_YZM+map.get("phoneNumber"));
+        if (!map.get("code").toString().equals(redisCode)) {
+            return result.setErrorReturn("验证码错误！");
+        }
 
         //判断用户名、手机号是否已注册
         List<Map> list = userMapper.validUserNameAndPhoneNumber(map);
@@ -101,6 +119,45 @@ public class LoginServiceImpl implements LoginService {
         //置空token
         Cookie cookie = new Cookie(JWTUtil.TOKEN,"");
         response.addCookie(cookie);
+
+        return result;
+    }
+
+    @Override
+    public Result sendRegisterYzm(String mobile) {
+        Result result = new Result();
+
+        // 1.验证
+        String unableKey = Constant.UNABLE_SEND_REGISTER_YZM+mobile;
+        boolean bool = redisComponent.exists(unableKey);
+        if (bool) {
+            return result.setErrorReturn("请稍后重试！");
+        }
+
+        Map data = userMapper.validMobile(mobile);
+        if (null != data && data.size() > 0) {
+            return result.setErrorReturn("该手机号已注册");
+        }
+
+        // 生成验证码
+        String code = RandomUtil.randomNumber(6);
+        // 发送
+        SmsAliyun smsAliyun = new SmsAliyun();
+        result = smsAliyun.sendRegisterYzm(mobile,code);
+        if (result.getCode() != Result.SUCCESS) {
+            return result;
+        }
+
+        // 存缓存
+        redisComponent.set(Constant.REGISTER_YZM+mobile,code,60*5);
+        redisComponent.set(unableKey,code,60);
+
+        // 记录
+        Map selMap = new HashMap();
+        selMap.put("mobile",mobile);
+        selMap.put("type","1");
+        selMap.put("ip", IPUtil.getIpAddress());
+        systemService.insertSendSmsLog(selMap);
 
         return result;
     }

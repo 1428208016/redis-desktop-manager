@@ -10,8 +10,10 @@
     <select id="validUserNameAndPhoneNumber" parameterType="map" resultType="map">
         SELECT userId,userName,phoneNumber
         FROM sys_user
-        WHERE userName = #{userName}
-        OR phoneNumber = #{phoneNumber}
+        WHERE state != 0
+        AND (
+            userName = #{userName} OR phoneNumber = #{phoneNumber}
+        )
     </select>
 
     <select id="findByUserName" parameterType="map" resultType="map" >
@@ -31,4 +33,10 @@
         VALUE (#{userId},#{method},#{parameter},#{httpServletRequestAttributes},#{remark},#{createTime},#{createDate})
     </insert>
 
+    <select id="validMobile" parameterType="java.lang.String" resultType="map" >
+        SELECT userId,userName,phoneNumber
+        FROM sys_user
+        WHERE state != 0
+        AND phoneNumber = #{phoneNumber}
+    </select>
 </mapper>

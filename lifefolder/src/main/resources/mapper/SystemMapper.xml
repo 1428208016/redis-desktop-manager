@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lingzhen.myproject.lifefolder.mapper.SystemMapper">
+
+    <insert id="insertSendSmsLog" parameterType="map" useGeneratedKeys="true" keyProperty="pkId" >
+        INSERT INTO sys_send_sms_log(mobile,`type`,ip,createTime,createDate)
+        VALUE (#{mobile},#{type},#{ip},#{createTime},#{createDate})
+    </insert>
+
+</mapper>

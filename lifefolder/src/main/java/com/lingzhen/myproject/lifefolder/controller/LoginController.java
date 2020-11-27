@@ -3,6 +3,7 @@ package com.lingzhen.myproject.lifefolder.controller;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.service.LoginService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
+import com.lingzhen.myproject.lifefolder.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,6 +54,10 @@ public class LoginController {
         this.validPhoneNumber(map,result);
         if (result.getCode() != Result.SUCCESS) {
             return result;
+        }
+        // 验证验证码
+        if (VerifyUtil.stringTrimIsEmpty(map.get("code"))) {
+            return result.setErrorReturn("验证码为空");
         }
 
         try {
@@ -129,6 +134,34 @@ public class LoginController {
 
         try {
             result = loginService.logout(request,response);
+        } catch (Exception e) {
+            result.setError();
+        }
+
+        return result;
+    }
+
+    /**
+     * 发送注册验证码
+     */
+    @PostMapping("sendRegisterYzm")
+    @ResponseBody
+    public Result sendRegisterYzm() {
+        Result result = new Result();
+        Map map =  HttpServletUtil.getRequestParameter();
+
+        //验证手机号
+        if (VerifyUtil.stringTrimIsEmpty(map.get("phoneNumber"))) {
+            return result.setErrorReturn("手机号为空");
+        }
+        this.validPhoneNumber(map,result);
+        if (result.getCode() != Result.SUCCESS) {
+            return result;
+        }
+
+        try {
+            String phoneNumber = map.get("phoneNumber").toString().trim();
+            result = loginService.sendRegisterYzm(phoneNumber);
         } catch (Exception e) {
             result.setError();
         }

@@ -14,4 +14,6 @@ public interface UserMapper {
     Map findById(Long userId);
 
     int insertAccessLog(Map map);
+
+    Map validMobile(String mobile);
 }

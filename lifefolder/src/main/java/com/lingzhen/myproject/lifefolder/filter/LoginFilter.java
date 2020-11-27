@@ -33,7 +33,8 @@ public class LoginFilter implements Filter {
             "/main/login.html",
             "/login",
             "/main/register.html",
-            "/register"
+            "/register",
+            "/sendRegisterYzm"
     };
 
     @Override
