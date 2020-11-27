@@ -14,6 +14,7 @@
     <script src="../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="../plugin/layer/3.1.1/layer.js"></script>
 
+    <script src="../js/common.js"></script>
     <script src="../js/store/store.js"></script>
 
     <style>
@@ -36,6 +37,8 @@
     </div>
 </div>
 
+<div><a href="#" onclick="logout()">退出</a></div>
+
 <script>
 $(function () {
     loadMyProject("#info");
@@ -57,6 +60,31 @@ function findById(){
             },error:function (res) {
                 alert(res.message);
             }
+        });
+    }
+
+    function logout(){
+        var _i = layer.confirm('确认退出？', {
+            btn: ['确认', '取消']
+        }, function(index, layero){
+            loading();
+            $.ajax({
+                url:"../logout",
+                type:"POST",
+                dataType:"JSON",
+                success:function (res) {
+                    if(res.code == 200){
+                        window.location.replace("login.html");
+                    } else {
+                        message.error(res.message);
+                    }
+                },error:function (res) {
+                    message.error();
+                },complete(XHR, TS) {
+                    loadingClose();
+                    layer.close(_i);
+                }
+            });
         });
     }
 </script>
