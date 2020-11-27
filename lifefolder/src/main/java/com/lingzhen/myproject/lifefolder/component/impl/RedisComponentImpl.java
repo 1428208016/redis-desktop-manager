@@ -2,8 +2,8 @@ package com.lingzhen.myproject.lifefolder.component.impl;
 
 import com.lingzhen.myproject.lifefolder.component.RedisComponent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -13,11 +13,12 @@ import java.util.concurrent.TimeUnit;
 public class RedisComponentImpl implements RedisComponent {
 
     @Autowired
-    @Qualifier("redisTemplate")
-//    @Resource(name = "redisTemplate")
+    @Resource(name = "myRedisTemplate")
     private RedisTemplate template;
 
     public void set(String key, String val, long expire){
+        template.setKeySerializer(new GenericToStringSerializer(String.class));
+        template.setValueSerializer(new GenericToStringSerializer(String.class));
         template.opsForValue().set(key,val,expire, TimeUnit.SECONDS);
     }
 
@@ -36,8 +37,21 @@ public class RedisComponentImpl implements RedisComponent {
         return template.hasKey(key);
     }
 
+    @Override
+    public void hSet(String key, String hashKey, Object val) {
+        template.opsForHash().put(key,hashKey,val);
+    }
 
-    public void a(){
+    @Override
+    public Long lPush(String key, Object val) {
+        return template.opsForList().leftPush(key,val);
+    }
+
+
+    public void test(){
+
+
+
     }
 
 }

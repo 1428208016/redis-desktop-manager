@@ -8,4 +8,8 @@ public interface RedisComponent {
 
     Boolean exists(String key);
 
+    void hSet(String key, String hashKey, Object val);
+
+    Long lPush(String key, Object val);
+
 }
