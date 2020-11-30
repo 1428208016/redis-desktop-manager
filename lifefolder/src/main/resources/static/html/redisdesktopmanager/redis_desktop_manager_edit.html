@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <!-- Basic -->
+    <link rel="stylesheet" href="../../plugin/bootstrap/3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="../../plugin/toastr/toastr.min.css">
+    <script src="../../js/jquery-3.5.1.js"></script>
+    <script src="../../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../plugin/toastr/toastr.min.js"></script>
+    <script src="../../plugin/layer/3.1.1/layer.js"></script>
+    <script src="../../js/common.js"></script>
+
+    <style>
+        input {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div  class="row">
+            <div class="col-md-12 col-sm-12">
+                连接名：<input type="text" name="connectionName">
+            </div>
+        </div>
+        <div  class="row">
+            <div class="col-md-8 col-sm-8">
+                连接地址：<input type="text" name="address">
+            </div>
+            <div class="col-md-4 col-sm-4">
+                端口：<input type="number" name="port" value="6379">
+            </div>
+        </div>
+        <div  class="row">
+            <div class="col-md-12 col-sm-12">
+                密码：<input type="password" name="auth">
+            </div>
+        </div>
+        <div  class="row" style="text-align: center;margin-top: 20px;">
+            <div class="col-md-12 col-sm-12">
+                <button class="btn btn-primary" onclick="testConnection()">测试连接</button>
+                <button class="btn btn-primary" onclick="save()">保存连接</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+
+function testConnection(){
+    loading();
+    $.ajax({
+        url:"../../redisDesktopManager/testConnection?tm="+ new Date().getTime(),
+        type:"POST",
+        data:{
+            connectionName:$("[name=connectionName]").val(),
+            address:$("[name=address]").val(),
+            port:$("[name=port]").val(),
+            auth:$("[name=auth]").val()
+        },
+        dataType:"JSON",
+        success:function (res) {
+            loadingClose();
+            if(res.code == 200){
+                message.success("连接成功！");
+            } else {
+                message.error(res.message,3000);
+            }
+        },error:function (res) {
+            message.error();
+        }
+    });
+}
+
+function save(){
+    loading();
+    $.ajax({
+        url:"../../redisDesktopManager/save?tm="+ new Date().getTime(),
+        type:"POST",
+        data:{
+            connectionName:$("[name=connectionName]").val(),
+            address:$("[name=address]").val(),
+            port:$("[name=port]").val(),
+            auth:$("[name=auth]").val()
+        },
+        dataType:"JSON",
+        success:function (res) {
+            if(res.code == 200){
+                message.success();
+                setTimeout(function (){
+                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                    parent.layer.close(index);
+                },800);
+            } else {
+            loadingClose();
+                message.error(res.message);
+            }
+        },error:function (res) {
+            message.error();
+        }
+    });
+}
+</script>
+</body>
+</html>

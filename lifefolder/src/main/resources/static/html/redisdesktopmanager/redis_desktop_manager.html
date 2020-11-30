@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Redis Distop Manager</title>
+    <!-- Basic -->
+    <link rel="stylesheet" href="../../plugin/bootstrap/3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="../../plugin/toastr/toastr.min.css">
+    <script src="../../js/jquery-3.5.1.js"></script>
+    <script src="../../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../plugin/toastr/toastr.min.js"></script>
+    <script src="../../plugin/layer/3.1.1/layer.js"></script>
+    <script src="../../js/common.js"></script>
+
+    <style>
+        #connectionList div{
+            padding:5px 0px;
+            cursor: pointer;
+        }
+        .editor {
+            margin-top: -5px;
+            display: none;
+            float: right;
+        }
+
+        .selectedItem {
+            background-color:#e2e2e2;
+            cursor:pointer;
+        }
+        .display-inline{
+            display: inline;
+        }
+        .databaseLi {
+            padding:5px 2px;
+            cursor: pointer;
+        }
+
+        #key{
+            height: 35px;
+            line-height: 35px;
+        }
+        .color-bg-fa{
+            background-color: #fafafa;
+        }
+        #keyTab tbody td {
+            border-bottom: 1px solid #f6f6fa;
+            padding:3px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container-fluid" style="padding-top: 10px;">
+        <div  class="row" style="margin-bottom: 10px">
+            <div class="col-md-12 col-sm-12">
+                <a href="#" onclick="openAdd()">添加连接</a>
+                <a href="#" onclick="javascript:history.go(-1)" style="display: inline-block;float:right;">返回</a>
+            </div>
+        </div>
+        <div  class="row">
+            <div class="col-md-12 col-sm-12">
+                <div  class="row">
+                    <div class="col-md-3 col-sm-3" id="connectionList"></div>
+                    <div class="col-md-3 col-sm-3" id="keyList">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12" style="margin-bottom: 10px;">
+                                <input type="text" id="key" style="width: 80%;" placeholder="请输入关键字">
+                                <button onclick="scan()" style="height:35px;">搜索</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <table id="keyTab" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            </th><th>键名</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6" id="keyValueDiv">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+
+    $(function(){
+        load();
+    });
+
+    function openAdd(){
+        layer.open({
+            type: 2,
+            title: "添加连接",
+            maxmin: true,
+            // shadeClose: true, //点击遮罩关闭层
+            area : ['400px' , '420px'],
+            content: "redis_desktop_manager_edit.html",
+            end:function () {
+                load();
+            }
+        });
+    }
+
+    // 删除连接
+    function deleteConnection(csId) {
+        var _i = layer.confirm('确认删除该连接吗？', {
+            btn: ['确认', '取消']
+        }, function(index, layero){
+            loading();
+            $.ajax({
+                url:"../../redisDesktopManager/delete?tm="+ new Date().getTime(),
+                type:"POST",
+                data:{
+                    csId:csId
+                },
+                dataType:"JSON",
+                success:function (res) {
+                    if(res.code == 200){
+                        message.success();
+                        load();
+                    } else {
+                        message.error(res.message);
+                    }
+                },error:function (res) {
+                    message.error();
+                },complete(XHR, TS) {
+                    loadingClose();
+                    layer.close(_i);
+                }
+            });
+        });
+    }
+
+    // 加载连接列表
+    function load(){
+        $.ajax({
+            url:"../../redisDesktopManager/findConnectionByUserId?tm="+ new Date().getTime(),
+            type:"POST",
+            dataType:"JSON",
+            success:function (res) {
+                $("#connectionList").html("");
+                if (res.code == 200) {
+                    $.each(res.data,function(i,temp){
+                        var html = '<div onclick="connectionSelected(this)" ondblclick="connectionRedis('+temp.csId+',this)"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> '
+                            + temp.connectionName +
+                            '   <div class="editor">' +
+                            '       <span class="glyphicon glyphicon-trash" aria-hidden="true" onclick="deleteConnection('+temp.csId+')"></span>' +
+                            '   </div>'+
+                            '</div>';
+
+                        $("#connectionList").append(html);
+                    });
+                }
+            },error:function (res) {
+                message.error();
+            }
+        });
+    }
+
+    // 选择连接
+    function connectionSelected(_this){
+        $(".selectedItem > .editor").removeClass("display-inline");
+        $(".selectedItem").removeClass("selectedItem");
+        $(_this).addClass("selectedItem");
+        $(_this).find(".editor").addClass("display-inline");
+
+        var _currentSelectConnection = $(_this).data("connectionKey");
+        if (strNotNull(_currentSelectConnection)) {
+            currentSelectConnection = _currentSelectConnection;
+        }
+
+    }
+
+    var currentSelectConnection;
+    function connectionRedis(csId,_this){
+        var connectionKey = $(_this).data("connectionKey");
+        if (strNotNull(connectionKey)) {
+            return ;
+        }
+        loading();
+        $.ajax({
+            url:"../../redisDesktopManager/connectionRedis?tm="+ new Date().getTime(),
+            type:"POST",
+            data:{
+                "csId":csId
+            },
+            dataType:"JSON",
+            success:function (res) {
+                if (res.code == 200) {
+                    $(_this).next("ul").remove();
+                    var html = '<ul>';
+                    $.each(res.data.list,function(i,temp){
+                        html += '<li class="databaseLi" onclick="selectDB('+i+',this)">'+temp.dbName+'('+temp.size+')</li>';
+                    });
+                    html += '</ul>';
+                    $(_this).after(html);
+                    $(_this).data("connectionKey",res.data.connectionKey);
+                    currentSelectConnection = res.data.connectionKey;
+                }
+            },error:function (res) {
+                message.error();
+            },complete(XHR, TS) {
+                loadingClose();
+            }
+        });
+    }
+
+    var currentDBIndex;
+    function selectDB(index,_this){
+        $(".selectedItem > .editor").removeClass("display-inline");
+        $(".selectedItem").removeClass("selectedItem");
+        $(_this).addClass("selectedItem");
+        $(_this).find(".editor").addClass("display-inline");
+        currentDBIndex = index;
+        // 加载key
+        $("#key").val("*");
+        scan();
+    }
+
+    function scan(){
+        var key = $("#key").val();
+        if (!strNotNull(key)) {
+            key = "*";
+        }
+        loading();
+        $.ajax({
+            url:"../../redisDesktopManager/scan?tm="+ new Date().getTime(),
+            type:"POST",
+            data:{
+                connectionKey:currentSelectConnection,
+                dbIndex:currentDBIndex,
+                key:key
+            },
+            dataType:"JSON",
+            success:function (res) {
+                if (res.code == 200) {
+                    $("#keyTab tbody").html("");
+                    var html = '';
+                    $.each(res.data,function(i,temp){
+                        var _cls = '';
+                        if (i%2 == 0) {
+                            _cls = 'class="color-bg-fa"';
+                        }
+                       // html += '<tr><td>'+(i+1)+'</td><td '+_cls+'>'+temp+'</td></tr>';
+                        html += '<tr><td onclick="loadKeyValue(\''+temp+'\')" '+_cls+'>'+temp+'</td></tr>';
+                    });
+                    $("#keyTab tbody").html(html);
+                }
+            },error:function (res) {
+                message.error();
+            },complete(XHR, TS) {
+                loadingClose();
+            }
+        });
+    }
+
+    function loadKeyValue(key) {
+        loading();
+        $.ajax({
+            url:"../../redisDesktopManager/loadKeyValue?tm="+ new Date().getTime(),
+            type:"POST",
+            data:{
+                connectionKey:currentSelectConnection,
+                dbIndex:currentDBIndex,
+                key:key
+            },
+            dataType:"JSON",
+            success:function (res) {
+                if (res.code == 200) {
+                    $("#keyValueDiv").html("");
+                    // var html = '';
+                    // $.each(res.data,function(i,temp){
+                    //     var _cls = '';
+                    //     if (i%2 == 0) {
+                    //         _cls = 'class="color-bg-fa"';
+                    //     }
+                    //     // html += '<tr><td>'+(i+1)+'</td><td '+_cls+'>'+temp+'</td></tr>';
+                    //     html += '<tr><td onclick="loadKeyValue(\"'+temp+'\")" '+_cls+'>'+temp+'</td></tr>';
+                    // });
+                    $("#keyValueDiv").html(html);
+                }
+            },error:function (res) {
+                message.error();
+            },complete(XHR, TS) {
+                loadingClose();
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

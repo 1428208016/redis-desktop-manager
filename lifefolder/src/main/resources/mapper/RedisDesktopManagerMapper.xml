@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lingzhen.myproject.lifefolder.mapper.RedisDesktopManagerMapper" >
+
+    <select id="findConnectionByUserId" resultType="map" parameterType="java.lang.Long" >
+        SELECT
+            csId,
+            userId,
+            connectionName,
+            address,
+            port,
+            createDate,
+            createTime
+        FROM rdm_connection_setting
+        WHERE userId = #{_parameter}
+        ORDER BY createTime
+    </select>
+
+    <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="csId" >
+        INSERT INTO rdm_connection_setting(userId,connectionName,address,port,auth,createDate,createTime)
+        VALUE (#{userId},#{connectionName},#{address},#{port},#{auth},#{createDate},#{createTime})
+    </insert>
+
+    <delete id="delete" parameterType="map" >
+        DELETE FROM rdm_connection_setting WHERE userId = #{userId} AND csId = #{csId}
+    </delete>
+
+    <select id="findById" parameterType="map" resultType="map" >
+        SELECT
+            address,
+            port,
+            auth,
+            createDate,
+            createTime
+        FROM rdm_connection_setting
+        WHERE userId = #{userId}
+        AND csId = #{csId}
+    </select>
+
+</mapper>

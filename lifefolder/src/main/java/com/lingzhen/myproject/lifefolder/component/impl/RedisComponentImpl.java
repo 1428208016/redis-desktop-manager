@@ -12,13 +12,10 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisComponentImpl implements RedisComponent {
 
-    @Autowired
     @Resource(name = "myRedisTemplate")
     private RedisTemplate template;
 
     public void set(String key, String val, long expire){
-        template.setKeySerializer(new GenericToStringSerializer(String.class));
-        template.setValueSerializer(new GenericToStringSerializer(String.class));
         template.opsForValue().set(key,val,expire, TimeUnit.SECONDS);
     }
 
