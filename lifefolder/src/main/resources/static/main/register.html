@@ -11,6 +11,8 @@
     <script src="../js/jquery-3.5.1.min.js"></script>
     <link rel="stylesheet" href="../plugin/toastr/toastr.min.css">
     <script src="../plugin/toastr/toastr.min.js"></script>
+
+    <script src="../plugin/layer/3.1.1/layer.js"></script>
     <script src="../js/common.js"></script>
 
 </head>
@@ -30,7 +32,7 @@
         <input type="text" id="phoneNumber" placeholder="请输入手机号" >
     </div>
     <div>
-        <input type="text" id="code" placeholder="请输入验证码" > <button onclick="sendYzm()">发送验证码</button>
+        <input type="text" id="code" placeholder="请输入验证码" > <button id="sendYzmBtn" onclick="sendYzm()" >发送验证码</button>
     </div>
     <div style="font-size: 12px;">
         <button type="button" onclick="login()" >注册</button> 已有账号去<a href="login.html">登陆</a>
@@ -65,7 +67,7 @@
     }
 
     function sendYzm(){
-
+        loading();
         $.ajax({
             url:"../sendRegisterYzm",
             type:"POST",
@@ -73,11 +75,35 @@
                 phoneNumber:$("#phoneNumber").val()
             },
             success : function(res) {
-                alert(res.message);
+
+                if (res.code == 200) {
+                    message.success();
+                    yzmSendIndex = 60;
+                    $("#sendYzmBtn").attr("disabled",true);
+                    lessYzmSendIndex();
+                } else {
+                    message.error(res.message);
+                }
             },error:function (res) {
-                alert(res.message);
+                message.success(res.message);
+            },complete:function (){
+                loadingClose();
             }
         });
+    }
+
+    var yzmSendIndex = 60;
+    function lessYzmSendIndex(){
+        yzmSendIndex--;
+        if (yzmSendIndex == 0) {
+            $("#sendYzmBtn").html("发送验证码");
+            $("#sendYzmBtn").attr("disabled",false);
+        } else {
+            $("#sendYzmBtn").html(yzmSendIndex);
+            setTimeout(function (){
+                lessYzmSendIndex();
+            },1000);
+        }
     }
 </script>
 
