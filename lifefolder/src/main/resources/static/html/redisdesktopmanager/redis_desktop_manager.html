@@ -45,10 +45,13 @@
         .color-bg-f5{
             background-color: #f5f5f5;
         }
-        #keyTab tbody td {
+        #keyDiv div {
             border-bottom: 1px solid #f6f6fa;
-            padding:3px;
+            padding:5px;
             cursor:pointer;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            overflow: hidden;
         }
 
         #keyvalue-key{
@@ -56,6 +59,9 @@
             line-height: 35px;
         }
 
+        .fontWeight900{
+            font-weight: 900;
+        }
 
     </style>
 </head>
@@ -79,16 +85,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 col-sm-12">
-                                <table id="keyTab" style="width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            </th><th>键名</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
+                            <div class="col-md-12 col-sm-12" id="keyDiv"></div>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6" id="keyValueDiv">
@@ -265,6 +262,8 @@
                     $(_this).after(html);
                     $(_this).data("connectionKey",res.data.connectionKey);
                     currentSelectConnection = res.data.connectionKey;
+
+                    $(_this).prepend('<span class="glyphicon glyphicon-triangle-bottom" style="cursor: pointer;" onclick="showHideDatabase(this)" aria-hidden="true">');
                 }
             },error:function (res) {
                 message.error();
@@ -272,6 +271,18 @@
                 loadingClose();
             }
         });
+    }
+    // 显示、隐藏databases
+    function showHideDatabase(_this){
+        if ($(_this).hasClass("glyphicon-triangle-bottom")) {
+            $(_this).parent().next("ul").hide();
+            $(_this).removeClass("glyphicon-triangle-bottom");
+            $(_this).addClass("glyphicon-triangle-right");
+        } else {
+            $(_this).parent().next("ul").show();
+            $(_this).removeClass("glyphicon-triangle-right");
+            $(_this).addClass("glyphicon-triangle-bottom");
+        }
     }
 
     var currentDBIndex;
@@ -284,6 +295,8 @@
         // 加载key
         $("#key").val("*");
         scan();
+        // 删除keyValueDiv
+        $("#keyValueDiv").html("");
     }
 
     function scan(){
@@ -303,17 +316,17 @@
             dataType:"JSON",
             success:function (res) {
                 if (res.code == 200) {
-                    $("#keyTab tbody").html("");
+                    $("#keyDiv").html("");
                     var html = '';
                     $.each(res.data,function(i,temp){
                         var _cls = '';
                         if (i%2 == 0) {
-                            _cls = 'class="color-bg-fa"';
+                            _cls = 'color-bg-fa';
                         }
                        // html += '<tr><td>'+(i+1)+'</td><td '+_cls+'>'+temp+'</td></tr>';
-                        html += '<tr><td onclick="loadKeyValue(\''+temp+'\')" '+_cls+'>'+temp+'</td></tr>';
+                        html += '<div title="'+temp+'" onclick="loadKeyValue(\''+temp+'\')" class="col-md-12 col-sm-12 '+_cls+'" >'+temp+'</div>';
                     });
-                    $("#keyTab tbody").html(html);
+                    $("#keyDiv").html(html);
                 }
             },error:function (res) {
                 message.error();
@@ -336,54 +349,34 @@
             dataType:"JSON",
             success:function (res) {
                 if (res.code == 200) {
-                    $("#keyValueDiv").html("");
-                    var html = '';
                     var type = res.data.type;
+                    $("#keyValueDiv").html("");
+                    var html = '<div class="row">' +
+                        '       <div class="col-md-12 col-sm-12">' +
+                        '           <span class="fontWeight900">'+type.toUpperCase()+'：</span>' +
+                        '           <input type="text" class="" id="kv-key" style="width: 50%"  >' +
+                        '           <span class="fontWeight900">TTL：</span><input type="text" id="kv-ttl" style="width: 200px;" >' +
+                        '       </div>' +
+                        '   </div>';
                     if ("string" == type) {
-                        html = '<div class="row">' +
-                            '       <div class="col-md-12 col-sm-12">' +
-                            '           <b>String：</b><input type="text" class="" id="kv-key" readonly ><input type="text" id="kv-ttl" readonly >' +
-                            '       </div>' +
-                            '   </div>' +
-                            '   <div class="row" style="margin-top: 10px">' +
+                        html += '<div class="row" style="margin-top: 10px">' +
                             '       <div class="col-md-12 col-sm-12">' +
                             '           <textarea id="kv-value" style="width: 100%;min-height: 360px;resize:none;" >'+res.data.data+'</textarea>' +
                             '       </div>' +
                             '   </div>';
                     } else if ("list" == type || "set" == type) {
-                        var _type = "";
-                        if ("list" == type) {
-                            _type = "LIST";
-                        } else {
-                            _type = "SET";
-                        }
-                        html = '<div class="row">' +
-                            '       <div class="col-md-12 col-sm-12">' +
-                            '           <b>'+_type+'：</b><input type="text" id="kv-key" readonly ><input type="text" id="kv-ttl" readonly >' +
-                            '       </div>' +
-                            '   </div>' +
-                            '   <div class="row" style="margin-top: 10px">' +
-                            '       <div class="col-md-12 col-sm-12">' +
-                            '           <table style="width: 100%;">' +
-                            '               <tbody>';
+                        html += '<div class="row" style="margin-top: 10px">' +
                         $.each(res.data.data,function(i,temp){
+                            debugger;
                             if (i%2 ==0) {
-                                html += '<tr><td>'+temp+'</td></tr>';
+                                html += '<div class="col-md-12 col-sm-12">'+temp+'</div>';
                             } else {
-                                html += '<tr class="color-bg-f5"><td>'+temp+'</td></tr>';
+                                html += '<div class="col-md-12 col-sm-12 color-bg-f5">'+temp+'</div>';
                             }
                         });
-                        html += '               </tbody>' +
-                        '           </table>' +
-                        '       </div>' +
-                        '   </div>';
+                        html += '   </div>';
                     } else if ("zset" == type) {
-                        html = '<div class="row">' +
-                            '       <div class="col-md-12 col-sm-12">' +
-                            '           <b>ZSET：</b><input type="text" id="kv-key" readonly ><input type="text" id="kv-ttl" readonly >' +
-                            '       </div>' +
-                            '   </div>' +
-                            '   <div class="row" style="margin-top: 10px">' +
+                        html += '<div class="row" style="margin-top: 10px">' +
                             '       <div class="col-md-12 col-sm-12">' +
                             '           <table style="width: 100%;"><thead><tr><td>Value</td><td>Score</td></tr></thead>' +
                             '               <tbody>';
@@ -399,12 +392,7 @@
                             '       </div>' +
                             '   </div>';
                     } else if ("hash" == type) {
-                        html = '<div class="row">' +
-                            '       <div class="col-md-12 col-sm-12">' +
-                            '           <b>HASH：</b><input type="text" id="kv-key" readonly ><input type="text" id="kv-ttl" readonly >' +
-                            '       </div>' +
-                            '   </div>' +
-                            '   <div class="row" style="margin-top: 10px">' +
+                        html += '   <div class="row" style="margin-top: 10px">' +
                             '       <div class="col-md-12 col-sm-12">' +
                             '           <table style="width: 100%;"><thead><tr><td>Key</td><td>Value</td></tr></thead>' +
                             '               <tbody>';
