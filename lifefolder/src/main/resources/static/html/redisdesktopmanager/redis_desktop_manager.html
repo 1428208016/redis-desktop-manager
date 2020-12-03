@@ -337,27 +337,24 @@
                     if ("string" == type) {
                         html = '<div class="row">' +
                             '       <div class="col-md-12 col-sm-12">' +
-                            '           <b>String:</b><input type="text" class="" id="kv-key" readonly ><input type="text" id="kv-ttl" readonly >' +
+                            '           <b>String：</b><input type="text" class="" id="kv-key" readonly ><input type="text" id="kv-ttl" readonly >' +
                             '       </div>' +
                             '   </div>' +
                             '   <div class="row" style="margin-top: 10px">' +
                             '       <div class="col-md-12 col-sm-12">' +
-                            '           <textarea id="kv-value" style="width: 100%;min-height: 360px;resize:none;" ></textarea>' +
+                            '           <textarea id="kv-value" style="width: 100%;min-height: 360px;resize:none;" >'+res.data.data+'</textarea>' +
                             '       </div>' +
                             '   </div>';
-                        html += '   <div class="row" style="margin-top: 10px; text-align: right;">' +
-                            '       <div class="col-md-12 col-sm-12">' +
-                            '           <button id="kv-save" class="btn btn-primary">保存</button>' +
-                            '       </div>' +
-                            '   </div>';
-                        $("#keyValueDiv").html(html);
-                        $("#kv-key").val(res.data.key);
-                        $("#kv-ttl").val(res.data.ttl);
-                        $("#kv-value").val(res.data.data);
-                    } else if ("list" == type) {
+                    } else if ("list" == type || "set" == type) {
+                        var _type = "";
+                        if ("list" == type) {
+                            _type = "LIST";
+                        } else {
+                            _type = "SET";
+                        }
                         html = '<div class="row">' +
                             '       <div class="col-md-12 col-sm-12">' +
-                            '           <b>LIST:</b><input type="text" id="kv-key" readonly ><input type="text" id="kv-ttl" readonly >' +
+                            '           <b>'+_type+'：</b><input type="text" id="kv-key" readonly ><input type="text" id="kv-ttl" readonly >' +
                             '       </div>' +
                             '   </div>' +
                             '   <div class="row" style="margin-top: 10px">' +
@@ -375,27 +372,66 @@
                         '           </table>' +
                         '       </div>' +
                         '   </div>';
-                        html += '   <div class="row" style="margin-top: 10px; text-align: right;">' +
+                    } else if ("zset" == type) {
+                        html = '<div class="row">' +
                             '       <div class="col-md-12 col-sm-12">' +
-                            '           <button id="kv-save" class="btn btn-primary">保存</button>' +
+                            '           <b>ZSET：</b><input type="text" id="kv-key" readonly ><input type="text" id="kv-ttl" readonly >' +
+                            '       </div>' +
+                            '   </div>' +
+                            '   <div class="row" style="margin-top: 10px">' +
+                            '       <div class="col-md-12 col-sm-12">' +
+                            '           <table style="width: 100%;"><thead><tr><td>Value</td><td>Score</td></tr></thead>' +
+                            '               <tbody>';
+                        $.each(res.data.data,function(i,temp){
+                            if (i%2 ==0) {
+                                html += '<tr><td>'+temp.element+'</td><td>'+temp.score+'</td></tr>';
+                            } else {
+                                html += '<tr class="color-bg-f5"><td>'+temp.element+'</td><td>'+temp.score+'</td></tr>';
+                            }
+                        });
+                        html += '               </tbody>' +
+                            '           </table>' +
                             '       </div>' +
                             '   </div>';
-                        $("#keyValueDiv").html(html);
-                        $("#kv-key").val(res.data.key);
-                        $("#kv-ttl").val(res.data.ttl);
-                    } else if ("set" == type) {
-
-                    } else if ("zset" == type) {
-
                     } else if ("hash" == type) {
+                        html = '<div class="row">' +
+                            '       <div class="col-md-12 col-sm-12">' +
+                            '           <b>HASH：</b><input type="text" id="kv-key" readonly ><input type="text" id="kv-ttl" readonly >' +
+                            '       </div>' +
+                            '   </div>' +
+                            '   <div class="row" style="margin-top: 10px">' +
+                            '       <div class="col-md-12 col-sm-12">' +
+                            '           <table style="width: 100%;"><thead><tr><td>Key</td><td>Value</td></tr></thead>' +
+                            '               <tbody>';
+                        $.each(res.data.data,function(i,temp){
+                            var cls = "";
+                            if (i%2 !=0) {
+                                cls = 'class="color-bg-f5"';
+                            }
+                            html += '<tr '+cls+'>';
+                            for (var key in temp) {
+                                html += '<td>'+key+'</td>';
+                                html += '<td>'+temp[key]+'</td>';
+                            }
+                            html += '</tr>';
 
+                        });
+                        html += '               </tbody>' +
+                            '           </table>' +
+                            '       </div>' +
+                            '   </div>';
                     } else {
 
                     }
+                    html += '   <div class="row" style="margin-top: 10px; text-align: right;">' +
+                        '       <div class="col-md-12 col-sm-12">' +
+                        '           <button id="kv-save" class="btn btn-primary">保存</button>' +
+                        '       </div>' +
+                        '   </div>';
+                    $("#keyValueDiv").html(html);
+                    $("#kv-key").val(res.data.key);
+                    $("#kv-ttl").val(res.data.ttl);
 
-
-
-                    console.info(res);
                 }
             },error:function (res) {
                 message.error();

@@ -148,6 +148,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         jedis.select(dbIndex);
 
         String type = jedis.type(key);
+        Long ttl = jedis.ttl(key);
         Object data;
         if ("string".equals(type)) {
             data = jedis.get(key);
@@ -175,6 +176,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         Map retMap = new HashMap();
         retMap.put("key",key);
         retMap.put("type",type);
+        retMap.put("ttl",ttl);
         retMap.put("data",data);
         result.setData(retMap);
 
