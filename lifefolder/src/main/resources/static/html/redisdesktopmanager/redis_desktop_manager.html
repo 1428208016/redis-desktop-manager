@@ -63,7 +63,7 @@
     <div class="container-fluid" style="padding-top: 10px;">
         <div  class="row" style="margin-bottom: 10px">
             <div class="col-md-12 col-sm-12">
-                <a href="#" onclick="openAdd()">添加连接</a>
+                <a href="#" onclick="openAdd('add')">添加连接</a>
                 <a href="#" onclick="javascript:history.go(-1)" style="display: inline-block;float:right;">返回</a>
             </div>
         </div>
@@ -151,14 +151,18 @@
         load();
     });
 
-    function openAdd(){
+    function openAdd(type,id){
+        var title = "添加连接";
+        if (type == "edit") {
+            title = "编辑连接";
+        }
         layer.open({
             type: 2,
-            title: "添加连接",
+            title: title,
             maxmin: true,
             // shadeClose: true, //点击遮罩关闭层
             area : ['400px' , '420px'],
-            content: "redis_desktop_manager_edit.html",
+            content: "redis_desktop_manager_edit.html?csId="+id,
             end:function () {
                 load();
             }
@@ -208,6 +212,7 @@
                         var html = '<div onclick="connectionSelected(this)" ondblclick="connectionRedis('+temp.csId+',this)"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> '
                             + temp.connectionName +
                             '   <div class="editor">' +
+                            '       <span class="glyphicon glyphicon-edit" aria-hidden="true" onclick="openAdd(\'edit\','+temp.csId+')"></span>' +
                             '       <span class="glyphicon glyphicon-trash" aria-hidden="true" onclick="deleteConnection('+temp.csId+')"></span>' +
                             '   </div>'+
                             '</div>';

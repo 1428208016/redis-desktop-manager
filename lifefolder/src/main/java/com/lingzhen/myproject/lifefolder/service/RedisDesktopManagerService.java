@@ -8,12 +8,18 @@ import java.util.Map;
 public interface RedisDesktopManagerService {
 
     /**
-     * 保存连接
+     * 保存\编辑连接
      * @param map
      * @return
      */
-    int save(Map map);
+    int saveOrEdit(Map map);
 
+    /**
+     * 查询连接
+     * @param csId
+     * @return
+     */
+    Map findConnectionById(String csId);
     /**
      * 查询用户连接
      * @param userId

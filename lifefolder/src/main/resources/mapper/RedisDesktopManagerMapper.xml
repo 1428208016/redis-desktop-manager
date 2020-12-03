@@ -17,8 +17,8 @@
     </select>
 
     <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="csId" >
-        INSERT INTO rdm_connection_setting(userId,connectionName,address,port,auth,createDate,createTime)
-        VALUE (#{userId},#{connectionName},#{address},#{port},#{auth},#{createDate},#{createTime})
+        INSERT INTO rdm_connection_setting(userId,connectionName,address,port,auth,defaultFilter,databaseDiscoveryLimit,createDate,createTime)
+        VALUE (#{userId},#{connectionName},#{address},#{port},#{auth},#{defaultFilter},#{databaseDiscoveryLimit},#{createDate},#{createTime})
     </insert>
 
     <delete id="delete" parameterType="map" >
@@ -27,14 +27,31 @@
 
     <select id="findById" parameterType="map" resultType="map" >
         SELECT
+            connectionName,
             address,
             port,
             auth,
+            defaultFilter,
+            databaseDiscoveryLimit,
             createDate,
             createTime
         FROM rdm_connection_setting
         WHERE userId = #{userId}
         AND csId = #{csId}
     </select>
+
+    <update id="edit" >
+        UPDATE rdm_connection_setting
+        SET
+            connectionName = #{connectionName},
+            address = #{address},
+            port = #{port},
+            auth = #{auth},
+            defaultFilter = #{defaultFilter},
+            databaseDiscoveryLimit = #{databaseDiscoveryLimit}
+        WHERE
+            csId = #{csId}
+        AND userId = #{userId}
+    </update>
 
 </mapper>

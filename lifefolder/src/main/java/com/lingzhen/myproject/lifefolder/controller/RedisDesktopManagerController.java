@@ -21,9 +21,9 @@ public class RedisDesktopManagerController {
     @Autowired
     private RedisDesktopManagerService redisDesktopManagerService;
 
-    @RequestMapping("save")
+    @RequestMapping("saveOrEdit")
     @ResponseBody
-    public Result save(){
+    public Result saveOrEdit(){
         Result result = new Result();
         Map param = HttpServletUtil.getRequestParameter();
 
@@ -41,7 +41,23 @@ public class RedisDesktopManagerController {
         }
 
         try {
-            int i = redisDesktopManagerService.save(param);
+            int i = redisDesktopManagerService.saveOrEdit(param);
+        } catch (Exception e) {
+            result.setError();
+        }
+        return result;
+    }
+
+    @RequestMapping("findConnectionById")
+    @ResponseBody
+    public Result findConnectionById(){
+        Result result = new Result();
+
+        try {
+            Map param = HttpServletUtil.getRequestParameter();
+            String csId = param.get("csId").toString();
+            Map data = redisDesktopManagerService.findConnectionById(csId);
+            result.setData(data);
         } catch (Exception e) {
             result.setError();
         }

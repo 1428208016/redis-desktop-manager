@@ -1,14 +1,11 @@
 package com.lingzhen.myproject.lifefolder.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.lingzhen.myproject.common.util.DateUtil;
-import com.lingzhen.myproject.common.util.UuidUtil;
-import com.lingzhen.myproject.lifefolder.component.RedisComponent;
 import com.lingzhen.myproject.lifefolder.mapper.RedisDesktopManagerMapper;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.service.RedisDesktopManagerService;
-import com.lingzhen.myproject.lifefolder.util.Constant;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
+import com.lingzhen.myproject.lifefolder.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.*;
@@ -31,11 +28,38 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
     private Map<String, Jedis> connectionMap = new HashMap<>();
 
     @Override
-    public int save(Map map) {
-        map.put("createDate",DateUtil.getDate());
-        map.put("createTime",DateUtil.getTime());
+    public int saveOrEdit(Map map) {
+        // defaultFilter默认值
+        if (VerifyUtil.stringTrimIsEmpty(map.get("defaultFilter"))) {
+            map.put("defaultFilter","*");
+        }
+        // databaseDiscoveryLimit默认值与限制
+        if (VerifyUtil.stringTrimIsEmpty(map.get("databaseDiscoveryLimit"))) {
+            map.put("databaseDiscoveryLimit","20");
+        } else {
+            Integer databaseDiscoveryLimit = Integer.valueOf(map.get("databaseDiscoveryLimit").toString());
+            if (databaseDiscoveryLimit <= 0 || databaseDiscoveryLimit > 255) {
+                map.put("databaseDiscoveryLimit",20);
+            }
+        }
         map.put("userId",HttpServletUtil.getUserId());
-        return redisDesktopManagerMapper.save(map);
+        if (VerifyUtil.stringTrimIsEmpty(map.get("csId"))) {
+            // 新增
+            map.put("createDate",DateUtil.getDate());
+            map.put("createTime",DateUtil.getTime());
+            return redisDesktopManagerMapper.save(map);
+        } else {
+            // 修改
+            return redisDesktopManagerMapper.edit(map);
+        }
+    }
+
+    @Override
+    public Map findConnectionById(String csId) {
+        Map selMap = new HashMap();
+        selMap.put("userId",HttpServletUtil.getUserId());
+        selMap.put("csId",csId);
+        return redisDesktopManagerMapper.findById(selMap);
     }
 
     @Override
@@ -98,7 +122,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         Map map = new HashMap();
         map.put("userId",HttpServletUtil.getUserId());
         map.put("csId",csId);
-        Map data = redisDesktopManagerMapper.findById(map);
+        Map data = this.findConnectionById(csId);
         if (null == data || data.size() <= 0) {
             return result.setErrorReturn("未找到连接信息！");
         }
@@ -119,7 +143,8 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         List<String> databases = jedis.configGet("databases");
         if (null != databases && databases.size() >= 2) {
             int index = Integer.valueOf(databases.get(1));
-            for (int i = 0;i < index; i++) {
+            int databaseDiscoveryLimit = Integer.valueOf(data.get("databaseDiscoveryLimit").toString());
+            for (int i = 0;i < index && i < databaseDiscoveryLimit; i++) {
                 Map _data = new HashMap();
                 _data.put("dbName","db"+i);
 

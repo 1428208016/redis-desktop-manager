@@ -18,7 +18,8 @@
     </style>
 </head>
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid" id="dataForm">
+        <input id="csId" type="hidden">
         <div  class="row">
             <div class="col-md-12 col-sm-12">
                 连接名：<input type="text" name="connectionName">
@@ -37,6 +38,12 @@
                 密码：<input type="password" name="auth">
             </div>
         </div>
+
+        <div  class="row" style="margin-top: 20px;">
+            <div class="col-md-12 col-sm-12">
+                数据库发现限制：<input type="number" min="1" max="255" name="databaseDiscoveryLimit">
+            </div>
+        </div>
         <div  class="row" style="text-align: center;margin-top: 20px;">
             <div class="col-md-12 col-sm-12">
                 <button class="btn btn-primary" onclick="testConnection()">测试连接</button>
@@ -46,7 +53,33 @@
     </div>
 
 <script>
+    $(function (){
+        var csId = getUrlParam("csId");
+        if (strNotNull(csId)) {
+            $("#csId").val(csId);
+            loadData(csId);
+        }
+    });
 
+    function loadData(csId){
+        loading();
+        $.ajax({
+            url:"../../redisDesktopManager/findConnectionById?tm="+ new Date().getTime(),
+            type:"POST",
+            data:{
+                csId:csId
+            },
+            dataType:"JSON",
+            success:function (res) {
+                loadingClose();
+                if(res.code == 200){
+                    loadFormData(res.data);
+                }
+            },error:function (res) {
+                message.error();
+            }
+        });
+    }
 function testConnection(){
     loading();
     $.ajax({
@@ -75,13 +108,15 @@ function testConnection(){
 function save(){
     loading();
     $.ajax({
-        url:"../../redisDesktopManager/save?tm="+ new Date().getTime(),
+        url:"../../redisDesktopManager/saveOrEdit?tm="+ new Date().getTime(),
         type:"POST",
         data:{
+            csId:$("#csId").val(),
             connectionName:$("[name=connectionName]").val(),
             address:$("[name=address]").val(),
             port:$("[name=port]").val(),
-            auth:$("[name=auth]").val()
+            auth:$("[name=auth]").val(),
+            databaseDiscoveryLimit:$("[name=databaseDiscoveryLimit]").val()
         },
         dataType:"JSON",
         success:function (res) {

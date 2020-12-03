@@ -7,6 +7,8 @@ public interface RedisDesktopManagerMapper {
 
     int save(Map map);
 
+    int edit(Map map);
+
     List findConnectionByUserId(Long userId);
 
     int delete(Map map);
