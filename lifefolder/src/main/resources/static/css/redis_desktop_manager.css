@@ -1,0 +1,69 @@
+#connectionList div{
+    padding:5px 0px;
+    cursor: pointer;
+}
+.editor {
+    margin-top: -5px;
+    display: none;
+    float: right;
+}
+
+.selectedItem {
+    background-color:#e2e2e2;
+    cursor:pointer;
+}
+.display-inline{
+    display: inline;
+}
+.databaseLi {
+    padding:5px 2px;
+    cursor: pointer;
+}
+
+#key{
+    height: 45px;
+    line-height: 45px;
+    width: 100%;
+}
+.color-bg-fa{
+    background-color: #fafafa;
+}
+.color-bg-f5{
+    background-color: #f5f5f5;
+}
+.color-bg-e8f2ff{
+    background-color: #E8F2FF;
+}
+#keyDiv div {
+    border-bottom: 1px solid #f6f6fa;
+    padding:5px;
+    cursor:pointer;
+    /* 一行显示，多余省略 */
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    overflow: hidden;
+}
+
+#keyvalue-key{
+    height: 35px;
+    line-height: 35px;
+}
+
+.fontWeight900{
+    font-weight: 900;
+}
+
+.kv-data-center-div {
+    float: left;
+    width: 100%;
+    min-height: 360px;
+    border:1px solid black;
+}
+.kv-data-row {
+    padding:5px;
+    /* 自动换行 */
+    word-wrap: break-word;
+    word-break: normal;
+}
+.float-r{float: right;}
+.float-l{float: left;}

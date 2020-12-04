@@ -66,5 +66,25 @@ public interface RedisDesktopManagerService {
      */
     Result loadKeyValue(String connectionKey,Integer dbIndex, String key);
 
+    /**
+     * 添加新键
+     * @param csId
+     * @param dbIndex
+     * @param key
+     * @param type
+     * @param value
+     * @param ttl
+     * @return
+     */
+    Result addNewKey(String csId, Integer dbIndex, String key, String type, Object value, Long ttl);
+
+    /**
+     * 删除键
+     * @param csId
+     * @param dbIndex
+     * @param key
+     * @return
+     */
+    Result deleteKey(String csId, Integer dbIndex, String key);
 
 }

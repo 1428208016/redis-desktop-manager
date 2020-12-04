@@ -155,6 +155,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         }
         Map retMap = new HashMap();
         retMap.put("connectionKey",csId);
+        retMap.put("connectionName",data.get("connectionName"));
         retMap.put("list",databaseList);
         result.setData(retMap);
 
@@ -204,6 +205,54 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         retMap.put("ttl",ttl);
         retMap.put("data",data);
         result.setData(retMap);
+
+        return result;
+    }
+
+    @Override
+    public Result addNewKey(String csId, Integer dbIndex, String key, String type, Object value, Long ttl) {
+        Result result = new Result();
+
+        Jedis jedis = connectionMap.get(csId);
+        if (null == jedis) {
+            return result.setErrorReturn("无此连接！");
+        }
+        // 选择数据库
+        jedis.select(dbIndex);
+
+        if ("string".equals(type)) {
+            String replyCode = jedis.set(key,value.toString());
+        } else if ("hash".equals(type)) {
+
+        } else if ("list".equals(type)) {
+
+        } else if ("set".equals(type)) {
+
+        } else if ("zset".equals(type)) {
+
+        } else {
+
+        }
+        // 过期时间
+        if (ttl != -1) {
+            jedis.expire(key,ttl.intValue());
+        }
+
+        return result;
+    }
+
+    @Override
+    public Result deleteKey(String csId, Integer dbIndex, String key) {
+        Result result = new Result();
+
+        Jedis jedis = connectionMap.get(csId);
+        if (null == jedis) {
+            return result.setErrorReturn("无此连接！");
+        }
+        // 选择数据库
+        jedis.select(dbIndex);
+
+        jedis.del(key);
 
         return result;
     }
