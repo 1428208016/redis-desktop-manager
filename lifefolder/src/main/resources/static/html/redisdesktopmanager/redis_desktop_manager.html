@@ -63,6 +63,18 @@
             font-weight: 900;
         }
 
+        .kv-data-center-div {
+            float: left;
+            width: 100%;
+            min-height: 360px;
+            border:1px solid black;
+        }
+        .kv-data-row {
+            padding:5px;
+            word-wrap: break-word;
+            word-break: normal;
+        }
+
     </style>
 </head>
 <body>
@@ -88,55 +100,7 @@
                             <div class="col-md-12 col-sm-12" id="keyDiv"></div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6" id="keyValueDiv">
-<!--                        STRING-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-12 col-sm-12">-->
-<!--                                <input type="text" readonly >-->
-<!--                                <input type="text" readonly >-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="row" style="margin-top: 10px">-->
-<!--                            <div class="col-md-12 col-sm-12">-->
-<!--                                <textarea style="width: 100%;min-height: 360px;resize:none;" ></textarea>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="row" style="margin-top: 10px; text-align: right;">-->
-<!--                            <div class="col-md-12 col-sm-12">-->
-<!--                                <button id="kv-save" class="btn btn-primary">保存</button>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-
-
-<!--                        LIST-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-12 col-sm-12">-->
-<!--                                <input type="text" id="kv-key" readonly >-->
-<!--                                <input type="text" id="kv-ttl" readonly >-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="row" style="margin-top: 10px">-->
-<!--                            <div class="col-md-12 col-sm-12">-->
-<!--                                <table style="width: 100%;">-->
-<!--                                    <tbody>-->
-<!--                                    <tr>-->
-<!--                                        <td>123123</td>-->
-<!--                                    </tr>-->
-<!--                                    <tr class="color-bg-f5">-->
-<!--                                        <td>123123</td>-->
-<!--                                    </tr>-->
-<!--                                    </tbody>-->
-<!--                                </table>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="row" style="margin-top: 10px; text-align: right;">-->
-<!--                            <div class="col-md-12 col-sm-12">-->
-<!--                                <button id="kv-save" class="btn btn-primary">保存</button>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-                    </div>
+                    <div class="col-md-6 col-sm-6" id="keyValueDiv"></div>
                 </div>
             </div>
         </div>
@@ -365,53 +329,43 @@
                             '       </div>' +
                             '   </div>';
                     } else if ("list" == type || "set" == type) {
-                        html += '<div class="row" style="margin-top: 10px">' +
+                        html += '<div class="row" style="margin-top: 10px;">' +
+                            '       <div class="col-md-12 col-sm-12">' +
+                            '           <div class="kv-data-center-div kv-data-row">';
                         $.each(res.data.data,function(i,temp){
-                            debugger;
                             if (i%2 ==0) {
-                                html += '<div class="col-md-12 col-sm-12">'+temp+'</div>';
+                                html += ('<div class="col-md-12 col-sm-12">'+temp+'</div>');
                             } else {
-                                html += '<div class="col-md-12 col-sm-12 color-bg-f5">'+temp+'</div>';
+                                html += ('<div class="col-md-12 col-sm-12 color-bg-f5">'+temp+'</div>');
                             }
                         });
-                        html += '   </div>';
+                        html += '   </div></div></div>';
                     } else if ("zset" == type) {
                         html += '<div class="row" style="margin-top: 10px">' +
-                            '       <div class="col-md-12 col-sm-12">' +
-                            '           <table style="width: 100%;"><thead><tr><td>Value</td><td>Score</td></tr></thead>' +
-                            '               <tbody>';
+                            '       <div class="col-md-12 col-sm-12"> <div class="kv-data-center-div kv-data-row">' +
+                            '           <div class="col-md-9 col-sm-9">Value</div><div class="col-md-3 col-sm-3">Score</div>';
                         $.each(res.data.data,function(i,temp){
                             if (i%2 ==0) {
-                                html += '<tr><td>'+temp.element+'</td><td>'+temp.score+'</td></tr>';
+                                html += '<div class="col-md-9 col-sm-9">'+temp.element+'</div><div class="col-md-3 col-sm-3">'+temp.score+'</div>';
                             } else {
-                                html += '<tr class="color-bg-f5"><td>'+temp.element+'</td><td>'+temp.score+'</td></tr>';
+                                html += '<div class="col-md-9 col-sm-9 color-bg-f5">'+temp.element+'</div><div class="col-md-3 col-sm-3">'+temp.score+'</div>';
                             }
                         });
-                        html += '               </tbody>' +
-                            '           </table>' +
-                            '       </div>' +
-                            '   </div>';
+                        html += '       </div></div></div>';
                     } else if ("hash" == type) {
                         html += '   <div class="row" style="margin-top: 10px">' +
-                            '       <div class="col-md-12 col-sm-12">' +
-                            '           <table style="width: 100%;"><thead><tr><td>Key</td><td>Value</td></tr></thead>' +
-                            '               <tbody>';
+                            '       <div class="col-md-12 col-sm-12"><div class="kv-data-center-div">' +
+                            '           <div class="col-md-4 col-sm-4">Key</div><div class="col-md-8 col-sm-8">Value</div>';
                         $.each(res.data.data,function(i,temp){
                             var cls = "";
                             if (i%2 !=0) {
-                                cls = 'class="color-bg-f5"';
+                                cls = 'color-bg-f5';
                             }
-                            html += '<tr '+cls+'>';
                             for (var key in temp) {
-                                html += '<td>'+key+'</td>';
-                                html += '<td>'+temp[key]+'</td>';
+                                html += '<div class="col-md-4 col-sm-4 kv-data-row '+cls+'">'+key+'</div><div class="col-md-8 col-sm-8 kv-data-row '+cls+'">'+temp[key]+'</div>';
                             }
-                            html += '</tr>';
-
                         });
-                        html += '               </tbody>' +
-                            '           </table>' +
-                            '       </div>' +
+                        html += '       </div></div>' +
                             '   </div>';
                     } else {
 
