@@ -232,7 +232,7 @@ public class RedisDesktopManagerController {
             }
             result = redisDesktopManagerService.addNewKey(csId,dbIndex,key,type,value,ttl);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e.getMessage());
         }
         return result;
     }

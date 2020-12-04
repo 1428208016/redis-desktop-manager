@@ -1,5 +1,6 @@
 package com.lingzhen.myproject.lifefolder.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.lingzhen.myproject.common.util.DateUtil;
 import com.lingzhen.myproject.lifefolder.mapper.RedisDesktopManagerMapper;
 import com.lingzhen.myproject.lifefolder.pojo.Result;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerService {
@@ -221,15 +219,21 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         jedis.select(dbIndex);
 
         if ("string".equals(type)) {
-            String replyCode = jedis.set(key,value.toString());
+            jedis.set(key,value.toString());
         } else if ("hash".equals(type)) {
-
+            Map<String, String> data = JSON.parseObject(value.toString(),Map.class);
+            jedis.hset(key,data);
         } else if ("list".equals(type)) {
-
+            List<String> data = JSON.parseArray(value.toString(),String.class);
+            String[] strArr = new String[data.size()];
+            jedis.rpush(key,data.toArray(strArr));
         } else if ("set".equals(type)) {
-
+            List<String> data = JSON.parseArray(value.toString(),String.class);
+            String[] strArr = new String[data.size()];
+            jedis.sadd(key,data.toArray(strArr));
         } else if ("zset".equals(type)) {
-
+            Map<String, Double> data = JSON.parseObject(value.toString(),Map.class);
+            jedis.zadd(key,data);
         } else {
 
         }

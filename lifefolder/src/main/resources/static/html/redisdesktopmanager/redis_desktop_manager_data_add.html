@@ -62,10 +62,10 @@
             <div class="width_bfb_50">
                 Type：<select name="type" style="width: 100%;">
                     <option value="string">string</option>
-                    <option value="hash">hash</option>
                     <option value="list">list</option>
                     <option value="set">set</option>
                     <option value="zset">zset</option>
+                    <option value="hash">hash</option>
                 </select>
             </div>
             <div class="width_bfb_50">
@@ -181,6 +181,45 @@
     // 保存
     function save(){
         loading();
+
+        var type = $("[name=type]").val();
+        var value = "";
+        if ("string" == type) {
+            value = $("[name=value]").val();
+        } else if ("list" == type) {
+            var arr = new Array();
+            $("#dataTab tbody tr").each(function(i,temp){
+                arr.push($(temp).find("td:eq(1)").html());
+            });
+            value = JSON.stringify(arr);
+        } else if ("set" == type) {
+            var arr = new Array();
+            $("#dataTab tbody tr").each(function(i,temp){
+                arr.push($(temp).find("td:eq(1)").html());
+            });
+            value = JSON.stringify(arr);
+        } else if ("zset" == type) {
+            var arr = new Array();
+            $("#dataTab tbody tr").each(function(i,temp){
+                var data = {
+                    value:$(temp).find("td:eq(1)").html(),
+                    score:$(temp).find("td:eq(2)").html()
+                }
+                arr.push(data);
+            });
+            value = JSON.stringify(arr);
+        } else if ("hash" == type) {
+            var arr = new Array();
+            $("#dataTab tbody tr").each(function(i,temp){
+                debugger;
+                var data = {
+                    hashKey:$(temp).find("td:eq(1)").html(),
+                    value:$(temp).find("td:eq(2)").html()
+                }
+                arr.push(data);
+            });
+            value = JSON.stringify(arr);
+        }
         $.ajax({
             url:"../../redisDesktopManager/addNewKey?tm="+ new Date().getTime(),
             type:"POST",
@@ -188,8 +227,8 @@
                 csId:$("#csId").val(),
                 dbIndex:$("#dbIndex").val(),
                 key:$("[name=key]").val(),
-                type:$("[name=type]").val(),
-                value:$("[name=value]").val(),
+                type:type,
+                value:value,
                 ttl:$("[name=ttl]").val(),
             },
             dataType:"JSON",
