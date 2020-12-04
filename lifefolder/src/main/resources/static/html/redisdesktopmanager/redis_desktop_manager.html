@@ -49,6 +49,7 @@
             border-bottom: 1px solid #f6f6fa;
             padding:5px;
             cursor:pointer;
+            /* 一行显示，多余省略 */
             text-overflow:ellipsis;
             white-space:nowrap;
             overflow: hidden;
@@ -71,9 +72,12 @@
         }
         .kv-data-row {
             padding:5px;
+            /* 自动换行 */
             word-wrap: break-word;
             word-break: normal;
         }
+        .float-r{float: right;}
+        .float-l{float: left;}
 
     </style>
 </head>
@@ -317,9 +321,12 @@
                     $("#keyValueDiv").html("");
                     var html = '<div class="row">' +
                         '       <div class="col-md-12 col-sm-12">' +
-                        '           <span class="fontWeight900">'+type.toUpperCase()+'：</span>' +
-                        '           <input type="text" class="" id="kv-key" style="width: 50%"  >' +
-                        '           <span class="fontWeight900">TTL：</span><input type="text" id="kv-ttl" style="width: 200px;" >' +
+                        '<table><tbody><tr>' +
+                        '<td class="fontWeight900">'+type.toUpperCase()+'：</td>' +
+                        '<td style="width: 100%;"><input type="text" class="float-r" id="kv-key" style="width: 100%;" ></td>' +
+                        '<td class="fontWeight900">TTL：</td>' +
+                        '<td><input type="text" id="kv-ttl" class="float-r" style="width: 100px;" ></td>' +
+                        '</tr></tbody></table>' +
                         '       </div>' +
                         '   </div>';
                     if ("string" == type) {
