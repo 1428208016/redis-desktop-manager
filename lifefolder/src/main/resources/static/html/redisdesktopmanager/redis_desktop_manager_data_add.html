@@ -180,8 +180,6 @@
     });
     // 保存
     function save(){
-        loading();
-
         var type = $("[name=type]").val();
         var value = "";
         if ("string" == type) {
@@ -199,27 +197,35 @@
             });
             value = JSON.stringify(arr);
         } else if ("zset" == type) {
-            var arr = new Array();
+            var data = {};
             $("#dataTab tbody tr").each(function(i,temp){
-                var data = {
-                    value:$(temp).find("td:eq(1)").html(),
-                    score:$(temp).find("td:eq(2)").html()
+                var value = $(temp).find("td:eq(1)").html();
+                if (!strNotNull(value)) {
+                    return true;
                 }
-                arr.push(data);
+                var score = $(temp).find("td:eq(2)").html();
+                if (!strNotNull(score)) {
+                    score = 0;
+                }
+                data[value] = score;
             });
-            value = JSON.stringify(arr);
+            if (data.length <= 0) {
+                message.warning("请至少添加一条数据！")
+                return ;
+            }
+            value = JSON.stringify(data);
         } else if ("hash" == type) {
-            var arr = new Array();
+            var data = {};
             $("#dataTab tbody tr").each(function(i,temp){
-                debugger;
-                var data = {
-                    hashKey:$(temp).find("td:eq(1)").html(),
-                    value:$(temp).find("td:eq(2)").html()
+                var key = $(temp).find("td:eq(1)").html();
+                var value = $(temp).find("td:eq(2)").html();
+                if (strNotNull(key) || strNotNull(value)) {
+                    data[key] = value;
                 }
-                arr.push(data);
             });
-            value = JSON.stringify(arr);
+            value = JSON.stringify(data);
         }
+        loading();
         $.ajax({
             url:"../../redisDesktopManager/addNewKey?tm="+ new Date().getTime(),
             type:"POST",

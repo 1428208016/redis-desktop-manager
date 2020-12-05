@@ -218,24 +218,43 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         // 选择数据库
         jedis.select(dbIndex);
 
+        if (jedis.exists(key)) {
+            return result.setErrorReturn("key已存在！");
+        }
+
         if ("string".equals(type)) {
             jedis.set(key,value.toString());
-        } else if ("hash".equals(type)) {
-            Map<String, String> data = JSON.parseObject(value.toString(),Map.class);
-            jedis.hset(key,data);
         } else if ("list".equals(type)) {
             List<String> data = JSON.parseArray(value.toString(),String.class);
+            if (data.size() <= 0) {
+                return result.setErrorReturn("请至少添加一行数据");
+            }
             String[] strArr = new String[data.size()];
             jedis.rpush(key,data.toArray(strArr));
         } else if ("set".equals(type)) {
             List<String> data = JSON.parseArray(value.toString(),String.class);
+            if (data.size() <= 0) {
+                return result.setErrorReturn("请至少添加一行数据");
+            }
             String[] strArr = new String[data.size()];
             jedis.sadd(key,data.toArray(strArr));
         } else if ("zset".equals(type)) {
-            Map<String, Double> data = JSON.parseObject(value.toString(),Map.class);
-            jedis.zadd(key,data);
-        } else {
-
+            Map<String, String> data = JSON.parseObject(value.toString(),Map.class);
+            if (data.size() <= 0) {
+                return result.setErrorReturn("请至少添加一行数据");
+            }
+            Map<String, Double> newData = new HashMap<>();
+            Set<String> keySet = data.keySet();
+            for (String _key : keySet) {
+                newData.put(_key,Double.valueOf(data.get(_key)));
+            }
+            jedis.zadd(key,newData);
+        } else if ("hash".equals(type)) {
+            Map<String, String> data = JSON.parseObject(value.toString(),Map.class);
+            if (data.size() <= 0) {
+                return result.setErrorReturn("请至少添加一行数据");
+            }
+            jedis.hset(key,data);
         }
         // 过期时间
         if (ttl != -1) {
