@@ -53,7 +53,42 @@
                             <div class="col-md-12 col-sm-12" id="keyDiv"></div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6" id="keyValueDiv"></div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fontWeight900">TYPE：</td>
+                                            <td style="width: 100%;padding-right: 5px;">
+                                                <input type="text" class="float-r" id="kv-key" style="width: 100%;" readonly >
+                                            </td>
+                                            <td class="fontWeight900">TTL：</td>
+                                            <td><input type="text" id="kv-ttl" class="float-r" style="width: 100px;" readonly >
+                                                <input type="hidden" id="kv-type"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="" id="kv-dataDiv">
+                                    <textarea id="kv-value" style="width: 100%;min-height: 470px;resize:none;border: none;" ></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 10px; text-align: right;">
+                            <div class="col-md-12 col-sm-12">
+<!--                                <button class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">头部新增</button>-->
+<!--                                <button class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">尾部新增</button>-->
+<!--                                <button class="btn btn-default float-l" onclick="loadKeyValueChildren(\''+res.data.key+'\')">删除</button>-->
+                                <button class="btn btn-default" onclick="loadKeyValueChildren()">刷新</button>
+                                <button class="btn btn-success" onclick="editKey()">保存</button>
+                            </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -230,7 +265,7 @@
         $("#key").val("*");
         scan();
         // 删除keyValueDiv
-        $("#keyValueDiv").html("");
+        $("#kv-dataDiv").html("");
     }
 
     function scan(){
@@ -278,6 +313,12 @@
     }
 
     function loadKeyValueChildren(key) {
+        if (!strNotNull(key)) {
+            key = $("#kv-key").val();
+        }
+        if (!strNotNull(key)) {
+            return ;
+        }
         loading();
         $.ajax({
             url:"../../redisDesktopManager/loadKeyValue?tm="+ new Date().getTime(),
@@ -290,30 +331,15 @@
             dataType:"JSON",
             success:function (res) {
                 if (res.code == 200) {
+                    $("#kv-dataDiv").html("");
+                    var html = '';
                     var type = res.data.type;
-                    $("#keyValueDiv").html("");
-                    var html = '<div class="row">' +
-                        '       <div class="col-md-12 col-sm-12">' +
-                        '<table><tbody><tr>' +
-                        '<td class="fontWeight900">'+type.toUpperCase()+'：</td>' +
-                        '<td style="width: 100%;padding-right: 5px;"><input type="text" class="float-r" id="kv-key" style="width: 100%;" readonly ></td>' +
-                        '<td class="fontWeight900">TTL：</td>' +
-                        '<td><input type="text" id="kv-ttl" class="float-r" style="width: 100px;" readonly > <input type="hidden" id="kv-type"></td>' +
-                        '</tr></tbody></table>' +
-                        '       </div>' +
-                        '   </div>';
                     if ("string" == type) {
-                        html += '<div class="row" style="margin-top: 10px">' +
-                            '       <div class="col-md-12 col-sm-12">' +
-                            '           <textarea id="kv-value" style="width: 100%;min-height: 360px;resize:none;" >'+res.data.data+'</textarea>' +
-                            '       </div>' +
-                            '   </div>';
+                        html = '<textarea id="kv-value" style="width: 100%;min-height: 470px;resize:none;border: none;" >'+res.data.data+'</textarea>';
                     } else if ("list" == type || "set" == type) {
-                        html += '<div class="row" style="margin-top: 10px;">' +
-                            '       <div class="col-md-12 col-sm-12">' +
-                            '           <div class="kv-data-center-div"><table class="width-full">' +
-                            '               <thead><tr><td style="width: 35px;"></td><td>值</td></tr></thead>' +
-                            '               <tbody>';
+                        html += '<table class="width-full">' +
+                            '       <thead><tr><td style="width: 35px;"></td><td>值</td></tr></thead>' +
+                            '       <tbody>';
                         $.each(res.data.data,function(i,temp){
                             if (i%2 ==0) {
                                 html += '<tr><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp+'</td></tr>';
@@ -321,45 +347,45 @@
                                 html += '<tr class="color-bg-f5 "><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp+'</td></tr>';
                             }
                         });
-                        html += '   </tbody></table></div></div></div>';
+                        html += '   </tbody></table>';
                     } else if ("zset" == type) {
-                        html += '<div class="row" style="margin-top: 10px">' +
-                            '       <div class="col-md-12 col-sm-12"> <div class="kv-data-center-div kv-data-row">' +
-                            '           <div class="col-md-9 col-sm-9">Value</div><div class="col-md-3 col-sm-3">Score</div>';
+                        html += '<table class="width-full">' +
+                            '       <thead><tr><td style="width: 35px;"></td><td>Value</td><td style="width: 150px;">Score</td></tr></thead>' +
+                            '       <tbody>';
                         $.each(res.data.data,function(i,temp){
                             if (i%2 ==0) {
-                                html += '<div class="col-md-9 col-sm-9">'+temp.element+'</div><div class="col-md-3 col-sm-3">'+temp.score+'</div>';
+                                html += '<tr><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp.element+'</td><td class="kv-data-tab-row">'+temp.score+'</td></tr>';
                             } else {
-                                html += '<div class="col-md-9 col-sm-9 color-bg-f5">'+temp.element+'</div><div class="col-md-3 col-sm-3">'+temp.score+'</div>';
+                                html += '<tr class="color-bg-f5 "><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp.element+'</td><td class="kv-data-tab-row">'+temp.score+'</td></tr>';
                             }
                         });
-                        html += '       </div></div></div>';
+                        html += '   </tbody></table>';
                     } else if ("hash" == type) {
-                        html += '   <div class="row" style="margin-top: 10px">' +
-                            '       <div class="col-md-12 col-sm-12"><div class="kv-data-center-div">' +
-                            '           <div class="col-md-4 col-sm-4">Key</div><div class="col-md-8 col-sm-8">Value</div>';
+                        html += '<table class="width-full">' +
+                            '       <thead><tr><td style="width: 35px;"></td><td style="width: 200px;">Key</td><td>Value</td></tr></thead>' +
+                            '       <tbody>';
                         $.each(res.data.data,function(i,temp){
                             var cls = "";
                             if (i%2 !=0) {
                                 cls = 'color-bg-f5';
                             }
                             for (var key in temp) {
-                                html += '<div class="col-md-4 col-sm-4 kv-data-row '+cls+'">'+key+'</div><div class="col-md-8 col-sm-8 kv-data-row '+cls+'">'+temp[key]+'</div>';
+                                html += '<tr class="'+cls+'"><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+key+'</td><td class="kv-data-tab-row">'+temp[key]+'</td></tr>';
                             }
                         });
-                        html += '       </div></div>' +
-                            '   </div>';
+                        html += '   </tbody></table>';
                     }
-                    html += '   <div class="row" style="margin-top: 10px; text-align: right;">' +
-                        '       <div class="col-md-12 col-sm-12">' +
-                        '           <button id="" class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">头部新增</button>' +
-                        '           <button id="" class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">尾部新增</button>' +
-                        '           <button id="" class="btn btn-default float-l" onclick="loadKeyValueChildren(\''+res.data.key+'\')">删除</button>' +
-                        '           <button id="kv-save" class="btn btn-default" onclick="loadKeyValueChildren(\''+res.data.key+'\')">刷新</button>' +
-                        '           <button id="kv-save" class="btn btn-success" onclick="editKey()">保存</button>' +
-                        '       </div>' +
-                        '   </div>';
-                    $("#keyValueDiv").html(html);
+                    // html += '   <div class="row" style="margin-top: 10px; text-align: right;">' +
+                    //     '       <div class="col-md-12 col-sm-12">' +
+                    //     '           <button id="" class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">头部新增</button>' +
+                    //     '           <button id="" class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">尾部新增</button>' +
+                    //     '           <button id="" class="btn btn-default float-l" onclick="loadKeyValueChildren(\''+res.data.key+'\')">删除</button>' +
+                    //     '           <button id="kv-save" class="btn btn-default" onclick="loadKeyValueChildren(\''+res.data.key+'\')">刷新</button>' +
+                    //     '           <button id="kv-save" class="btn btn-success" onclick="editKey()">保存</button>' +
+                    //     '       </div>' +
+                     html +=   '   </div>';
+                    $("#kv-dataDiv").html(html);
+
                     $("#kv-key").val(res.data.key);
                     $("#kv-type").val(type);
                     $("#kv-ttl").val(res.data.ttl);
@@ -419,7 +445,7 @@
                 success:function (res) {
                     if (res.code == 200) {
                         message.success();
-                        $("#keyValueDiv").html("");
+                        $("#kv-dataDiv").html("");
                         scan();
                     }
                 },error:function (res) {

@@ -53,10 +53,11 @@
     font-weight: 900;
 }
 
-.kv-data-center-div {
-    float: left;
-    width: 100%;
-    min-height: 360px;
+#kv-dataDiv {
+    min-height: 480px;
+    max-height: 480px;
+    overflow-y: auto;
+    overflow-x: hidden;
     border:1px solid black;
 }
 .kv-data-row {
