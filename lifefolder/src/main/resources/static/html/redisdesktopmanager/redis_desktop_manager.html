@@ -274,6 +274,11 @@
         loading();
         $(".color-bg-e8f2ff").removeClass("color-bg-e8f2ff");
         $(_this).addClass("color-bg-e8f2ff");
+        loadKeyValueChildren(key);
+    }
+
+    function loadKeyValueChildren(key) {
+        loading();
         $.ajax({
             url:"../../redisDesktopManager/loadKeyValue?tm="+ new Date().getTime(),
             type:"POST",
@@ -291,9 +296,9 @@
                         '       <div class="col-md-12 col-sm-12">' +
                         '<table><tbody><tr>' +
                         '<td class="fontWeight900">'+type.toUpperCase()+'：</td>' +
-                        '<td style="width: 100%;padding-right: 5px;"><input type="text" class="float-r" id="kv-key" style="width: 100%;" ></td>' +
+                        '<td style="width: 100%;padding-right: 5px;"><input type="text" class="float-r" id="kv-key" style="width: 100%;" readonly ></td>' +
                         '<td class="fontWeight900">TTL：</td>' +
-                        '<td><input type="text" id="kv-ttl" class="float-r" style="width: 100px;" ></td>' +
+                        '<td><input type="text" id="kv-ttl" class="float-r" style="width: 100px;" readonly > <input type="hidden" id="kv-type"></td>' +
                         '</tr></tbody></table>' +
                         '       </div>' +
                         '   </div>';
@@ -306,15 +311,17 @@
                     } else if ("list" == type || "set" == type) {
                         html += '<div class="row" style="margin-top: 10px;">' +
                             '       <div class="col-md-12 col-sm-12">' +
-                            '           <div class="kv-data-center-div kv-data-row">';
+                            '           <div class="kv-data-center-div"><table class="width-full">' +
+                            '               <thead><tr><td style="width: 35px;"></td><td>值</td></tr></thead>' +
+                            '               <tbody>';
                         $.each(res.data.data,function(i,temp){
                             if (i%2 ==0) {
-                                html += ('<div class="col-md-12 col-sm-12">'+temp+'</div>');
+                                html += '<tr><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp+'</td></tr>';
                             } else {
-                                html += ('<div class="col-md-12 col-sm-12 color-bg-f5">'+temp+'</div>');
+                                html += '<tr class="color-bg-f5 "><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp+'</td></tr>';
                             }
                         });
-                        html += '   </div></div></div>';
+                        html += '   </tbody></table></div></div></div>';
                     } else if ("zset" == type) {
                         html += '<div class="row" style="margin-top: 10px">' +
                             '       <div class="col-md-12 col-sm-12"> <div class="kv-data-center-div kv-data-row">' +
@@ -342,18 +349,20 @@
                         });
                         html += '       </div></div>' +
                             '   </div>';
-                    } else {
-
                     }
                     html += '   <div class="row" style="margin-top: 10px; text-align: right;">' +
                         '       <div class="col-md-12 col-sm-12">' +
-                        '           <button id="kv-save" class="btn btn-primary">保存</button>' +
+                        '           <button id="" class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">头部新增</button>' +
+                        '           <button id="" class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">尾部新增</button>' +
+                        '           <button id="" class="btn btn-default float-l" onclick="loadKeyValueChildren(\''+res.data.key+'\')">删除</button>' +
+                        '           <button id="kv-save" class="btn btn-default" onclick="loadKeyValueChildren(\''+res.data.key+'\')">刷新</button>' +
+                        '           <button id="kv-save" class="btn btn-success" onclick="editKey()">保存</button>' +
                         '       </div>' +
                         '   </div>';
                     $("#keyValueDiv").html(html);
                     $("#kv-key").val(res.data.key);
+                    $("#kv-type").val(type);
                     $("#kv-ttl").val(res.data.ttl);
-
                 }
             },error:function (res) {
                 message.error();
@@ -421,7 +430,52 @@
                 }
             });
         });
+    }
+    // 编剧key
+    function editKey(){
+        var key = $("#kv-key").val();
+        var type = $("#kv-type").val();
+        var ttl = $("#kv-ttl").val();
+        var value = "";
+        if ("string" == type) {
+            value = $("#kv-value").val();
+        } else if ("list" == type) {
 
+        } else if ("set" == type) {
+
+        } else if ("zset" == type) {
+
+        } else if ("hash" == type) {
+
+        }
+        var _i = layer.confirm('确认修改吗？', {
+            btn: ['确认', '取消']
+        }, function(index, layero){
+            loading();
+            $.ajax({
+                url:"../../redisDesktopManager/editKey?tm="+ new Date().getTime(),
+                type:"POST",
+                data:{
+                    csId:currentSelectConnection,
+                    dbIndex:currentDBIndex,
+                    key:key,
+                    type:type,
+                    ttl:ttl,
+                    value:value
+                },
+                dataType:"JSON",
+                success:function (res) {
+                    if (res.code == 200) {
+                        message.success();
+                    }
+                },error:function (res) {
+                    message.error();
+                },complete(XHR, TS) {
+                    loadingClose();
+                    layer.close(_i);
+                }
+            });
+        });
     }
 
 

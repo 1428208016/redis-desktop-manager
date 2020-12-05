@@ -65,5 +65,15 @@
     word-wrap: break-word;
     word-break: normal;
 }
-.float-r{float: right;}
-.float-l{float: left;}
+.kv-data-tab-row {
+    padding:5px;
+    /* 自动换行 */
+    word-wrap: break-word;
+    word-break: break-all;
+}
+.float-r {float: right;}
+.float-l {float: left;}
+.text-l {text-align: left;}
+.text-c {text-align: center;}
+.text-r {text-align: right;}
+.width-full {width:100%;}

@@ -87,4 +87,16 @@ public interface RedisDesktopManagerService {
      */
     Result deleteKey(String csId, Integer dbIndex, String key);
 
+    /**
+     * 编辑
+     * @param csId
+     * @param dbIndex
+     * @param key
+     * @param type
+     * @param value
+     * @param ttl
+     * @return
+     */
+    Result editKey(String csId, Integer dbIndex, String key, String type, Object value, Long ttl);
+
 }
