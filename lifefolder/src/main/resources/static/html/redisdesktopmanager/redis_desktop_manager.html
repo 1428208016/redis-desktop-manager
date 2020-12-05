@@ -6,7 +6,7 @@
     <!-- Basic -->
     <link rel="stylesheet" href="../../plugin/bootstrap/3.3.7/css/bootstrap.css">
     <link rel="stylesheet" href="../../plugin/toastr/toastr.min.css">
-    <link rel="stylesheet" href="../../css/redis_desktop_manager.css">
+    <link rel="stylesheet" href="../../css/redisdesktopmanager/redis_desktop_manager.css">
 
 
     <script src="../../js/jquery-3.5.1.js"></script>
@@ -14,6 +14,7 @@
     <script src="../../plugin/toastr/toastr.min.js"></script>
     <script src="../../plugin/layer/3.1.1/layer.js"></script>
     <script src="../../js/common.js"></script>
+    <script src="../../js/redisdesktopmanager/redis_desktop_manager.js"></script>
 
 </head>
 <body>
@@ -59,7 +60,7 @@
                                 <table>
                                     <tbody>
                                         <tr>
-                                            <td class="fontWeight900">TYPE：</td>
+                                            <td class="fontWeight900" id="kv-typeTD">TYPE：</td>
                                             <td style="width: 100%;padding-right: 5px;">
                                                 <input type="text" class="float-r" id="kv-key" style="width: 100%;" readonly >
                                             </td>
@@ -82,9 +83,9 @@
 
                         <div class="row" style="margin-top: 10px; text-align: right;">
                             <div class="col-md-12 col-sm-12">
-<!--                                <button class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">头部新增</button>-->
-<!--                                <button class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">尾部新增</button>-->
-<!--                                <button class="btn btn-default float-l" onclick="loadKeyValueChildren(\''+res.data.key+'\')">删除</button>-->
+                                <button class="btn btn-primary float-l editorBtn listBtn" style="margin-right: 5px;display: none;" onclick="kvTableAddRowByList('left')">头部新增</button>
+                                <button class="btn btn-primary float-l editorBtn listBtn" style="margin-right: 5px;display: none;" onclick="kvTableAddRowByList('right')">尾部新增</button>
+                                <button class="btn btn-default float-l editorBtn listBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
                                 <button class="btn btn-default" onclick="loadKeyValueChildren()">刷新</button>
                                 <button class="btn btn-success" onclick="editKey()">保存</button>
                             </div>
@@ -331,63 +332,48 @@
             dataType:"JSON",
             success:function (res) {
                 if (res.code == 200) {
+                    // 前置操作
+                    $(".editorBtn").hide();
                     $("#kv-dataDiv").html("");
+                    editArr = new Array();
+
                     var html = '';
                     var type = res.data.type;
                     if ("string" == type) {
                         html = '<textarea id="kv-value" style="width: 100%;min-height: 470px;resize:none;border: none;" >'+res.data.data+'</textarea>';
                     } else if ("list" == type || "set" == type) {
-                        html += '<table class="width-full">' +
+                        html += '<table class="width-full kv-data-tab" border="1">' +
                             '       <thead><tr><td style="width: 35px;"></td><td>值</td></tr></thead>' +
                             '       <tbody>';
                         $.each(res.data.data,function(i,temp){
-                            if (i%2 ==0) {
-                                html += '<tr><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp+'</td></tr>';
-                            } else {
-                                html += '<tr class="color-bg-f5 "><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp+'</td></tr>';
-                            }
+                            html += '<tr data-value="'+temp+'" ><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td><td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+temp+'</td></tr>';
                         });
                         html += '   </tbody></table>';
+                        $(".listBtn").show();
                     } else if ("zset" == type) {
-                        html += '<table class="width-full">' +
+                        html += '<table class="width-full kv-data-tab"  border="1">' +
                             '       <thead><tr><td style="width: 35px;"></td><td>Value</td><td style="width: 150px;">Score</td></tr></thead>' +
                             '       <tbody>';
                         $.each(res.data.data,function(i,temp){
-                            if (i%2 ==0) {
-                                html += '<tr><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp.element+'</td><td class="kv-data-tab-row">'+temp.score+'</td></tr>';
-                            } else {
-                                html += '<tr class="color-bg-f5 "><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp.element+'</td><td class="kv-data-tab-row">'+temp.score+'</td></tr>';
-                            }
+                            html += '<tr><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp.element+'</td><td class="kv-data-tab-row">'+temp.score+'</td></tr>';
                         });
                         html += '   </tbody></table>';
                     } else if ("hash" == type) {
-                        html += '<table class="width-full">' +
+                        html += '<table class="width-full kv-data-tab" border="1">' +
                             '       <thead><tr><td style="width: 35px;"></td><td style="width: 200px;">Key</td><td>Value</td></tr></thead>' +
                             '       <tbody>';
                         $.each(res.data.data,function(i,temp){
-                            var cls = "";
-                            if (i%2 !=0) {
-                                cls = 'color-bg-f5';
-                            }
                             for (var key in temp) {
-                                html += '<tr class="'+cls+'"><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+key+'</td><td class="kv-data-tab-row">'+temp[key]+'</td></tr>';
+                                html += '<tr><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+key+'</td><td class="kv-data-tab-row">'+temp[key]+'</td></tr>';
                             }
                         });
                         html += '   </tbody></table>';
                     }
-                    // html += '   <div class="row" style="margin-top: 10px; text-align: right;">' +
-                    //     '       <div class="col-md-12 col-sm-12">' +
-                    //     '           <button id="" class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">头部新增</button>' +
-                    //     '           <button id="" class="btn btn-primary float-l" style="margin-right: 5px;" onclick="loadKeyValueChildren(\''+res.data.key+'\')">尾部新增</button>' +
-                    //     '           <button id="" class="btn btn-default float-l" onclick="loadKeyValueChildren(\''+res.data.key+'\')">删除</button>' +
-                    //     '           <button id="kv-save" class="btn btn-default" onclick="loadKeyValueChildren(\''+res.data.key+'\')">刷新</button>' +
-                    //     '           <button id="kv-save" class="btn btn-success" onclick="editKey()">保存</button>' +
-                    //     '       </div>' +
-                     html +=   '   </div>';
                     $("#kv-dataDiv").html(html);
 
                     $("#kv-key").val(res.data.key);
                     $("#kv-type").val(type);
+                    $("#kv-typeTD").html(type.toUpperCase()+"：");
                     $("#kv-ttl").val(res.data.ttl);
                 }
             },error:function (res) {
@@ -457,7 +443,9 @@
             });
         });
     }
-    // 编剧key
+    // 编辑操作对象集合
+    var editArr;
+    // 编辑KEY
     function editKey(){
         var key = $("#kv-key").val();
         var type = $("#kv-type").val();
@@ -466,7 +454,37 @@
         if ("string" == type) {
             value = $("#kv-value").val();
         } else if ("list" == type) {
-
+            // editArr
+            $("#kv-dataDiv table tbody tr").each(function (i,temp){
+                var _type = $(temp).data("type");
+                if (!strNotNull(_type)) {
+                    // 原来的值
+                    var _oldValue = $(temp).data("value");
+                    var _value = $(temp).find("td:eq(1)").html();
+                    // 是否修改过
+                    console.info(_oldValue);
+                    console.info(value);
+                    console.info(_oldValue != _value);
+                    if (_oldValue != _value) {
+                        var editData = {
+                            type:"set",
+                            value:_value,
+                            index:i
+                        }
+                        editArr.push(editData);
+                    }
+                } else {
+                    // 新值
+                    var editData = {
+                        type:_type,
+                        value:_value
+                    }
+                    editArr.push(editData);
+                }
+            });
+            console.info(editArr);
+            return ;
+            value = JSON.stringify(arr);
         } else if ("set" == type) {
 
         } else if ("zset" == type) {
@@ -493,6 +511,7 @@
                 success:function (res) {
                     if (res.code == 200) {
                         message.success();
+                        loadKeyValueChildren();
                     }
                 },error:function (res) {
                     message.error();
@@ -503,6 +522,88 @@
             });
         });
     }
+    // 添加行 LIST
+    function kvTableAddRowByList(type){
+        var html = '<tr data-type="'+type+'">' +
+            '           <td class="text-c"></td>' +
+            '           <td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)"></td>' +
+            '       </tr>';
+        if ("left" == type) {
+            $("#kv-dataDiv table tbody").prepend(html);
+        } else {
+            $("#kv-dataDiv table tbody").append(html);
+        }
+        $("#kv-dataDiv table tbody tr").each(function (i,temp){
+            $(this).children("td:eq(0)").html(i+1);
+        });
+    }
+    // 删除行
+    function kvTableRemoveRow(){
+        var obj = null;
+        if ($("#kv-dataDiv table").find(".color-bg-ef").length > 0) {
+            obj = $("#kv-dataDiv table").find(".color-bg-ef")[0];
+        } else if ($("#kv-dataDiv table tbody tr:last").length > 0) {
+            obj = $("#kv-dataDiv table tbody tr:last");
+        }
+
+        // editArr
+        if (obj != null) {
+            var type = $(obj).data("type");
+            if (!strNotNull(type)) {
+                // 原来的值
+                var editData = {
+                    type:"rem",
+                    data:$(obj).data("value")
+                }
+                editArr.push(editData);
+            }
+            // remove
+            $(obj).remove();
+        }
+        // re index
+        $("#kv-dataDiv table tbody tr").each(function (i,temp){
+            $(this).children("td:eq(0)").html(i+1);
+        });
+    }
+    // 选择行 TR
+    function selectKVTabRow(_this) {
+        $("#kv-dataDiv").find(".color-bg-ef").removeClass("color-bg-ef");
+        $(_this).parent().addClass("color-bg-ef");
+    }
+
+    var transformIndex = 0;
+    function transformInput(type,_this){
+        // 选择该行
+        selectKVTabRow(_this);
+
+        // 验证
+        if ($(_this).find(type).length > 0) {
+            return ;
+        }
+
+        transformIndex++;
+        var uuid = "transformIndex_"+transformIndex;
+
+        var val = $(_this).html();
+        var html = "";
+        if ("input" == type) {
+            html = '<input type="text" id="'+uuid+'">';
+        } else if ("textarea" == type) {
+            html = '<textarea class="table-textarea" id="'+uuid+'" style="height:'+$(_this).height()+'px"></textarea>';
+        } else if ("number" == type) {
+            html = '<input type="number" id="'+uuid+'"></input>';
+        }
+        $(_this).html(html);
+        $("#"+uuid).val(val);
+        $("#"+uuid).focus()
+        $("#"+uuid).on("blur",function (){
+            var val = $(this).val();
+            $(this).parent().html(val);
+        });
+
+    }
+
+
 
 
 </script>

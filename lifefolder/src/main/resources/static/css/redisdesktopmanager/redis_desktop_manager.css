@@ -28,6 +28,9 @@
 .color-bg-fa{
     background-color: #fafafa;
 }
+.color-bg-ef{
+    background-color: #efefef;
+}
 .color-bg-f5{
     background-color: #f5f5f5;
 }
@@ -58,7 +61,17 @@
     max-height: 480px;
     overflow-y: auto;
     overflow-x: hidden;
-    border:1px solid black;
+    border:1px solid #EBEBEB;
+}
+
+.kv-data-tab {
+    border: 1px solid #EBEBEB;
+}
+.kv-data-tab thead tr {
+    background-color: #FAFAFA;
+}
+.kv-data-tab td {
+    padding: 5px;
 }
 .kv-data-row {
     padding:5px;
@@ -78,3 +91,9 @@
 .text-c {text-align: center;}
 .text-r {text-align: right;}
 .width-full {width:100%;}
+
+.table-textarea{
+    width: 100%;
+    min-height: 70px;
+    resize:none;
+}
