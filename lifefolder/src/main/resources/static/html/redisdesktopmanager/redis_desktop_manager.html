@@ -85,10 +85,9 @@
                             <div class="col-md-12 col-sm-12">
                                 <button class="btn btn-primary float-l editorBtn listBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByList('left')">头部新增</button>
                                 <button class="btn btn-primary float-l editorBtn listBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByList('right')">尾部新增</button>
-
                                 <button class="btn btn-primary float-l editorBtn setBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByList('right')">新增</button>
-
                                 <button class="btn btn-primary float-l editorBtn zsetBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByZset()">新增</button>
+                                <button class="btn btn-primary float-l editorBtn hashBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByHash()">新增</button>
 
                                 <button class="btn btn-default float-l editorBtn listBtn setBtn zsetBtn hashBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
 
@@ -483,7 +482,7 @@
                     var _value = $(temp).find("td:eq(1)").html();
                     if (!strNotNull(_type)) {
                         // 原来的值
-                        var _oldValue = $(temp).data("old_value");
+                        var _oldValue = $(temp).find("td:eq(1)").data("old_value");
                         // 是否修改过
                         if (undefined != _oldValue && _oldValue != _value) {
                             var editData = {
@@ -515,9 +514,11 @@
                     }
                     if (!strNotNull(_type)) {
                         // 原来的值
-                        var _oldValue = $(temp).data("old_value");
+                        var _oldValue = $(temp).find("td:eq(1)").data("old_value") || _value;
+                        var _oldScore = $(temp).find("td:eq(2)").data("old_value");
                         // 是否修改过
-                        if (undefined != _oldValue && _oldValue != _value) {
+                        if ((undefined != _oldValue && _oldValue != _value) ||
+                            (undefined != _oldScore && _oldScore != _score)) {
                             var editData = {
                                 type:"set",
                                 oldValue:_oldValue,
@@ -544,17 +545,19 @@
                 $("#kv-dataDiv table tbody tr").each(function (i,temp){
                     var _type = $(temp).data("type");
                     var _value = $(temp).find("td:eq(1)").html();
-                    var fieldValue = $(temp).find("td:eq(2)").html();
+                    var _fieldValue = $(temp).find("td:eq(2)").html();
                     if (!strNotNull(_type)) {
                         // 原来的值
-                        var oldHashKey = $(temp).data("old_value");
+                        var oldHashKey = $(temp).find("td:eq(1)").data("old_value");
+                        var oldFieldValue = $(temp).find("td:eq(2)").data("old_value");
                         // 是否修改过
-                        if (undefined != _oldValue && _oldValue != _value) {
+                        if ((undefined != oldHashKey && oldHashKey != _value) ||
+                            (undefined != oldFieldValue && oldFieldValue != _fieldValue)) {
                             var editData = {
                                 type:"set",
                                 value:_value,
                                 oldHashKey:oldHashKey,
-                                fieldValue:fieldValue
+                                fieldValue:_fieldValue
                             }
                             editArr.push(editData);
                         }
@@ -563,7 +566,7 @@
                         var editData = {
                             type:_type,
                             value:_value,
-                            fieldValue:fieldValue
+                            fieldValue:_fieldValue
                         }
                         editArr.push(editData);
                     }
@@ -641,6 +644,20 @@
             $(this).children("td:eq(0)").html(i+1);
         });
     }
+    // 添加行 HASH
+    function kvTableAddRowByHash() {
+        var html = '<tr data-type="add">' +
+            '           <td class="text-c"></td>' +
+            '           <td onclick="transformInput(\'textarea\',this)"></td>' +
+            '           <td onclick="transformInput(\'textarea\',this)"></td>' +
+            '       </tr>';
+        $("#kv-dataDiv table tbody").prepend(html);
+        $("#kv-dataDiv table tbody tr").each(function (i,temp){
+            $(this).children("td:eq(0)").html(i+1);
+        });
+    }
+
+
     // 删除行
     function kvTableRemoveRow(){
         var obj = null;
@@ -686,7 +703,7 @@
         selectKVTabRow(_this);
 
         // 验证
-        if ($(_this).find(type).length > 0) {
+        if ($(_this).find("[labeltype="+type+"]").length > 0) {
             return ;
         }
 
@@ -696,18 +713,18 @@
 
         // 原值
         var val = $(_this).html();
-        var isInitData = $(_this).parent().data("is_init_data");
+        var isInitData = $(_this).data("is_init_data");
         if (!strNotNull(isInitData) || isInitData != "1") {
-            $(_this).parent().data("is_init_data","1");
-            $(_this).parent().data("old_value",val);
+            $(_this).data("is_init_data","1");
+            $(_this).data("old_value",val);
         }
 
         // HTML
         var html = "";
         if ("textarea" == type) {
-            html = '<textarea class="table-textarea" id="'+uuid+'" style="height:'+$(_this).height()+'px"></textarea>';
+            html = '<textarea labeltype="textarea" class="table-textarea" id="'+uuid+'" style="height:'+$(_this).height()+'px"></textarea>';
         } else if ("number" == type) {
-            html = '<input type="number" id="'+uuid+'"></input>';
+            html = '<input labeltype="number" type="number" id="'+uuid+'"></input>';
         }
         $(_this).html(html);
         $("#"+uuid).val(val);
