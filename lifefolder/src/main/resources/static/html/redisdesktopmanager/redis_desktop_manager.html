@@ -504,10 +504,15 @@
                     }
                 });
             } else if ("zset" == type) {
+                var bool = true;
                 $("#kv-dataDiv table tbody tr").each(function (i,temp){
                     var _type = $(temp).data("type");
                     var _value = $(temp).find("td:eq(1)").html();
                     var _score = $(temp).find("td:eq(2)").html();
+                    if (!strNotNull(_value) || !strNotNull(_score)) {
+                        bool = false;
+                        return false;
+                    }
                     if (!strNotNull(_type)) {
                         // 原来的值
                         var _oldValue = $(temp).data("old_value");
@@ -530,8 +535,11 @@
                         }
                         editArr.push(editData);
                     }
-
                 });
+                if (!bool) {
+                    message.warning("Value或Score不可为空！");
+                    return;
+                }
             } else if ("hash" == type) {
                 $("#kv-dataDiv table tbody tr").each(function (i,temp){
                     var _type = $(temp).data("type");
