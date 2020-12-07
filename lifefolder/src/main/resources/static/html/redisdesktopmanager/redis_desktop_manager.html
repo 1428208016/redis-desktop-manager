@@ -346,7 +346,7 @@
                             '       <thead><tr><td style="width: 35px;"></td><td>值</td></tr></thead>' +
                             '       <tbody>';
                         $.each(res.data.data,function(i,temp){
-                            html += '<tr data-value="'+temp+'" ><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td><td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+temp+'</td></tr>';
+                            html += '<tr><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td><td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+temp+'</td></tr>';
                         });
                         html += '   </tbody></table>';
                         $(".listBtn").show();
@@ -457,15 +457,12 @@
             // editArr
             $("#kv-dataDiv table tbody tr").each(function (i,temp){
                 var _type = $(temp).data("type");
+                var _value = $(temp).find("td:eq(1)").html();
                 if (!strNotNull(_type)) {
                     // 原来的值
-                    var _oldValue = $(temp).data("value");
-                    var _value = $(temp).find("td:eq(1)").html();
+                    var _oldValue = $(temp).data("old_value");
                     // 是否修改过
-                    console.info(_oldValue);
-                    console.info(value);
-                    console.info(_oldValue != _value);
-                    if (_oldValue != _value) {
+                    if (undefined != _oldValue && _oldValue != _value) {
                         var editData = {
                             type:"set",
                             value:_value,
@@ -482,9 +479,11 @@
                     editArr.push(editData);
                 }
             });
-            console.info(editArr);
-            return ;
-            value = JSON.stringify(arr);
+            if (editArr.length <= 0) {
+                message.warning("没有任何修改!");
+                return ;
+            }
+            value = JSON.stringify(editArr);
         } else if ("set" == type) {
 
         } else if ("zset" == type) {
@@ -548,14 +547,23 @@
 
         // editArr
         if (obj != null) {
-            var type = $(obj).data("type");
-            if (!strNotNull(type)) {
-                // 原来的值
-                var editData = {
-                    type:"rem",
-                    data:$(obj).data("value")
+            var kv_type = $("#kv-type").val();
+            // LIST
+            if ("list" == kv_type) {
+                var objType = $(obj).data("type");
+                if (!strNotNull(objType)) {
+                    var _index = $(obj).index();
+                    var _sum = $("#kv-dataDiv table tbody tr").length;
+                    // 原来的值
+                    var editData = {
+                        type:"rem",
+                        count:(_index > _sum / 2)?"-1":"1",
+                        value:$(obj).find("td:eq(1)").html()
+                    }
+                    editArr.push(editData);
                 }
-                editArr.push(editData);
+            } else {
+
             }
             // remove
             $(obj).remove();
@@ -581,10 +589,19 @@
             return ;
         }
 
+        // 唯一ID
         transformIndex++;
         var uuid = "transformIndex_"+transformIndex;
 
+        // 原值
         var val = $(_this).html();
+        var isInitData = $(_this).parent().data("is_init_data");
+        if (!strNotNull(isInitData) || isInitData != "1") {
+            $(_this).parent().data("is_init_data","1");
+            $(_this).parent().data("old_value",val);
+        }
+
+        // HTML
         var html = "";
         if ("input" == type) {
             html = '<input type="text" id="'+uuid+'">';
