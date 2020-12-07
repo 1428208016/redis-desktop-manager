@@ -83,12 +83,14 @@
 
                         <div class="row" style="margin-top: 10px; text-align: right;">
                             <div class="col-md-12 col-sm-12">
-                                <button class="btn btn-primary float-l editorBtn listBtn" style="margin-right: 5px;display: none;" onclick="kvTableAddRowByList('left')">头部新增</button>
-                                <button class="btn btn-primary float-l editorBtn listBtn" style="margin-right: 5px;display: none;" onclick="kvTableAddRowByList('right')">尾部新增</button>
-                                <button class="btn btn-default float-l editorBtn listBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
+                                <button class="btn btn-primary float-l editorBtn listBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByList('left')">头部新增</button>
+                                <button class="btn btn-primary float-l editorBtn listBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByList('right')">尾部新增</button>
 
-                                <button class="btn btn-primary float-l editorBtn setBtn" style="margin-right: 5px;display: none;" onclick="kvTableAddRowByList('right')">新增</button>
-                                <button class="btn btn-default float-l editorBtn setBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
+                                <button class="btn btn-primary float-l editorBtn setBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByList('right')">新增</button>
+
+                                <button class="btn btn-primary float-l editorBtn zsetBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByZset()">新增</button>
+
+                                <button class="btn btn-default float-l editorBtn listBtn setBtn zsetBtn hashBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
 
                                 <button class="btn btn-default" onclick="loadKeyValueChildren()">刷新</button>
                                 <button class="btn btn-success" onclick="editKey()">保存</button>
@@ -363,19 +365,25 @@
                             '       <thead><tr><td style="width: 35px;"></td><td>Value</td><td style="width: 150px;">Score</td></tr></thead>' +
                             '       <tbody>';
                         $.each(res.data.data,function(i,temp){
-                            html += '<tr><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+temp.element+'</td><td class="kv-data-tab-row">'+temp.score+'</td></tr>';
+                            html += '<tr><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td>' +
+                                '<td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+temp.element+'</td>' +
+                                '<td class="kv-data-tab-row" onclick="transformInput(\'number\',this)">'+temp.score+'</td></tr>';
                         });
                         html += '   </tbody></table>';
+                        $(".zsetBtn").show();
                     } else if ("hash" == type) {
                         html += '<table class="width-full kv-data-tab" border="1">' +
                             '       <thead><tr><td style="width: 35px;"></td><td style="width: 200px;">Key</td><td>Value</td></tr></thead>' +
                             '       <tbody>';
                         $.each(res.data.data,function(i,temp){
                             for (var key in temp) {
-                                html += '<tr><td class="text-c">'+(i+1)+'</td><td class="kv-data-tab-row">'+key+'</td><td class="kv-data-tab-row">'+temp[key]+'</td></tr>';
+                                html += '<tr><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td>' +
+                                    '<td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+key+'</td>' +
+                                    '<td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+temp[key]+'</td></tr>';
                             }
                         });
                         html += '   </tbody></table>';
+                        $(".hashBtn").show();
                     }
                     $("#kv-dataDiv").html(html);
 
@@ -459,6 +467,12 @@
         var type = $("#kv-type").val();
         var ttl = $("#kv-ttl").val();
         var value = "";
+        var tempEditArr = new Array();
+        if (editArr.length > 0) {
+            $.each(editArr,function (i,temp){
+               tempEditArr.push(temp);
+            });
+        }
         if ("string" == type) {
             value = $("#kv-value").val();
         } else {
@@ -489,25 +503,78 @@
                         editArr.push(editData);
                     }
                 });
-                if (editArr.length <= 0) {
-                    message.warning("没有任何修改!");
-                    return ;
-                }
-                value = JSON.stringify(editArr);
             } else if ("zset" == type) {
+                $("#kv-dataDiv table tbody tr").each(function (i,temp){
+                    var _type = $(temp).data("type");
+                    var _value = $(temp).find("td:eq(1)").html();
+                    var _score = $(temp).find("td:eq(2)").html();
+                    if (!strNotNull(_type)) {
+                        // 原来的值
+                        var _oldValue = $(temp).data("old_value");
+                        // 是否修改过
+                        if (undefined != _oldValue && _oldValue != _value) {
+                            var editData = {
+                                type:"set",
+                                oldValue:_oldValue,
+                                value:_value,
+                                score:_score
+                            }
+                            editArr.push(editData);
+                        }
+                    } else {
+                        // 新值
+                        var editData = {
+                            type:_type,
+                            value:_value,
+                            score:_score
+                        }
+                        editArr.push(editData);
+                    }
 
+                });
             } else if ("hash" == type) {
-
+                $("#kv-dataDiv table tbody tr").each(function (i,temp){
+                    var _type = $(temp).data("type");
+                    var _value = $(temp).find("td:eq(1)").html();
+                    var fieldValue = $(temp).find("td:eq(2)").html();
+                    if (!strNotNull(_type)) {
+                        // 原来的值
+                        var oldHashKey = $(temp).data("old_value");
+                        // 是否修改过
+                        if (undefined != _oldValue && _oldValue != _value) {
+                            var editData = {
+                                type:"set",
+                                value:_value,
+                                oldHashKey:oldHashKey,
+                                fieldValue:fieldValue
+                            }
+                            editArr.push(editData);
+                        }
+                    } else {
+                        // 新值
+                        var editData = {
+                            type:_type,
+                            value:_value,
+                            fieldValue:fieldValue
+                        }
+                        editArr.push(editData);
+                    }
+                });
             }
 
             if (editArr.length <= 0) {
                 message.warning("没有任何修改!");
                 return ;
             }
+            console.info(editArr);
             value = JSON.stringify(editArr);
         }
         var _i = layer.confirm('确认修改吗？', {
-            btn: ['确认', '取消']
+            btn: ['确认', '取消'],
+            cancel:function (index, layero){
+                // 右上角
+                editArr = tempEditArr;
+            }
         }, function(index, layero){
             loading();
             $.ajax({
@@ -534,6 +601,9 @@
                     layer.close(_i);
                 }
             });
+        },function(index, layero){
+            // 取消按钮
+            editArr = tempEditArr;
         });
     }
     // 添加行 LIST
@@ -551,42 +621,46 @@
             $(this).children("td:eq(0)").html(i+1);
         });
     }
+    // 添加行 ZSET
+    function kvTableAddRowByZset() {
+        var html = '<tr data-type="add">' +
+            '           <td class="text-c"></td>' +
+            '           <td onclick="transformInput(\'textarea\',this)"></td>' +
+            '           <td onclick="transformInput(\'number\',this)"></td>' +
+            '       </tr>';
+        $("#kv-dataDiv table tbody").prepend(html);
+        $("#kv-dataDiv table tbody tr").each(function (i,temp){
+            $(this).children("td:eq(0)").html(i+1);
+        });
+    }
     // 删除行
     function kvTableRemoveRow(){
         var obj = null;
         if ($("#kv-dataDiv table").find(".color-bg-ef").length > 0) {
             obj = $("#kv-dataDiv table").find(".color-bg-ef")[0];
-        } else if ($("#kv-dataDiv table tbody tr:last").length > 0) {
-            obj = $("#kv-dataDiv table tbody tr:last");
+        } else {
+            message.warning("请选择行！");
+            return;
         }
 
         // editArr
-        if (obj != null) {
-            var kv_type = $("#kv-type").val();
-            // LIST
-            if ("list" == kv_type || "set" == kv_type) {
-                var objType = $(obj).data("type");
-                if (!strNotNull(objType)) {
-                    var _index = $(obj).index();
-                    var _sum = $("#kv-dataDiv table tbody tr").length;
-                    // 原来的值
-                    var editData = {
-                        type:"rem",
-                        count:(_index > _sum / 2)?"-1":"1",
-                        value:$(obj).find("td:eq(1)").html()
-                    }
-                    editArr.push(editData);
-                }
-            } else if ("zset" == kv_type) {
-
-            } else if ("hash" == kv_type) {
-
-            } else {
-
+        var kv_type = $("#kv-type").val();
+        var objType = $(obj).data("type");
+        if (!strNotNull(objType)) {
+            var _index = $(obj).index();
+            var _sum = $("#kv-dataDiv table tbody tr").length;
+            // 原来的值
+            var editData = {
+                type:"rem",
+                count:(_index > _sum / 2)?"-1":"1",
+                value:$(obj).find("td:eq(1)").html()
             }
-            // remove
-            $(obj).remove();
+            editArr.push(editData);
         }
+
+        // remove
+        $(obj).remove();
+
         // re index
         $("#kv-dataDiv table tbody tr").each(function (i,temp){
             $(this).children("td:eq(0)").html(i+1);
@@ -622,9 +696,7 @@
 
         // HTML
         var html = "";
-        if ("input" == type) {
-            html = '<input type="text" id="'+uuid+'">';
-        } else if ("textarea" == type) {
+        if ("textarea" == type) {
             html = '<textarea class="table-textarea" id="'+uuid+'" style="height:'+$(_this).height()+'px"></textarea>';
         } else if ("number" == type) {
             html = '<input type="number" id="'+uuid+'"></input>';

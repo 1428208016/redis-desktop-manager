@@ -329,7 +329,37 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
 
                     }
                 } else if ("zset".equals(type)) {
+                    for (Map temp : valueArr) {
+                        String _type = temp.get("type").toString();
+                        String _value = temp.get("value").toString();
+                        if ("set".equals(_type)) {
+                            String oldValue = temp.get("oldValue").toString();
+                            Double score = Double.valueOf(temp.get("score").toString());
+                            jedis.zrem(key,oldValue);
+                            jedis.zadd(key,score,_value);
+                        } else if ("add".equals(_type)) {
+                            Double score = Double.valueOf(temp.get("score").toString());
+                            jedis.zadd(key,score,_value);
+                        } else if ("rem".equals(_type)) {
+                            jedis.zrem(key,_value);
+                        }
+                    }
                 } else if ("hash".equals(type)) {
+                    for (Map temp : valueArr) {
+                        String _type = temp.get("type").toString();
+                        String _hashKey = temp.get("value").toString();
+                        if ("set".equals(_type)) {
+                            String oldHashKey = temp.get("oldHashKey").toString();
+                            String _fieldValue = temp.get("fieldValue").toString();
+                            jedis.hdel(key,oldHashKey);
+                            jedis.hset(key,_hashKey,_fieldValue);
+                        } else if ("add".equals(_type)) {
+                            String _fieldValue = temp.get("fieldValue").toString();
+                            jedis.hset(key,_hashKey,_fieldValue);
+                        } else if ("rem".equals(_type)) {
+                            jedis.hdel(key,_hashKey);
+                        }
+                    }
                 }
             }
         }
