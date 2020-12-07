@@ -83,11 +83,11 @@
 
                         <div class="row" style="margin-top: 10px; text-align: right;">
                             <div class="col-md-12 col-sm-12">
-                                <button class="btn btn-primary float-l editorBtn listBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByList('left')">头部新增</button>
-                                <button class="btn btn-primary float-l editorBtn listBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByList('right')">尾部新增</button>
-                                <button class="btn btn-primary float-l editorBtn setBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByList('right')">新增</button>
-                                <button class="btn btn-primary float-l editorBtn zsetBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByZset()">新增</button>
-                                <button class="btn btn-primary float-l editorBtn hashBtn margin-r-5" style="display: none;" onclick="kvTableAddRowByHash()">新增</button>
+                                <button class="btn btn-primary float-l editorBtn listBtn margin-r-5" style="display: none;" onclick="kvTableAddRow('list','left')">头部新增</button>
+                                <button class="btn btn-primary float-l editorBtn listBtn margin-r-5" style="display: none;" onclick="kvTableAddRow('list','right')">尾部新增</button>
+                                <button class="btn btn-primary float-l editorBtn setBtn margin-r-5" style="display: none;" onclick="kvTableAddRow('list','right')">新增</button>
+                                <button class="btn btn-primary float-l editorBtn zsetBtn margin-r-5" style="display: none;" onclick="kvTableAddRow('zset')">新增</button>
+                                <button class="btn btn-primary float-l editorBtn hashBtn margin-r-5" style="display: none;" onclick="kvTableAddRow('hash')">新增</button>
 
                                 <button class="btn btn-default float-l editorBtn listBtn setBtn zsetBtn hashBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
 
@@ -119,6 +119,7 @@
         load();
     });
 
+    // 打开添加连接界面
     function openConnectionAdd(type,id){
         var title = "添加连接";
         if (type == "edit") {
@@ -209,6 +210,7 @@
 
     }
 
+    // 连接redis
     var currentSelectConnection;
     var currentSelectConnectionName;
     function connectionRedis(csId,_this){
@@ -247,6 +249,7 @@
             }
         });
     }
+
     // 显示、隐藏databases
     function showHideDatabase(_this){
         if ($(_this).hasClass("glyphicon-triangle-bottom")) {
@@ -260,6 +263,7 @@
         }
     }
 
+    // 选择数据库 databases
     var currentDBIndex;
     function selectDB(index,_this){
         $(".selectedItem > .editor").removeClass("display-inline");
@@ -274,6 +278,7 @@
         $("#kv-dataDiv").html("");
     }
 
+    // 加载KEY列表
     function scan(){
         var key = $("#key").val();
         if (!strNotNull(key)) {
@@ -311,6 +316,7 @@
         });
     }
 
+    // 加载键值对
     function loadKeyValue(key,_this) {
         loading();
         $(".color-bg-e8f2ff").removeClass("color-bg-e8f2ff");
@@ -318,6 +324,7 @@
         loadKeyValueChildren(key);
     }
 
+    // 加载键值对 children
     function loadKeyValueChildren(key) {
         if (!strNotNull(key)) {
             key = $("#kv-key").val();
@@ -458,6 +465,7 @@
             });
         });
     }
+
     // 编辑操作对象集合
     var editArr;
     // 编辑KEY
@@ -466,7 +474,7 @@
         var type = $("#kv-type").val();
         var ttl = $("#kv-ttl").val();
         var value = "";
-        var tempEditArr = new Array();
+        var tempEditArr = new Array();  // 临时的editArr
         if (editArr.length > 0) {
             $.each(editArr,function (i,temp){
                tempEditArr.push(temp);
@@ -617,46 +625,38 @@
             editArr = tempEditArr;
         });
     }
-    // 添加行 LIST
-    function kvTableAddRowByList(type){
-        var html = '<tr data-type="'+type+'">' +
-            '           <td class="text-c"></td>' +
-            '           <td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)"></td>' +
-            '       </tr>';
-        if ("left" == type) {
+
+    // 添加行
+    function kvTableAddRow(type,appendType){
+        if ("list" == type) {
+            var html = '<tr data-type="'+appendType+'">' +
+                '           <td class="text-c"></td>' +
+                '           <td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)"></td>' +
+                '       </tr>';
+            if ("left" == appendType) {
+                $("#kv-dataDiv table tbody").prepend(html);
+            } else {
+                $("#kv-dataDiv table tbody").append(html);
+            }
+        } else if ("zset" == type) {
+            var html = '<tr data-type="add">' +
+                '           <td class="text-c"></td>' +
+                '           <td onclick="transformInput(\'textarea\',this)"></td>' +
+                '           <td onclick="transformInput(\'number\',this)"></td>' +
+                '       </tr>';
             $("#kv-dataDiv table tbody").prepend(html);
-        } else {
-            $("#kv-dataDiv table tbody").append(html);
+        } else if ("hash" == type) {
+            var html = '<tr data-type="add">' +
+                '           <td class="text-c"></td>' +
+                '           <td onclick="transformInput(\'textarea\',this)"></td>' +
+                '           <td onclick="transformInput(\'textarea\',this)"></td>' +
+                '       </tr>';
+            $("#kv-dataDiv table tbody").prepend(html);
         }
         $("#kv-dataDiv table tbody tr").each(function (i,temp){
             $(this).children("td:eq(0)").html(i+1);
         });
     }
-    // 添加行 ZSET
-    function kvTableAddRowByZset() {
-        var html = '<tr data-type="add">' +
-            '           <td class="text-c"></td>' +
-            '           <td onclick="transformInput(\'textarea\',this)"></td>' +
-            '           <td onclick="transformInput(\'number\',this)"></td>' +
-            '       </tr>';
-        $("#kv-dataDiv table tbody").prepend(html);
-        $("#kv-dataDiv table tbody tr").each(function (i,temp){
-            $(this).children("td:eq(0)").html(i+1);
-        });
-    }
-    // 添加行 HASH
-    function kvTableAddRowByHash() {
-        var html = '<tr data-type="add">' +
-            '           <td class="text-c"></td>' +
-            '           <td onclick="transformInput(\'textarea\',this)"></td>' +
-            '           <td onclick="transformInput(\'textarea\',this)"></td>' +
-            '       </tr>';
-        $("#kv-dataDiv table tbody").prepend(html);
-        $("#kv-dataDiv table tbody tr").each(function (i,temp){
-            $(this).children("td:eq(0)").html(i+1);
-        });
-    }
-
 
     // 删除行
     function kvTableRemoveRow(){
@@ -691,6 +691,7 @@
             $(this).children("td:eq(0)").html(i+1);
         });
     }
+
     // 选择行 TR
     function selectKVTabRow(_this) {
         $("#kv-dataDiv").find(".color-bg-ef").removeClass("color-bg-ef");
@@ -733,7 +734,6 @@
             var val = $(this).val();
             $(this).parent().html(val);
         });
-
     }
 
 
