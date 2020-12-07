@@ -86,6 +86,10 @@
                                 <button class="btn btn-primary float-l editorBtn listBtn" style="margin-right: 5px;display: none;" onclick="kvTableAddRowByList('left')">头部新增</button>
                                 <button class="btn btn-primary float-l editorBtn listBtn" style="margin-right: 5px;display: none;" onclick="kvTableAddRowByList('right')">尾部新增</button>
                                 <button class="btn btn-default float-l editorBtn listBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
+
+                                <button class="btn btn-primary float-l editorBtn setBtn" style="margin-right: 5px;display: none;" onclick="kvTableAddRowByList('right')">新增</button>
+                                <button class="btn btn-default float-l editorBtn setBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
+
                                 <button class="btn btn-default" onclick="loadKeyValueChildren()">刷新</button>
                                 <button class="btn btn-success" onclick="editKey()">保存</button>
                             </div>
@@ -349,7 +353,11 @@
                             html += '<tr><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td><td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+temp+'</td></tr>';
                         });
                         html += '   </tbody></table>';
-                        $(".listBtn").show();
+                        if ("list" == type) {
+                            $(".listBtn").show();
+                        } else {
+                            $(".setBtn").show();
+                        }
                     } else if ("zset" == type) {
                         html += '<table class="width-full kv-data-tab"  border="1">' +
                             '       <thead><tr><td style="width: 35px;"></td><td>Value</td><td style="width: 150px;">Score</td></tr></thead>' +
@@ -453,43 +461,50 @@
         var value = "";
         if ("string" == type) {
             value = $("#kv-value").val();
-        } else if ("list" == type) {
-            // editArr
-            $("#kv-dataDiv table tbody tr").each(function (i,temp){
-                var _type = $(temp).data("type");
-                var _value = $(temp).find("td:eq(1)").html();
-                if (!strNotNull(_type)) {
-                    // 原来的值
-                    var _oldValue = $(temp).data("old_value");
-                    // 是否修改过
-                    if (undefined != _oldValue && _oldValue != _value) {
+        } else {
+            if ("list" == type || "set" == type) {
+                // editArr
+                $("#kv-dataDiv table tbody tr").each(function (i,temp){
+                    var _type = $(temp).data("type");
+                    var _value = $(temp).find("td:eq(1)").html();
+                    if (!strNotNull(_type)) {
+                        // 原来的值
+                        var _oldValue = $(temp).data("old_value");
+                        // 是否修改过
+                        if (undefined != _oldValue && _oldValue != _value) {
+                            var editData = {
+                                type:"set",
+                                oldValue:_oldValue,
+                                value:_value,
+                                index:i
+                            }
+                            editArr.push(editData);
+                        }
+                    } else {
+                        // 新值
                         var editData = {
-                            type:"set",
-                            value:_value,
-                            index:i
+                            type:_type,
+                            value:_value
                         }
                         editArr.push(editData);
                     }
-                } else {
-                    // 新值
-                    var editData = {
-                        type:_type,
-                        value:_value
-                    }
-                    editArr.push(editData);
+                });
+                if (editArr.length <= 0) {
+                    message.warning("没有任何修改!");
+                    return ;
                 }
-            });
+                value = JSON.stringify(editArr);
+            } else if ("zset" == type) {
+
+            } else if ("hash" == type) {
+
+            }
+
             if (editArr.length <= 0) {
                 message.warning("没有任何修改!");
                 return ;
             }
             value = JSON.stringify(editArr);
-        } else if ("set" == type) {
-
-        } else if ("zset" == type) {
-
-        } else if ("hash" == type) {
-
         }
         var _i = layer.confirm('确认修改吗？', {
             btn: ['确认', '取消']
@@ -549,7 +564,7 @@
         if (obj != null) {
             var kv_type = $("#kv-type").val();
             // LIST
-            if ("list" == kv_type) {
+            if ("list" == kv_type || "set" == kv_type) {
                 var objType = $(obj).data("type");
                 if (!strNotNull(objType)) {
                     var _index = $(obj).index();
@@ -562,6 +577,10 @@
                     }
                     editArr.push(editData);
                 }
+            } else if ("zset" == kv_type) {
+
+            } else if ("hash" == kv_type) {
+
             } else {
 
             }

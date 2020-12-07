@@ -293,29 +293,45 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
 
         if ("string".equals(type)) {
             jedis.set(key,value.toString());
-        } else if ("list".equals(type)) {
+        } else {
             List<Map> valueArr = JSON.parseArray(value.toString(),Map.class);
             if (valueArr.size() > 0) {
-                for (Map temp : valueArr) {
-                    String _type = temp.get("type").toString();
-                    String _value = temp.get("value").toString();
-                    if ("set".equals(_type)) {
-                        jedis.lset(key,Long.valueOf(temp.get("index").toString()),_value);
-                    } else if ("left".equals(_type)) {
-                        jedis.lpush(key,_value);
-                    } else if ("right".equals(_type)) {
-                        jedis.rpush(key,_value);
-                    } else if ("rem".equals(_type)) {
-//                    count > 0：删除等于element从头到尾移动的元素。
-//                    count < 0：删除等于element从尾到头移动的元素。
-//                    count = 0：删除所有等于的元素element。
-                        jedis.lrem(key,Long.valueOf(temp.get("count").toString()),_value);
+                if ("list".equals(type)) {
+                    for (Map temp : valueArr) {
+                        String _type = temp.get("type").toString();
+                        String _value = temp.get("value").toString();
+                        if ("set".equals(_type)) {
+                            jedis.lset(key,Long.valueOf(temp.get("index").toString()),_value);
+                        } else if ("left".equals(_type)) {
+                            jedis.lpush(key,_value);
+                        } else if ("right".equals(_type)) {
+                            jedis.rpush(key,_value);
+                        } else if ("rem".equals(_type)) {
+//                            count > 0：删除等于element从头到尾移动的元素。
+//                            count < 0：删除等于element从尾到头移动的元素。
+//                            count = 0：删除所有等于的元素element。
+                            jedis.lrem(key,Long.valueOf(temp.get("count").toString()),_value);
+                        }
                     }
+                } else if ("set".equals(type)) {
+                    for (Map temp : valueArr) {
+                        String _type = temp.get("type").toString();
+                        String _value = temp.get("value").toString();
+                        if ("set".equals(_type)) {
+                            String oldValue = temp.get("oldValue").toString();
+                            jedis.srem(key,oldValue);
+                            jedis.sadd(key,_value);
+                        } else if ("right".equals(_type)) {
+                            jedis.sadd(key,_value);
+                        } else if ("rem".equals(_type)) {
+                            jedis.srem(key,_value);
+                        }
+
+                    }
+                } else if ("zset".equals(type)) {
+                } else if ("hash".equals(type)) {
                 }
             }
-        } else if ("set".equals(type)) {
-        } else if ("zset".equals(type)) {
-        } else if ("hash".equals(type)) {
         }
 
         // 过期时间
