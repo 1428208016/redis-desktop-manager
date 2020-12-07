@@ -91,6 +91,7 @@
 .text-c {text-align: center;}
 .text-r {text-align: right;}
 .width-full {width:100%;}
+.width-100 {width:100px;}
 
 .table-textarea{
     width: 100%;

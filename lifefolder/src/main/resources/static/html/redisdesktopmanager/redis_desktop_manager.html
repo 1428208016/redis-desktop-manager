@@ -43,7 +43,7 @@
                                             <td style="padding-top:5px;">
                                                 <button class="btn btn-success" onclick="openDataAdd('add')">添加</button>
                                                 <button class="btn btn-default" onclick="deleteKey()">删除</button>
-                                                <button onclick="scan()" class="btn btn-info float-r" >搜索</button>
+                                                <button onclick="scan()" class="btn btn-info float-r" style="min-width: 120px;" >搜索</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -62,11 +62,13 @@
                                         <tr>
                                             <td class="fontWeight900" id="kv-typeTD">TYPE：</td>
                                             <td style="width: 100%;padding-right: 5px;">
-                                                <input type="text" class="float-r" id="kv-key" style="width: 100%;" readonly >
+                                                <button class="btn btn-default width-full text-l" id="kv-key"></button>
                                             </td>
                                             <td class="fontWeight900">TTL：</td>
-                                            <td><input type="text" id="kv-ttl" class="float-r" style="width: 100px;" readonly >
-                                                <input type="hidden" id="kv-type"></td>
+                                            <td>
+                                                <button class="btn btn-default width-100" id="kv-ttl"></button>
+                                                <input type="hidden" id="kv-type">
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -327,7 +329,7 @@
     // 加载键值对 children
     function loadKeyValueChildren(key) {
         if (!strNotNull(key)) {
-            key = $("#kv-key").val();
+            key = $("#kv-key").html();
         }
         if (!strNotNull(key)) {
             return ;
@@ -393,10 +395,10 @@
                     }
                     $("#kv-dataDiv").html(html);
 
-                    $("#kv-key").val(res.data.key);
+                    $("#kv-key").html(res.data.key);
                     $("#kv-type").val(type);
                     $("#kv-typeTD").html(type.toUpperCase()+"：");
-                    $("#kv-ttl").val(res.data.ttl);
+                    $("#kv-ttl").html(res.data.ttl);
                 }
             },error:function (res) {
                 message.error();
@@ -470,9 +472,9 @@
     var editArr;
     // 编辑KEY
     function editKey(){
-        var key = $("#kv-key").val();
+        var key = $("#kv-key").html();
         var type = $("#kv-type").val();
-        var ttl = $("#kv-ttl").val();
+        var ttl = $("#kv-ttl").html();
         var value = "";
         var tempEditArr = new Array();  // 临时的editArr
         if (editArr.length > 0) {

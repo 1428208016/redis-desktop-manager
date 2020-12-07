@@ -105,11 +105,27 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
 
         jedis.select(dbIndex);
 
+        Integer count = 200;
         ScanParams sp = new ScanParams();
         sp.match(key);
-        sp.count(200);
-        ScanResult<String> resultList = jedis.scan("0",sp);
-        retList = resultList.getResult();
+        sp.count(count);
+        // cursor 从0开始
+        String cursor = "0";
+        int listSize = 0;
+        do {
+            ScanResult<String> resultList = jedis.scan(cursor,sp);
+            listSize = resultList.getResult().size();
+            if (listSize > 0) {
+                retList = resultList.getResult().subList(0,listSize<200?listSize:200);
+                break;
+            }
+            cursor = resultList.getCursor();
+            sp.count(count*=2);
+            if ("0".equals(cursor)) {
+                // 全库查询完
+                break;
+            }
+        } while (true);
         return retList;
     }
 
