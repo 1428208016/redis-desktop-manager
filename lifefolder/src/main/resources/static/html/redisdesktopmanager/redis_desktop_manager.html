@@ -82,6 +82,21 @@
                             </div>
                         </div>
 
+                        <div class="row margin-t-10">
+                            <div class="col-md-12 col-sm-12">
+                                <button class="btn btn-primary float-l editorBtn margin-r-5 listBtn " style="display: none;" onclick="kvTableAddRow('list','left')">头部新增</button>
+                                <button class="btn btn-primary float-l editorBtn margin-r-5 listBtn " style="display: none;" onclick="kvTableAddRow('list','right')">尾部新增</button>
+                                <button class="btn btn-primary float-l editorBtn margin-r-5 setBtn " style="display: none;" onclick="kvTableAddRow('list','right')">新增</button>
+                                <button class="btn btn-primary float-l editorBtn margin-r-5 zsetBtn " style="display: none;" onclick="kvTableAddRow('zset')">新增</button>
+                                <button class="btn btn-primary float-l editorBtn margin-r-5 hashBtn " style="display: none;" onclick="kvTableAddRow('hash')">新增</button>
+                                <button class="btn btn-default float-l editorBtn margin-r-5 listBtn setBtn zsetBtn hashBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
+                                <button class="btn btn-default " onclick="loadKeyValueChildren()">刷新</button>
+                                <button class="btn btn-success" onclick="editKey()">保存</button>
+
+<!--                                <span class="flo">SIZE：</span>-->
+                            </div>
+                        </div>
+
                         <div class="row" style="margin-top: 10px;">
                             <div class="col-md-12 col-sm-12">
                                 <div class="" id="kv-dataDiv">
@@ -92,16 +107,6 @@
 
                         <div class="row" style="margin-top: 10px; text-align: right;">
                             <div class="col-md-12 col-sm-12">
-                                <button class="btn btn-primary float-l editorBtn listBtn margin-r-5" style="display: none;" onclick="kvTableAddRow('list','left')">头部新增</button>
-                                <button class="btn btn-primary float-l editorBtn listBtn margin-r-5" style="display: none;" onclick="kvTableAddRow('list','right')">尾部新增</button>
-                                <button class="btn btn-primary float-l editorBtn setBtn margin-r-5" style="display: none;" onclick="kvTableAddRow('list','right')">新增</button>
-                                <button class="btn btn-primary float-l editorBtn zsetBtn margin-r-5" style="display: none;" onclick="kvTableAddRow('zset')">新增</button>
-                                <button class="btn btn-primary float-l editorBtn hashBtn margin-r-5" style="display: none;" onclick="kvTableAddRow('hash')">新增</button>
-
-                                <button class="btn btn-default float-l editorBtn listBtn setBtn zsetBtn hashBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
-
-                                <button class="btn btn-default" onclick="loadKeyValueChildren()">刷新</button>
-                                <button class="btn btn-success" onclick="editKey()">保存</button>
                             </div>
                     </div>
                 </div>
@@ -569,7 +574,7 @@
                     var _fieldValue = $(temp).find("td:eq(2)").html();
                     if (!strNotNull(_type)) {
                         // 原来的值
-                        var oldHashKey = $(temp).find("td:eq(1)").data("old_value");
+                        var oldHashKey = $(temp).find("td:eq(1)").data("old_value") || _value;
                         var oldFieldValue = $(temp).find("td:eq(2)").data("old_value");
                         // 是否修改过
                         if ((undefined != oldHashKey && oldHashKey != _value) ||

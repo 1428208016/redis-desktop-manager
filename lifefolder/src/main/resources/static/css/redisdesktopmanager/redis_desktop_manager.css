@@ -98,6 +98,5 @@
     min-height: 70px;
     resize:none;
 }
-.margin-r-5 {
-    margin-right: 5px;
-}
+.margin-r-5 {margin-right: 5px;}
+.margin-t-10 {margin-top:10px;}

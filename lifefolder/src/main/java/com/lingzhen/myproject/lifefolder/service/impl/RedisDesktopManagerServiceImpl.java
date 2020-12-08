@@ -105,10 +105,13 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
 
         jedis.select(dbIndex);
 
-        Integer count = 200;
+        Integer pageSize = 200;     //每页数据条数
+        Integer count = pageSize;
+
         ScanParams sp = new ScanParams();
         sp.match(key);
         sp.count(count);
+
         // cursor 从0开始
         String cursor = "0";
         int listSize = 0;
@@ -116,8 +119,11 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
             ScanResult<String> resultList = jedis.scan(cursor,sp);
             listSize = resultList.getResult().size();
             if (listSize > 0) {
-                retList = resultList.getResult().subList(0,listSize<200?listSize:200);
-                break;
+                retList.addAll(resultList.getResult());
+                if (retList.size() >= pageSize) {
+                    retList = retList.subList(0,pageSize);
+                    break;
+                }
             }
             cursor = resultList.getCursor();
             sp.count(count*=2);
