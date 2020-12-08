@@ -25,18 +25,18 @@
 <body>
     <div class="container-fluid" style="padding-top: 10px;">
         <div  class="row" style="margin-bottom: 10px">
-            <div class="col-md-3 col-sm-3">
+            <div class="col-md-2 col-sm-2">
                 <button class="btn btn-default" onclick="openConnectionAdd('add')">添加连接</button>
             </div>
-            <div class="col-md-9 col-sm-9">
+            <div class="col-md-10 col-sm-10">
                 <a href="#" onclick="javascript:history.go(-1)" style="display: inline-block;float:right;">返回</a>
             </div>
         </div>
         <div  class="row">
             <div class="col-md-12 col-sm-12">
                 <div  class="row">
-                    <div class="col-md-3 col-sm-3" id="connectionList"></div>
-                    <div class="col-md-3 col-sm-3" id="keyList">
+                    <div class="col-md-2 col-sm-2" id="connectionList"></div>
+                    <div class="col-md-4 col-sm-4" id="keyList">
                         <div class="row">
                             <div class="col-md-12 col-sm-12" style="margin-bottom: 10px;">
                                 <table style="width: 100%;">
@@ -192,8 +192,9 @@
                 $("#connectionList").html("");
                 if (res.code == 200) {
                     $.each(res.data,function(i,temp){
-                        var html = '<div onclick="connectionSelected(this)" ondblclick="connectionRedis('+temp.csId+',this)"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> '
-                            + temp.connectionName +
+                        var html = '<div onclick="connectionSelected(this)" ondblclick="connectionRedis('+temp.csId+',this)">' +
+                            '<img src="../../image/redisdesktopmanager/favicon.png" height="16" width="16"/>' +
+                            '<span> '+ temp.connectionName +'</span>'+
                             '   <div class="editor">' +
                             '       <span class="glyphicon glyphicon-edit" aria-hidden="true" onclick="openConnectionAdd(\'edit\','+temp.csId+')"></span>' +
                             '       <span class="glyphicon glyphicon-trash" aria-hidden="true" onclick="deleteConnection('+temp.csId+')"></span>' +
