@@ -300,6 +300,69 @@ public class RedisDesktopManagerController {
         return result;
     }
 
+    @RequestMapping("renameKey")
+    @ResponseBody
+    public Result renameKey(){
+        Result result = new Result();
+        Map param = HttpServletUtil.getRequestParameter();
+
+        if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
+            return result.setErrorReturn("csId为空");
+        }
+        if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
+            return result.setErrorReturn("dbIndex为空");
+        }
+        if (VerifyUtil.stringTrimIsEmpty(param.get("key"))) {
+            return result.setErrorReturn("key为空");
+        }
+        if (VerifyUtil.stringTrimIsEmpty(param.get("newKey"))) {
+            return result.setErrorReturn("newKey为空");
+        }
+
+        try {
+            String csId = param.get("csId").toString().trim();
+            Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString().trim());
+            String key = param.get("key").toString().trim();
+            String newKey = param.get("newKey").toString().trim();
+            result = redisDesktopManagerService.renameKey(csId,dbIndex,key,newKey);
+        } catch (Exception e) {
+            result.setError();
+        }
+        return result;
+    }
+
+    @RequestMapping("setTTL")
+    @ResponseBody
+    public Result setTTL(){
+        Result result = new Result();
+        Map param = HttpServletUtil.getRequestParameter();
+
+        if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
+            return result.setErrorReturn("csId为空");
+        }
+        if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
+            return result.setErrorReturn("dbIndex为空");
+        }
+        if (VerifyUtil.stringTrimIsEmpty(param.get("key"))) {
+            return result.setErrorReturn("key为空");
+        }
+        if (VerifyUtil.stringTrimIsEmpty(param.get("ttl"))) {
+            return result.setErrorReturn("ttl为空");
+        }
+
+        try {
+
+            String csId = param.get("csId").toString().trim();
+            Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString().trim());
+            String key = param.get("key").toString().trim();
+            Integer ttl = Integer.valueOf(param.get("ttl").toString());
+            result = redisDesktopManagerService.setTTL(csId,dbIndex,key,ttl);
+        } catch (Exception e) {
+            result.setError();
+        }
+        return result;
+    }
+
 
 
 

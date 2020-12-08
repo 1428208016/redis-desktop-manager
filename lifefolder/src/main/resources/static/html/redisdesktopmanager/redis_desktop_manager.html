@@ -466,6 +466,8 @@
                         message.success();
                         $("#kv-dataDiv").html("");
                         scan();
+                    } else {
+                        message.error(res.message);
                     }
                 },error:function (res) {
                     message.error();
@@ -623,6 +625,8 @@
                     if (res.code == 200) {
                         message.success();
                         loadKeyValueChildren();
+                    } else {
+                        message.error(res.message);
                     }
                 },error:function (res) {
                     message.error();
@@ -747,6 +751,7 @@
         });
     }
 
+    // 重命名KEY
     function openRenameKey() {
         var key = $("#kv-key").val();
         if (!strNotNull(key)) {
@@ -754,29 +759,78 @@
             return ;
         }
 
-        //prompt层
-
         layer.prompt({
             title: '重命名Key',
             formType: 0, //输入框类型，支持0（文本）默认1（密码）2（多行文本）
-            value: key,
-            width: "300px"
+            value: key
         }, function(pass, index){
-            layer.close(index);
-            // layer.prompt({title: '随便写点啥，并确认', formType: 2}, function(text, index){
-            //     layer.close(index);
-            //     layer.msg('演示完毕！您的口令：'+ pass +'<br>您最后写下了：'+text);
-            // });
+            loading();
+            $.ajax({
+                url:"../../redisDesktopManager/renameKey?tm="+ new Date().getTime(),
+                type:"POST",
+                data:{
+                    csId:currentSelectConnection,
+                    dbIndex:currentDBIndex,
+                    key:key,
+                    newKey:pass
+                },
+                dataType:"JSON",
+                success:function (res) {
+                    if (res.code == 200) {
+                        layer.close(index);
+                        message.success();
+                        scan();
+                        loadKeyValueChildren(pass);
+                    } else {
+                        message.error(res.message);
+                    }
+                },error:function (res) {
+                    message.error(res.message);
+                },complete(XHR, TS) {
+                    loadingClose();
+                }
+            });
         });
-
     }
 
+    // 设置TTL
     function openEditTTL() {
         var key = $("#kv-key").val();
         if (!strNotNull(key)) {
             message.warning("未加载key");
             return ;
         }
+        layer.prompt({
+            title: '设置TTL',
+            formType: 0, //输入框类型，支持0（文本）默认1（密码）2（多行文本）
+            value: $("#kv-ttl").val()
+        }, function(pass, index){
+            loading();
+            $.ajax({
+                url:"../../redisDesktopManager/setTTL?tm="+ new Date().getTime(),
+                type:"POST",
+                data:{
+                    csId:currentSelectConnection,
+                    dbIndex:currentDBIndex,
+                    key:key,
+                    ttl:pass
+                },
+                dataType:"JSON",
+                success:function (res) {
+                    if (res.code == 200) {
+                        layer.close(index);
+                        message.success();
+                        loadKeyValueChildren();
+                    } else {
+                        message.error(res.message);
+                    }
+                },error:function (res) {
+                    message.error(res.message);
+                },complete(XHR, TS) {
+                    loadingClose();
+                }
+            });
+        });
     }
 
 </script>

@@ -388,4 +388,43 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         return result;
     }
 
+    @Override
+    public Result renameKey(String csId, Integer dbIndex, String key, String newKey) {
+        Result result = new Result();
+
+        Jedis jedis = connectionMap.get(csId);
+        if (null == jedis) {
+            return result.setErrorReturn("无此连接！");
+        }
+        // 选择数据库
+        jedis.select(dbIndex);
+        // 重命名
+        Long reply = jedis.renamenx(key,newKey);
+        if (reply == 0) {
+            result.setError("新Key已存在！");
+        }
+
+        return result;
+    }
+
+    @Override
+    public Result setTTL(String csId, Integer dbIndex, String key, Integer ttl) {
+        Result result = new Result();
+
+        Jedis jedis = connectionMap.get(csId);
+        if (null == jedis) {
+            return result.setErrorReturn("无此连接！");
+        }
+        // 选择数据库
+        jedis.select(dbIndex);
+        // 重命名
+        if (ttl == -1) {
+            jedis.persist(key);
+        } else {
+            jedis.expire(key,ttl);
+        }
+
+        return result;
+    }
+
 }

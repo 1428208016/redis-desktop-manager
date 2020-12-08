@@ -99,4 +99,24 @@ public interface RedisDesktopManagerService {
      */
     Result editKey(String csId, Integer dbIndex, String key, String type, Object value, Long ttl);
 
+    /**
+     * 重命名Key
+     * @param csId
+     * @param dbIndex
+     * @param key
+     * @param newKey
+     * @return
+     */
+    Result renameKey(String csId, Integer dbIndex, String key, String newKey);
+
+    /**
+     * 设置TTL
+     * @param csId
+     * @param dbIndex
+     * @param key
+     * @param ttl
+     * @return
+     */
+    Result setTTL(String csId, Integer dbIndex, String key, Integer ttl);
+
 }
