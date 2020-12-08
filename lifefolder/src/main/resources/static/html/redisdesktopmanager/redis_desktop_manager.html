@@ -16,6 +16,11 @@
     <script src="../../js/common.js"></script>
     <script src="../../js/redisdesktopmanager/redis_desktop_manager.js"></script>
 
+    <style>
+        .layui-layer-prompt .layui-layer-input {
+            width: 360px;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid" style="padding-top: 10px;">
@@ -62,11 +67,13 @@
                                         <tr>
                                             <td class="fontWeight900" id="kv-typeTD">TYPE：</td>
                                             <td style="width: 100%;padding-right: 5px;">
-                                                <button class="btn btn-default width-full text-l" id="kv-key"></button>
+                                                <button class="btn btn-default width-full text-l" id="kv-key-btn" onclick="openRenameKey()">NONE</button>
+                                                <input type="hidden" id="kv-key">
                                             </td>
                                             <td class="fontWeight900">TTL：</td>
                                             <td>
-                                                <button class="btn btn-default width-100" id="kv-ttl"></button>
+                                                <button class="btn btn-default width-100" id="kv-ttl-btn" onclick="openEditTTL()">0</button>
+                                                <input type="hidden" id="kv-ttl">
                                                 <input type="hidden" id="kv-type">
                                             </td>
                                         </tr>
@@ -329,7 +336,7 @@
     // 加载键值对 children
     function loadKeyValueChildren(key) {
         if (!strNotNull(key)) {
-            key = $("#kv-key").html();
+            key = $("#kv-key").val();
         }
         if (!strNotNull(key)) {
             return ;
@@ -395,10 +402,12 @@
                     }
                     $("#kv-dataDiv").html(html);
 
-                    $("#kv-key").html(res.data.key);
+                    $("#kv-key").val(res.data.key);
+                    $("#kv-key-btn").html(res.data.key);
                     $("#kv-type").val(type);
                     $("#kv-typeTD").html(type.toUpperCase()+"：");
-                    $("#kv-ttl").html(res.data.ttl);
+                    $("#kv-ttl").val(res.data.ttl);
+                    $("#kv-ttl-btn").html(res.data.ttl);
                 }
             },error:function (res) {
                 message.error();
@@ -472,9 +481,9 @@
     var editArr;
     // 编辑KEY
     function editKey(){
-        var key = $("#kv-key").html();
+        var key = $("#kv-key").val();
         var type = $("#kv-type").val();
-        var ttl = $("#kv-ttl").html();
+        var ttl = $("#kv-ttl").val();
         var value = "";
         var tempEditArr = new Array();  // 临时的editArr
         if (editArr.length > 0) {
@@ -738,8 +747,37 @@
         });
     }
 
+    function openRenameKey() {
+        var key = $("#kv-key").val();
+        if (!strNotNull(key)) {
+            message.warning("未加载key");
+            return ;
+        }
 
+        //prompt层
 
+        layer.prompt({
+            title: '重命名Key',
+            formType: 0, //输入框类型，支持0（文本）默认1（密码）2（多行文本）
+            value: key,
+            width: "300px"
+        }, function(pass, index){
+            layer.close(index);
+            // layer.prompt({title: '随便写点啥，并确认', formType: 2}, function(text, index){
+            //     layer.close(index);
+            //     layer.msg('演示完毕！您的口令：'+ pass +'<br>您最后写下了：'+text);
+            // });
+        });
+
+    }
+
+    function openEditTTL() {
+        var key = $("#kv-key").val();
+        if (!strNotNull(key)) {
+            message.warning("未加载key");
+            return ;
+        }
+    }
 
 </script>
 </body>
