@@ -71,7 +71,9 @@
                         <tr>
                             <td class="fontWeight900" id="kv-typeTD">TYPE：</td>
                             <td style="width: 100%;padding-right: 5px;">
-                                <button class="btn btn-default width-full text-l" id="kv-key-btn" onclick="openRenameKey()">NONE</button>
+                                <div class="btn btn-default width-full text-l" style="overflow: hidden;" onclick="openRenameKey()">
+                                    <div style="width: 10px;" id="kv-key-btn">NONE</div>
+                                </div>
                                 <input type="hidden" id="kv-key">
                             </td>
                             <td class="fontWeight900">TTL：</td>
