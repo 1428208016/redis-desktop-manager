@@ -132,6 +132,9 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
                 break;
             }
         } while (true);
+        if (retList.size() > 0) {
+            Collections.sort(retList);
+        }
         return retList;
     }
 

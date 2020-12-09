@@ -20,6 +20,7 @@
         .layui-layer-prompt .layui-layer-input {
             width: 360px;
         }
+
     </style>
 </head>
 <body>
@@ -193,8 +194,8 @@
                 if (res.code == 200) {
                     $.each(res.data,function(i,temp){
                         var html = '<div onclick="connectionSelected(this)" ondblclick="connectionRedis('+temp.csId+',this)">' +
-                            '<img src="../../image/redisdesktopmanager/favicon.png" height="16" width="16"/>' +
-                            '<span> '+ temp.connectionName +'</span>'+
+                            '<img src="../../image/redisdesktopmanager/favicon.png" height="16" width="16"/> '
+                            + temp.connectionName +
                             '   <div class="editor">' +
                             '       <span class="glyphicon glyphicon-edit" aria-hidden="true" onclick="openConnectionAdd(\'edit\','+temp.csId+')"></span>' +
                             '       <span class="glyphicon glyphicon-trash" aria-hidden="true" onclick="deleteConnection('+temp.csId+')"></span>' +
