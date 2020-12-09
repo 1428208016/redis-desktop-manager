@@ -281,6 +281,7 @@
     // 选择数据库 databases
     var currentDBIndex;
     function selectDB(index,_this){
+        connectionSelected($(_this).parent().prev());
         $(".selectedItem > .editor").removeClass("display-inline");
         $(".selectedItem").removeClass("selectedItem");
         $(_this).addClass("selectedItem");
