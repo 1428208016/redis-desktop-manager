@@ -20,105 +20,102 @@
         .layui-layer-prompt .layui-layer-input {
             width: 360px;
         }
-        #row2{
-            position: absolute;
-            top:35px;
-            left: 0px;
-            right: 0px;
-            bottom: 0px;
-        }
+
     </style>
 </head>
 <body>
-    <div class="row" style="margin: 0px;">
-        <div class="col-md-2 col-sm-2">
-            <button class="btn btn-default" onclick="openConnectionAdd('add')">添加连接</button>
-        </div>
-        <div class="col-md-10 col-sm-10">
-            <a href="#" onclick="javascript:history.go(-1)" style="display: inline-block;float:right;">返回</a>
-        </div>
-    </div>
-    <div id="row2">
-        <div class="col-md-2 col-sm-2" id="connectionList"></div>
-        <div class="col-md-4 col-sm-4 height-full" id="keyList">
-            <div class="row height-95">
-                <div class="col-md-12 col-sm-12" style="margin-bottom: 10px;">
-                    <table style="width: 100%;">
-                        <tbody>
-                        <tr><td>
-                            <input type="text" id="key" placeholder="请输入关键字">
-                        </td></tr>
-                        <tr>
-                            <td style="padding-top:5px;">
-                                <button class="btn btn-success" onclick="openDataAdd('add')">添加</button>
-                                <button class="btn btn-default" onclick="deleteKey()">删除</button>
-                                <button onclick="scan()" class="btn btn-info float-r" style="min-width: 120px;" >搜索</button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+    <div class="container-fluid" style="padding-top: 10px;">
+        <div  class="row" style="margin-bottom: 10px">
+            <div class="col-md-2 col-sm-2">
+                <button class="btn btn-default" onclick="openConnectionAdd('add')">添加连接</button>
             </div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12" id="keyDiv"></div>
+            <div class="col-md-10 col-sm-10">
+                <a href="#" onclick="javascript:history.go(-1)" style="display: inline-block;float:right;">返回</a>
             </div>
         </div>
-        <div class="col-md-6 col-sm-6">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <table>
-                        <tbody>
-                        <tr>
-                            <td class="fontWeight900" id="kv-typeTD">TYPE：</td>
-                            <td style="width: 100%;padding-right: 5px;">
-                                <button class="btn btn-default width-full text-l" id="kv-key-btn" onclick="openRenameKey()">NONE</button>
-                                <input type="hidden" id="kv-key">
-                            </td>
-                            <td class="fontWeight900">TTL：</td>
-                            <td>
-                                <button class="btn btn-default width-100" id="kv-ttl-btn" onclick="openEditTTL()">0</button>
-                                <input type="hidden" id="kv-ttl">
-                                <input type="hidden" id="kv-type">
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div  class="row">
+                    <div class="col-md-2 col-sm-2" id="connectionList"></div>
+                    <div class="col-md-4 col-sm-4" id="keyList">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12" style="margin-bottom: 10px;">
+                                <table style="width: 100%;">
+                                    <tbody>
+                                        <tr><td>
+                                            <input type="text" id="key" placeholder="请输入关键字">
+                                        </td></tr>
+                                        <tr>
+                                            <td style="padding-top:5px;">
+                                                <button class="btn btn-success" onclick="openDataAdd('add')">添加</button>
+                                                <button class="btn btn-default" onclick="deleteKey()">删除</button>
+                                                <button onclick="scan()" class="btn btn-info float-r" style="min-width: 120px;" >搜索</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12" id="keyDiv"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fontWeight900" id="kv-typeTD">TYPE：</td>
+                                            <td style="width: 100%;padding-right: 5px;">
+                                                <button class="btn btn-default width-full text-l" id="kv-key-btn" onclick="openRenameKey()">NONE</button>
+                                                <input type="hidden" id="kv-key">
+                                            </td>
+                                            <td class="fontWeight900">TTL：</td>
+                                            <td>
+                                                <button class="btn btn-default width-100" id="kv-ttl-btn" onclick="openEditTTL()">0</button>
+                                                <input type="hidden" id="kv-ttl">
+                                                <input type="hidden" id="kv-type">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-            <div class="row margin-t-10">
-                <div class="col-md-12 col-sm-12">
-                    <button class="btn btn-primary float-l editorBtn margin-r-5 listBtn " style="display: none;" onclick="kvTableAddRow('list','left')">头部新增</button>
-                    <button class="btn btn-primary float-l editorBtn margin-r-5 listBtn " style="display: none;" onclick="kvTableAddRow('list','right')">尾部新增</button>
-                    <button class="btn btn-primary float-l editorBtn margin-r-5 setBtn " style="display: none;" onclick="kvTableAddRow('list','right')">新增</button>
-                    <button class="btn btn-primary float-l editorBtn margin-r-5 zsetBtn " style="display: none;" onclick="kvTableAddRow('zset')">新增</button>
-                    <button class="btn btn-primary float-l editorBtn margin-r-5 hashBtn " style="display: none;" onclick="kvTableAddRow('hash')">新增</button>
-                    <button class="btn btn-default float-l editorBtn margin-r-5 listBtn setBtn zsetBtn hashBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
-                    <button class="btn btn-default " onclick="loadKeyValueChildren()">刷新</button>
-                    <button class="btn btn-success" onclick="editKey()">保存</button>
+                        <div class="row margin-t-10">
+                            <div class="col-md-12 col-sm-12">
+                                <button class="btn btn-primary float-l editorBtn margin-r-5 listBtn " style="display: none;" onclick="kvTableAddRow('list','left')">头部新增</button>
+                                <button class="btn btn-primary float-l editorBtn margin-r-5 listBtn " style="display: none;" onclick="kvTableAddRow('list','right')">尾部新增</button>
+                                <button class="btn btn-primary float-l editorBtn margin-r-5 setBtn " style="display: none;" onclick="kvTableAddRow('list','right')">新增</button>
+                                <button class="btn btn-primary float-l editorBtn margin-r-5 zsetBtn " style="display: none;" onclick="kvTableAddRow('zset')">新增</button>
+                                <button class="btn btn-primary float-l editorBtn margin-r-5 hashBtn " style="display: none;" onclick="kvTableAddRow('hash')">新增</button>
+                                <button class="btn btn-default float-l editorBtn margin-r-5 listBtn setBtn zsetBtn hashBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
+                                <button class="btn btn-default " onclick="loadKeyValueChildren()">刷新</button>
+                                <button class="btn btn-success" onclick="editKey()">保存</button>
 
 <!--                                <span class="flo">SIZE：</span>-->
-                </div>
-            </div>
+                            </div>
+                        </div>
 
-            <div class="row" style="margin-top: 10px;">
-                <div class="col-md-12 col-sm-12">
-                    <div class="" id="kv-dataDiv">
-                        <textarea id="kv-value" style="width: 100%;min-height: 470px;resize:none;border: none;" ></textarea>
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="" id="kv-dataDiv">
+                                    <textarea id="kv-value" style="width: 100%;min-height: 470px;resize:none;border: none;" ></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 10px; text-align: right;">
+                            <div class="col-md-12 col-sm-12">
+                            </div>
                     </div>
                 </div>
             </div>
-
-            <div class="row" style="margin-top: 10px; text-align: right;">
-                <div class="col-md-12 col-sm-12">
-                </div>
-            </div>
         </div>
-    </div>
 
 
-
-<!--        <div class="col-md-12 col-sm-12">-->
+        <div class="col-md-12 col-sm-12">
 <!--            <button class="btn btn-default">btn-default</button>-->
 <!--            <button class="btn btn-link">btn-link</button>-->
 <!--            <button class="btn btn-info">btn-info</button>-->
@@ -127,7 +124,9 @@
 <!--            <button class="btn btn-danger">btn-danger</button>-->
 <!--            <button class="btn btn-warning">btn-warning</button>-->
 <!--            <button class="btn btn-block">btn-block</button>-->
-<!--        </div>-->
+        </div>
+
+    </div>
 
 <script>
 
@@ -315,16 +314,15 @@
             success:function (res) {
                 if (res.code == 200) {
                     $("#keyDiv").html("");
-                    var html = '<table class="width-full"><tbody>';
+                    var html = '';
                     $.each(res.data,function(i,temp){
                         var _cls = '';
                         if (i%2 == 0) {
                             _cls = 'color-bg-fa';
                         }
-                        html += '<tr class="text-c '+_cls+'" onclick="loadKeyValue(\''+temp+'\',this)"><td class="width-35">'+(i+1)+'</td>' +
-                            '<td>'+temp+'</td></tr>';
+                       // html += '<tr><td>'+(i+1)+'</td><td '+_cls+'>'+temp+'</td></tr>';
+                        html += '<div title="'+temp+'" onclick="loadKeyValue(\''+temp+'\',this)" class="col-md-12 col-sm-12 '+_cls+'" >'+temp+'</div>';
                     });
-                    html += '</tbody></table>';
                     $("#keyDiv").html(html);
                 }
             },error:function (res) {
