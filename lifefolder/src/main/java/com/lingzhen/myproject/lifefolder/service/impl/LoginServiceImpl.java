@@ -98,6 +98,7 @@ public class LoginServiceImpl implements LoginService {
         }
         //创建token
         Cookie cookie = new Cookie(JWTUtil.TOKEN,JWTUtil.createToken(data.get("userId").toString()));
+        cookie.setMaxAge(JWTUtil.TOKEN_EXPIRE_SECOND);
         response.addCookie(cookie);
 
         return result;

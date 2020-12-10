@@ -22,7 +22,7 @@ public class JWTUtil {
     //JWT的 Claim1：key
     public static final String JWT_CLAIM_KEY = "key";
     //token过期时间 秒
-    private static final int TOKEN_EXPIRE_SECOND = 60 * 30;
+    public static final int TOKEN_EXPIRE_SECOND = 60 * 60;
     //key:token
     public static final String TOKEN = "token";
 
@@ -34,7 +34,7 @@ public class JWTUtil {
     public static String createToken(String key) {
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
-        c.add(Calendar.SECOND,TOKEN_EXPIRE_SECOND); //过期时间30分钟
+        c.add(Calendar.SECOND,TOKEN_EXPIRE_SECOND); // 过期时间60分钟
         return createToken(key,c.getTime());
     }
 
@@ -44,14 +44,17 @@ public class JWTUtil {
      * @param date 过期时间
      * @return
      */
-    public static String createToken (String key,Date date){
+    public static String createToken(String key,Date date){
         Algorithm algorithm = Algorithm.HMAC256(JWT_TOKEN_SECRET);
         String token = JWT.create()
-                //发出者
+                // 发出者
                 .withIssuer(JWT_TOKEN_USER)
-                //携带的信息
+                // 携带的信息
                 .withClaim(JWT_CLAIM_KEY,key)
+                // 过期时间
                 .withExpiresAt(date)
+                // 使用开始时间（创建时间）
+                .withIssuedAt(new Date())
                 .sign(algorithm);
         return token;
     }
@@ -75,10 +78,17 @@ public class JWTUtil {
         return b;
     }
 
+    // 获取附加参数
     public static String getValue(String token) {
         DecodedJWT jwt = JWT.decode(token);
         String value = jwt.getClaim(JWTUtil.JWT_CLAIM_KEY).asString();
         return value;
+    }
+
+    // 获取token创建时间
+    public static Date getIssuedAt(String token) {
+        DecodedJWT jwt = JWT.decode(token);
+        return jwt.getIssuedAt();
     }
 
 }
