@@ -44,18 +44,11 @@ html,body{
     line-height: 45px;
     width: 100%;
 }
-.color-bg-fa{
-    background-color: #fafafa;
-}
-.color-bg-ef{
-    background-color: #efefef;
-}
-.color-bg-f5{
-    background-color: #f5f5f5;
-}
-.color-bg-e8f2ff{
-    background-color: #E8F2FF;
-}
+.color-bg-fa{background-color: #fafafa;}
+.color-bg-ef{background-color: #efefef;}
+.color-bg-f5{background-color: #f5f5f5;}
+.color-bg-e8f2ff{background-color: #E8F2FF;}
+.color-bg-de{background-color: #DEDEDE;}
 #keyDiv {
     position: absolute;
     top:95px;
@@ -87,6 +80,20 @@ html,body{
     text-overflow:ellipsis;
     white-space:nowrap;
     overflow: hidden;
+}
+
+.childScan-input{
+    border: 1px solid #DEDEDE;
+    height: 34px;
+    padding: 7px 4px;
+}
+.childScan-input:hover {
+    border: 1px solid #737373;
+}
+.childScan-input input{
+    border: none;
+    height: 100%;
+    outline:none;
 }
 
 #keyvalue-key{

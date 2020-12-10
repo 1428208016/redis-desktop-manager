@@ -436,4 +436,83 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         return result;
     }
 
+    @Override
+    public Result kvScan(String csId, Integer dbIndex, String key, String type, String scanKey) {
+        Result result = new Result();
+
+        Jedis jedis = connectionMap.get(csId);
+        if (null == jedis) {
+            return result.setErrorReturn("无此连接！");
+        }
+        // 选择数据库
+        jedis.select(dbIndex);
+
+        String cursor = "0";
+        Integer count = 200;
+        Integer pageSize = 200;
+
+        ScanParams sp = new ScanParams();
+        sp.count(count);
+        sp.match("*"+scanKey+"*");
+
+        List retList = new ArrayList();
+        if ("set".equals(type)) {
+            do {
+                ScanResult<String> resultList = jedis.sscan(key,cursor,sp);
+                Integer listSize = resultList.getResult().size();
+                if (listSize > 0) {
+                    retList.addAll(resultList.getResult());
+                    if (retList.size() >= pageSize) {
+                        retList = retList.subList(0,pageSize);
+                        break;
+                    }
+                }
+                cursor = resultList.getCursor();
+                if ("0".equals(cursor)) {
+                    // 全库查询完
+                    break;
+                }
+                sp.count(count*=2);
+            } while (true);
+        } else if ("zset".equals(type)) {
+            do {
+                ScanResult<Tuple> resultList = jedis.zscan(key,cursor,sp);
+                Integer listSize = resultList.getResult().size();
+                if (listSize > 0) {
+                    retList.addAll(resultList.getResult());
+                    if (retList.size() >= pageSize) {
+                        retList = retList.subList(0,pageSize);
+                        break;
+                    }
+                }
+                cursor = resultList.getCursor();
+                if ("0".equals(cursor)) {
+                    // 全库查询完
+                    break;
+                }
+                sp.count(count*=2);
+            } while (true);
+        } else if ("hash".equals(type)) {
+            do {
+                ScanResult<Map.Entry<String, String>> resultList = jedis.hscan(key,cursor,sp);
+                Integer listSize = resultList.getResult().size();
+                if (listSize > 0) {
+                    retList.addAll(resultList.getResult());
+                    if (retList.size() >= pageSize) {
+                        retList = retList.subList(0,pageSize);
+                        break;
+                    }
+                }
+                cursor = resultList.getCursor();
+                if ("0".equals(cursor)) {
+                    // 全库查询完
+                    break;
+                }
+                sp.count(count*=2);
+            } while (true);
+        }
+        result.setData(retList);
+        return result;
+    }
+
 }

@@ -98,7 +98,10 @@
                     <button class="btn btn-default float-l editorBtn margin-r-5 listBtn setBtn zsetBtn hashBtn" style="display: none;" onclick="kvTableRemoveRow()" >删除</button>
                     <button class="btn btn-default " onclick="loadKeyValueChildren()">刷新</button>
                     <button class="btn btn-success" onclick="editKey()">保存</button>
-
+                    <span class="childScan-input editorBtn setBtn zsetBtn hashBtn" >
+                        <input class="margin-r-20" placeholder="输入关键字搜索" type="text" id="kv-scan-key">
+                        <i class="glyphicon glyphicon-search" style="cursor: pointer;" onclick="kvScan()"></i>
+                    </span>
 <!--                                <span class="flo">SIZE：</span>-->
                 </div>
             </div>
@@ -367,52 +370,10 @@
                 if (res.code == 200) {
                     // 前置操作
                     $(".editorBtn").hide();
-                    $("#kv-dataDiv").html("");
                     editArr = new Array();
 
-                    var html = '';
                     var type = res.data.type;
-                    if ("string" == type) {
-                        html = '<textarea id="kv-value" style="width: 100%;min-height: 470px;resize:none;border: none;" >'+res.data.data+'</textarea>';
-                    } else if ("list" == type || "set" == type) {
-                        html += '<table class="width-full kv-data-tab" border="1">' +
-                            '       <thead><tr><td style="width: 35px;"></td><td>值</td></tr></thead>' +
-                            '       <tbody>';
-                        $.each(res.data.data,function(i,temp){
-                            html += '<tr><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td><td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+temp+'</td></tr>';
-                        });
-                        html += '   </tbody></table>';
-                        if ("list" == type) {
-                            $(".listBtn").show();
-                        } else {
-                            $(".setBtn").show();
-                        }
-                    } else if ("zset" == type) {
-                        html += '<table class="width-full kv-data-tab"  border="1">' +
-                            '       <thead><tr><td style="width: 35px;"></td><td>Value</td><td style="width: 150px;">Score</td></tr></thead>' +
-                            '       <tbody>';
-                        $.each(res.data.data,function(i,temp){
-                            html += '<tr><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td>' +
-                                '<td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+temp.element+'</td>' +
-                                '<td class="kv-data-tab-row" onclick="transformInput(\'number\',this)">'+temp.score+'</td></tr>';
-                        });
-                        html += '   </tbody></table>';
-                        $(".zsetBtn").show();
-                    } else if ("hash" == type) {
-                        html += '<table class="width-full kv-data-tab" border="1">' +
-                            '       <thead><tr><td style="width: 35px;"></td><td style="width: 200px;">Key</td><td>Value</td></tr></thead>' +
-                            '       <tbody>';
-                        $.each(res.data.data,function(i,temp){
-                            for (var key in temp) {
-                                html += '<tr><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td>' +
-                                    '<td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+key+'</td>' +
-                                    '<td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)">'+temp[key]+'</td></tr>';
-                            }
-                        });
-                        html += '   </tbody></table>';
-                        $(".hashBtn").show();
-                    }
-                    $("#kv-dataDiv").html(html);
+                    drawKVDataDiv(type,res.data.data);
 
                     $("#kv-key").val(res.data.key);
                     $("#kv-key-btn").html(res.data.key);
@@ -420,6 +381,7 @@
                     $("#kv-typeTD").html(type.toUpperCase()+"：");
                     $("#kv-ttl").val(res.data.ttl);
                     $("#kv-ttl-btn").html(res.data.ttl);
+                    $("#kv-scan-key").val("");
                 }
             },error:function (res) {
                 message.error();
@@ -427,6 +389,53 @@
                 loadingClose();
             }
         });
+    }
+
+    // 绘制KV数据Div
+    function drawKVDataDiv(type,data) {
+        $("#kv-dataDiv").html("");
+        var html = '';
+        if ("string" == type) {
+            html = '<textarea id="kv-value" style="width: 100%;min-height: 470px;resize:none;border: none;" >'+data+'</textarea>';
+        } else if ("list" == type || "set" == type) {
+            html += '<table class="width-full kv-data-tab" border="1">' +
+                '       <thead><tr><td style="width: 35px;"></td><td>值</td></tr></thead>' +
+                '       <tbody>';
+            $.each(data,function(i,temp){
+                html += '<tr><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td><td class="kv-data-tab-row" onclick="selectKVTabRow(this)" ondblclick="transformInput(\'textarea\',this)">'+temp+'</td></tr>';
+            });
+            html += '   </tbody></table>';
+            if ("list" == type) {
+                $(".listBtn").show();
+            } else {
+                $(".setBtn").show();
+            }
+        } else if ("zset" == type) {
+            html += '<table class="width-full kv-data-tab"  border="1">' +
+                '       <thead><tr><td style="width: 35px;"></td><td>Value</td><td style="width: 150px;">Score</td></tr></thead>' +
+                '       <tbody>';
+            $.each(data,function(i,temp){
+                html += '<tr><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td>' +
+                    '<td class="kv-data-tab-row" onclick="selectKVTabRow(this)" ondblclick="transformInput(\'textarea\',this)">'+temp.element+'</td>' +
+                    '<td class="kv-data-tab-row" onclick="selectKVTabRow(this)" ondblclick="transformInput(\'number\',this)">'+temp.score+'</td></tr>';
+            });
+            html += '   </tbody></table>';
+            $(".zsetBtn").show();
+        } else if ("hash" == type) {
+            html += '<table class="width-full kv-data-tab" border="1">' +
+                '       <thead><tr><td style="width: 35px;"></td><td style="width: 200px;">Key</td><td>Value</td></tr></thead>' +
+                '       <tbody>';
+            $.each(data,function(i,temp){
+                for (var key in temp) {
+                    html += '<tr><td class="text-c" onclick="selectKVTabRow(this)">'+(i+1)+'</td>' +
+                        '<td class="kv-data-tab-row" onclick="selectKVTabRow(this)" ondblclick="transformInput(\'textarea\',this)">'+key+'</td>' +
+                        '<td class="kv-data-tab-row" onclick="selectKVTabRow(this)" ondblclick="transformInput(\'textarea\',this)">'+temp[key]+'</td></tr>';
+                }
+            });
+            html += '   </tbody></table>';
+            $(".hashBtn").show();
+        }
+        $("#kv-dataDiv").html(html);
     }
 
     // 打开添加数据界面
@@ -492,7 +501,7 @@
     }
 
     // 编辑操作对象集合
-    var editArr;
+    var editArr = new Array();
     // 编辑KEY
     function editKey(){
         var key = $("#kv-key").val();
@@ -658,7 +667,7 @@
         if ("list" == type) {
             var html = '<tr data-type="'+appendType+'">' +
                 '           <td class="text-c"></td>' +
-                '           <td class="kv-data-tab-row" onclick="transformInput(\'textarea\',this)"></td>' +
+                '           <td class="kv-data-tab-row" onclick="selectKVTabRow(this)" ondblclick="transformInput(\'textarea\',this)"></td>' +
                 '       </tr>';
             if ("left" == appendType) {
                 $("#kv-dataDiv table tbody").prepend(html);
@@ -668,15 +677,15 @@
         } else if ("zset" == type) {
             var html = '<tr data-type="add">' +
                 '           <td class="text-c"></td>' +
-                '           <td onclick="transformInput(\'textarea\',this)"></td>' +
-                '           <td onclick="transformInput(\'number\',this)"></td>' +
+                '           <td class="kv-data-tab-row" onclick="selectKVTabRow(this)" ondblclick="transformInput(\'textarea\',this)"></td>' +
+                '           <td class="kv-data-tab-row" onclick="selectKVTabRow(this)" ondblclick="transformInput(\'number\',this)"></td>' +
                 '       </tr>';
             $("#kv-dataDiv table tbody").prepend(html);
         } else if ("hash" == type) {
             var html = '<tr data-type="add">' +
                 '           <td class="text-c"></td>' +
-                '           <td onclick="transformInput(\'textarea\',this)"></td>' +
-                '           <td onclick="transformInput(\'textarea\',this)"></td>' +
+                '           <td class="kv-data-tab-row" onclick="selectKVTabRow(this)" ondblclick="transformInput(\'textarea\',this)"></td>' +
+                '           <td class="kv-data-tab-row" onclick="selectKVTabRow(this)" ondblclick="transformInput(\'textarea\',this)"></td>' +
                 '       </tr>';
             $("#kv-dataDiv table tbody").prepend(html);
         }
@@ -842,6 +851,41 @@
                     loadingClose();
                 }
             });
+        });
+    }
+
+    // 搜索hscan zscan sscan
+    function kvScan() {
+        var key = $("#kv-key").val();
+        if (!strNotNull(key)) {
+            return ;
+        }
+        var type = $("#kv-type").val();
+        var scanKey = $("#kv-scan-key").val();
+        loading();
+        $.ajax({
+            url:"../../redisDesktopManager/kvScan?tm="+ new Date().getTime(),
+            type:"POST",
+            data:{
+                csId:currentSelectConnection,
+                dbIndex:currentDBIndex,
+                key:key,
+                type:type,
+                scanKey:scanKey
+            },
+            dataType:"JSON",
+            success:function (res) {
+                if (res.code == 200) {
+                    message.success();
+                    drawKVDataDiv(type,res.data);
+                } else {
+                    message.error(res.message);
+                }
+            },error:function (res) {
+                message.error(res.message);
+            },complete(XHR, TS) {
+                loadingClose();
+            }
         });
     }
 

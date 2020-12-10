@@ -363,8 +363,35 @@ public class RedisDesktopManagerController {
         return result;
     }
 
+    @RequestMapping("kvScan")
+    @ResponseBody
+    public Result kvScan(){
+        Result result = new Result();
+        Map param = HttpServletUtil.getRequestParameter();
 
+        if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
+            return result.setErrorReturn("csId为空");
+        }
+        if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
+            return result.setErrorReturn("dbIndex为空");
+        }
+        if (VerifyUtil.stringTrimIsEmpty(param.get("key"))) {
+            return result.setErrorReturn("key为空");
+        }
 
+        try {
+
+            String csId = param.get("csId").toString().trim();
+            Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString().trim());
+            String key = param.get("key").toString().trim();
+            String type = param.get("type").toString().trim();
+            String scanKey = param.get("scanKey").toString();
+            result = redisDesktopManagerService.kvScan(csId,dbIndex,key,type,scanKey);
+        } catch (Exception e) {
+            result.setError();
+        }
+        return result;
+    }
 
 
 

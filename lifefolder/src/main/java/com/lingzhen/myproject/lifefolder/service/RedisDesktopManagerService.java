@@ -119,4 +119,14 @@ public interface RedisDesktopManagerService {
      */
     Result setTTL(String csId, Integer dbIndex, String key, Integer ttl);
 
+    /**
+     * hscan sscan zscan
+     * @param csId
+     * @param dbIndex
+     * @param key
+     * @param scanKey
+     * @return
+     */
+    Result kvScan(String csId, Integer dbIndex, String key, String type, String scanKey);
+
 }
