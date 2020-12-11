@@ -5,6 +5,7 @@ import com.lingzhen.myproject.lifefolder.pojo.Result;
 import com.lingzhen.myproject.lifefolder.service.EnglishWordService;
 import com.lingzhen.myproject.lifefolder.service.RedisDesktopManagerService;
 import com.lingzhen.myproject.lifefolder.util.HttpServletUtil;
+import com.lingzhen.myproject.lifefolder.util.IPUtil;
 import com.lingzhen.myproject.lifefolder.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,12 @@ public class RedisDesktopManagerController {
         }
 
         try {
+            String address = param.get("address").toString().trim().toLowerCase();
+            if ("localhost".equals(address) || "127.0.0.1".equals(address)) {
+                String ip = IPUtil.getIpAddress();
+                param.put("address",ip);
+            }
+
             int i = redisDesktopManagerService.saveOrEdit(param);
         } catch (Exception e) {
             result.setError();
