@@ -44,6 +44,31 @@ public class IPUtil {
         return ip;
     }
 
+//    /**
+//     * 获取客户端源端口
+//     * @return
+//     */
+//    public final static Long getRemotePort() {
+//        return getRemotePort(HttpServletUtil.getHttpServletRequest());
+//    }
+//
+//    private static Long getRemotePort(final HttpServletRequest request){
+//        try {
+//            String port = request.getHeader("remote-port");
+//            if (VerifyUtil.stringTrimIsEmpty(port)) {
+//                try{
+//                    return Long.parseLong(port);
+//                }catch(NumberFormatException ex){
+//                    return 0l;
+//                }
+//            }else{
+//                return 0l;
+//            }
+//        }catch(Exception e){
+//            return 0l;
+//        }
+//    }
+//
     public static int toInt(String ip) {
         if (ip == null) {
             return 0;
