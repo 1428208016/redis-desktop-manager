@@ -467,7 +467,7 @@
             message.warning("请选择Key");
             return ;
         }
-        var key = $(".color-bg-e8f2ff:eq(0)").html();
+        var key = $(".color-bg-e8f2ff").children(":eq(1)").html();
         var _i = layer.confirm('确认删除【'+key+'】吗？', {
             btn: ['确认', '取消']
         }, function(index, layero){
@@ -485,6 +485,12 @@
                     if (res.code == 200) {
                         message.success();
                         $("#kv-dataDiv").html("");
+                        $("#kv-type").val("");
+                        $("#kv-typeTD").html("TYPE：");
+                        $("#kv-key").val("");
+                        $("#kv-key-btn").html("NONE");
+                        $("#kv-ttl").html("0");
+                        $("#kv-ttl-btn").html("0");
                         scan();
                     } else {
                         message.error(res.message);
