@@ -62,7 +62,7 @@
                 <div class="col-md-12 col-sm-12" id="keyDiv"></div>
             </div>
         </div>
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6 col-sm-6 height-full">
             <div class="row">
                 <div class="col-md-12 col-sm-12">
                     <table>
@@ -113,8 +113,32 @@
                 </div>
             </div>
 
-            <div class="row" style="margin-top: 10px; text-align: right;">
-                <div class="col-md-12 col-sm-12">
+            <div class="row" id="operationLog" style="display: none;">
+                <div class="col-md-12 col-sm-12 height-30">
+                    操作记录
+                </div>
+                <div class="col-md-12 col-sm-12" style="max-height: 240px;min-height: 160px;">
+                    <table class="width-full" >
+                        <thead>
+                        <tr>
+                            <th width="150px">操作时间</th>
+                            <th>数据库</th>
+                            <th>操作</th>
+                            <th width="45px">状态</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>2020-12-17 14:51:59</td>
+                            <td> r-uf60b1h0qxy6vuwx5hpd.redis.rds.aliyuncs.com:db0</td>
+                            <td>22</td>
+                            <td>成功</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-12 col-sm-12 height-30">
+                    bottom
                 </div>
             </div>
         </div>

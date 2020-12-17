@@ -44,11 +44,6 @@ html,body{
     line-height: 45px;
     width: 100%;
 }
-.color-bg-fa{background-color: #fafafa;}
-.color-bg-ef{background-color: #efefef;}
-.color-bg-f5{background-color: #f5f5f5;}
-.color-bg-e8f2ff{background-color: #E8F2FF;}
-.color-bg-de{background-color: #DEDEDE;}
 #keyDiv {
     position: absolute;
     top:95px;
@@ -134,6 +129,19 @@ html,body{
     word-wrap: break-word;
     word-break: break-all;
 }
+
+#operationLog {
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    bottom: 0px;
+    min-height: 220px;
+    max-height: 300px;
+}
+#operationLog table{
+    border: 1px solid #CCC;
+}
+
 .float-r {float: right;}
 .float-l {float: left;}
 .text-l {text-align: left;}
@@ -144,6 +152,7 @@ html,body{
 .width-35 {width: 35px;}
 .width-100 {width: 100px;}
 .height-full {height: 100%;}
+.height-30 {height: 30px;}
 .height-35 {height: 35px;}
 .height-95 {height: 95px;}
 
@@ -152,6 +161,13 @@ html,body{
 .margin-b-10 {margin-bottom: 10px;}
 .margin-t--35 {margin-top: -35px;}
 .padding-t-15{padding-top: 15px;}
+
+.color-bg-fa{background-color: #fafafa;}
+.color-bg-ef{background-color: #efefef;}
+.color-bg-f5{background-color: #f5f5f5;}
+.color-bg-e8f2ff{background-color: #E8F2FF;}
+.color-bg-de{background-color: #DEDEDE;}
+.color-bg-ee{background-color: #EEE;}
 
 .table-textarea{
     width: 100%;

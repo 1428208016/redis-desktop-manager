@@ -14,4 +14,6 @@ public interface RedisDesktopManagerMapper {
     int delete(Map map);
 
     Map findById(Map map);
+
+    int addOperationLog(Map map);
 }

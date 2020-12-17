@@ -515,4 +515,26 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         return result;
     }
 
+    // 添加操作日志
+    private void addOperationLog(String csId, int database, String operation, int time, String state, String remark) {
+        Long userId = HttpServletUtil.getUserId();
+        Map relMap = new HashMap();
+        relMap.put("userId",userId);
+        relMap.put("csId",csId);
+        Map data = redisDesktopManagerMapper.findById(relMap);
+
+        Map map = new HashMap();
+        map.put("addressName",data.get("connectionName"));
+        map.put("addressUrl",data.get("address"));
+        map.put("database",database);
+        map.put("operation",operation);
+        map.put("time",time);
+        map.put("state",state);
+        map.put("userId",userId);
+        map.put("remark",remark);
+        map.put("createDate",DateUtil.getDate());
+        map.put("createTime",DateUtil.getTime());
+        redisDesktopManagerMapper.addOperationLog(map);
+    }
+
 }

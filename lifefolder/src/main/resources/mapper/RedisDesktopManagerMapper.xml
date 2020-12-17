@@ -54,4 +54,9 @@
         AND userId = #{userId}
     </update>
 
+    <insert id="addOperationLog" parameterMap="map" useGeneratedKeys="true" >
+        INSERT INTO rdm_operation_log(userId,addressName,addressUrl,database,operation,time,state,remark,createDate,createTime)
+        VALUE (#{userId},#{addressName},#{addressUrl},#{database},#{operation},#{time},#{state},#{remark},#{createDate},#{createTime})
+    </insert>
+
 </mapper>
