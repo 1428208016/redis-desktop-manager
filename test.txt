@@ -1,7 +1,3 @@
-123456789
-12
-
-
 docker container run \
   --name jenkins \
   --detach \
