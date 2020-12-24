@@ -46,7 +46,7 @@
 </head>
 <body>
     <div class="container-fluid" id="dataForm">
-        <input id="csId" type="hidden">
+        <input id="connKey" type="hidden">
         <input id="dbIndex" type="hidden">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -82,9 +82,9 @@
     </div>
 <script>
     $(function (){
-        var csId = getUrlParam("csId");
+        var connKey = getUrlParam("connKey");
         var dbIndex = getUrlParam("dbIndex");
-        $("#csId").val(csId);
+        $("#connKey").val(connKey);
         $("#dbIndex").val(dbIndex);
 
         $("[name=type]").on("change",function (e){
@@ -222,10 +222,10 @@
         }
         loading();
         $.ajax({
-            url:"../redisDesktopManager/addNewKey?tm="+ new Date().getTime(),
+            url:"redisDesktopManager/addNewKey?tm="+ new Date().getTime(),
             type:"POST",
             data:{
-                csId:$("#csId").val(),
+                connStr:localStorage.getItem($("#connKey").val()),
                 dbIndex:$("#dbIndex").val(),
                 key:$("[name=key]").val(),
                 type:type,

@@ -8,19 +8,6 @@ import java.util.Map;
 public interface RedisDesktopManagerService {
 
     /**
-     * 查询连接
-     * @param csId
-     * @return
-     */
-    Map findConnectionById(String csId);
-    /**
-     * 查询用户连接
-     * @param userId
-     * @return
-     */
-    List findConnectionByUserId(Long userId);
-
-    /**
      * 测试连接
      * @param map
      * @return
@@ -28,36 +15,29 @@ public interface RedisDesktopManagerService {
     Result testConnection(Map map);
 
     /**
-     * 删除连接
-     * @param csId
-     * @return
-     */
-    int delete(String csId);
-
-    /**
      *
-     * @param connectionKey
+     * @param connStr
      * @param dbIndex
      * @param key
      * @return
      */
-    List scan(String connectionKey,Integer dbIndex, String key);
+    List scan(String connStr,Integer dbIndex, String key);
 
     /**
      * 连接数据库
-     * @param csId
+     * @param objStr
      * @return
      */
-    Result connectionRedis(String csId);
+    Result connectionRedis(String connKey, String objStr);
 
     /**
      * 加载键值
-     * @param connectionKey
+     * @param connStr
      * @param dbIndex
      * @param key
      * @return
      */
-    Result loadKeyValue(String connectionKey,Integer dbIndex, String key);
+    Result loadKeyValue(String connStr,Integer dbIndex, String key);
 
     /**
      * 添加新键
@@ -73,16 +53,16 @@ public interface RedisDesktopManagerService {
 
     /**
      * 删除键
-     * @param csId
+     * @param connStr
      * @param dbIndex
      * @param key
      * @return
      */
-    Result deleteKey(String csId, Integer dbIndex, String key);
+    Result deleteKey(String connStr, Integer dbIndex, String key);
 
     /**
      * 编辑
-     * @param csId
+     * @param connStr
      * @param dbIndex
      * @param key
      * @param type
@@ -90,36 +70,36 @@ public interface RedisDesktopManagerService {
      * @param ttl
      * @return
      */
-    Result editKey(String csId, Integer dbIndex, String key, String type, Object value, Long ttl);
+    Result editKey(String connStr, Integer dbIndex, String key, String type, Object value, Long ttl);
 
     /**
      * 重命名Key
-     * @param csId
+     * @param connStr
      * @param dbIndex
      * @param key
      * @param newKey
      * @return
      */
-    Result renameKey(String csId, Integer dbIndex, String key, String newKey);
+    Result renameKey(String connStr, Integer dbIndex, String key, String newKey);
 
     /**
      * 设置TTL
-     * @param csId
+     * @param connStr
      * @param dbIndex
      * @param key
      * @param ttl
      * @return
      */
-    Result setTTL(String csId, Integer dbIndex, String key, Integer ttl);
+    Result setTTL(String connStr, Integer dbIndex, String key, Integer ttl);
 
     /**
      * hscan sscan zscan
-     * @param csId
+     * @param connStr
      * @param dbIndex
      * @param key
      * @param scanKey
      * @return
      */
-    Result kvScan(String csId, Integer dbIndex, String key, String type, String scanKey);
+    Result kvScan(String connStr, Integer dbIndex, String key, String type, String scanKey);
 
 }

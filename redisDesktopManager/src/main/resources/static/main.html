@@ -47,7 +47,7 @@
                         </td></tr>
                         <tr>
                             <td style="padding-top:5px;">
-                                <button class="btn btn-success" onclick="openDataAdd('add')">添加</button>
+                                <button class="btn btn-success" onclick="openDataAdd()">添加</button>
                                 <button class="btn btn-default" onclick="deleteKey()">删除</button>
                                 <button onclick="scan()" class="btn btn-info float-r" style="min-width: 120px;" >搜索</button>
                             </td>
@@ -240,10 +240,11 @@
         }
         loading();
         $.ajax({
-            url:"../redisDesktopManager/connectionRedis?tm="+ new Date().getTime(),
+            url:"redisDesktopManager/connectionRedis?tm="+ new Date().getTime(),
             type:"POST",
             data:{
-                "connKey":connKey
+                connKey:connKey,
+                obj:localStorage.getItem(connKey)
             },
             dataType:"JSON",
             success:function (res) {
@@ -261,9 +262,11 @@
                     currentSelectConnectionName = res.data.connectionName
 
                     $(_this).prepend('<span class="glyphicon glyphicon-triangle-bottom" style="cursor: pointer;" onclick="showHideDatabase(this)" aria-hidden="true">');
+                } else {
+                    message.error(res.message);
                 }
             },error:function (res) {
-                message.error();
+                message.error(res.message);
             },complete(XHR, TS) {
                 loadingClose();
             }
@@ -307,10 +310,10 @@
         }
         loading();
         $.ajax({
-            url:"../redisDesktopManager/scan?tm="+ new Date().getTime(),
+            url:"redisDesktopManager/scan?tm="+ new Date().getTime(),
             type:"POST",
             data:{
-                connectionKey:currentSelectConnection,
+                connStr:localStorage.getItem(currentSelectConnection),
                 dbIndex:currentDBIndex,
                 key:key
             },
@@ -356,10 +359,10 @@
         }
         loading();
         $.ajax({
-            url:"../redisDesktopManager/loadKeyValue?tm="+ new Date().getTime(),
+            url:"redisDesktopManager/loadKeyValue?tm="+ new Date().getTime(),
             type:"POST",
             data:{
-                connectionKey:currentSelectConnection,
+                connStr:localStorage.getItem(currentSelectConnection),
                 dbIndex:currentDBIndex,
                 key:key
             },
@@ -437,7 +440,7 @@
     }
 
     // 打开添加数据界面
-    function openDataAdd(type,id){
+    function openDataAdd(){
         if (!strNotNull(currentSelectConnectionName)) {
             message.warning("请先选择连接");
             return;
@@ -452,7 +455,7 @@
             maxmin: true,
             // shadeClose: true, //点击遮罩关闭层
             area : ['800px' , '620px'],
-            content: "redis_desktop_manager_data_add.html?connKey="+currentSelectConnection+"&dbIndex="+currentDBIndex,
+            content: "data_add.html?connKey="+currentSelectConnection+"&dbIndex="+currentDBIndex,
             end:function () {
                 scan();
             }
@@ -472,10 +475,10 @@
         }, function(index, layero){
             loading();
             $.ajax({
-                url:"../redisDesktopManager/deleteKey?tm="+ new Date().getTime(),
+                url:"redisDesktopManager/deleteKey?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
-                    connKey:currentSelectConnection,
+                    connStr:localStorage.getItem(currentSelectConnection),
                     dbIndex:currentDBIndex,
                     key:key
                 },
@@ -623,7 +626,6 @@
                 message.warning("没有任何修改!");
                 return ;
             }
-            console.info(editArr);
             value = JSON.stringify(editArr);
         }
         var _i = layer.confirm('确认修改吗？', {
@@ -635,10 +637,10 @@
         }, function(index, layero){
             loading();
             $.ajax({
-                url:"../redisDesktopManager/editKey?tm="+ new Date().getTime(),
+                url:"redisDesktopManager/editKey?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
-                    connKey:currentSelectConnection,
+                    connStr:localStorage.getItem(currentSelectConnection),
                     dbIndex:currentDBIndex,
                     key:key,
                     type:type,
@@ -791,10 +793,10 @@
         }, function(pass, index){
             loading();
             $.ajax({
-                url:"../redisDesktopManager/renameKey?tm="+ new Date().getTime(),
+                url:"redisDesktopManager/renameKey?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
-                    connKey:currentSelectConnection,
+                    connStr:localStorage.getItem(currentSelectConnection),
                     dbIndex:currentDBIndex,
                     key:key,
                     newKey:pass
@@ -832,10 +834,10 @@
         }, function(pass, index){
             loading();
             $.ajax({
-                url:"../redisDesktopManager/setTTL?tm="+ new Date().getTime(),
+                url:"redisDesktopManager/setTTL?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
-                    connKey:currentSelectConnection,
+                    connStr:localStorage.getItem(currentSelectConnection),
                     dbIndex:currentDBIndex,
                     key:key,
                     ttl:pass
@@ -868,10 +870,10 @@
         var scanKey = $("#kv-scan-key").val();
         loading();
         $.ajax({
-            url:"../redisDesktopManager/kvScan?tm="+ new Date().getTime(),
+            url:"redisDesktopManager/kvScan?tm="+ new Date().getTime(),
             type:"POST",
             data:{
-                connKey:currentSelectConnection,
+                connStr:localStorage.getItem(currentSelectConnection),
                 dbIndex:currentDBIndex,
                 key:key,
                 type:type,

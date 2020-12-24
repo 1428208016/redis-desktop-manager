@@ -33,24 +33,6 @@ public class RedisDesktopManagerController {
         return result;
     }
 
-
-
-
-    @RequestMapping("findConnectionByUserId")
-    @ResponseBody
-    public Result findConnectionByUserId(){
-        Result result = new Result();
-
-        try {
-            Long userId = HttpServletUtil.getUserId();
-            List data = redisDesktopManagerService.findConnectionByUserId(userId);
-            result.setData(data);
-        } catch (Exception e) {
-            result.setError(e);
-        }
-        return result;
-    }
-
     @RequestMapping("testConnection")
     @ResponseBody
     public Result testConnection(){
@@ -74,24 +56,6 @@ public class RedisDesktopManagerController {
         return result;
     }
 
-    @RequestMapping("delete")
-    @ResponseBody
-    public Result delete(){
-        Result result = new Result();
-        Map param = HttpServletUtil.getRequestParameter();
-
-        try {
-            if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
-                return result.setErrorReturn("csId为空");
-            }
-            String csId = param.get("csId").toString();
-            redisDesktopManagerService.delete(csId);
-        } catch (Exception e) {
-            result.setError(e);
-        }
-        return result;
-    }
-
     @RequestMapping("connectionRedis")
     @ResponseBody
     public Result connectionRedis(){
@@ -99,11 +63,17 @@ public class RedisDesktopManagerController {
         Map param = HttpServletUtil.getRequestParameter();
 
         try {
-            if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
-                return result.setErrorReturn("csId为空");
+            if (VerifyUtil.stringTrimIsEmpty(param.get("connKey"))) {
+                return result.setErrorReturn("connKey为空");
             }
-            String csId = param.get("csId").toString();
-            result = redisDesktopManagerService.connectionRedis(csId);
+            if (VerifyUtil.stringTrimIsEmpty(param.get("obj"))) {
+                return result.setErrorReturn("obj为空");
+            }
+
+
+            String connKey = param.get("connKey").toString();
+            String obj = param.get("obj").toString();
+            result = redisDesktopManagerService.connectionRedis(connKey,obj);
         } catch (Exception e) {
             result.setError(e);
         }
@@ -116,8 +86,8 @@ public class RedisDesktopManagerController {
         Result result = new Result();
         Map param = HttpServletUtil.getRequestParameter();
 
-        if (VerifyUtil.stringTrimIsEmpty(param.get("connectionKey"))) {
-            return result.setErrorReturn("连接key为空");
+        if (VerifyUtil.stringTrimIsEmpty(param.get("connStr"))) {
+            return result.setErrorReturn("connStr为空");
         }
         if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
             return result.setErrorReturn("dbIndex为空");
@@ -129,9 +99,9 @@ public class RedisDesktopManagerController {
             if (null != param.get("key")) {
                 key = param.get("key").toString();
             }
-            String connectionKey = param.get("connectionKey").toString();
+            String connStr = param.get("connStr").toString();
             Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString());
-            List<String> data = redisDesktopManagerService.scan(connectionKey,dbIndex,key);
+            List<String> data = redisDesktopManagerService.scan(connStr,dbIndex,key);
             result.setData(data);
         } catch (Exception e) {
             result.setError(e);
@@ -145,8 +115,8 @@ public class RedisDesktopManagerController {
         Result result = new Result();
         Map param = HttpServletUtil.getRequestParameter();
 
-        if (VerifyUtil.stringTrimIsEmpty(param.get("connectionKey"))) {
-            return result.setErrorReturn("连接key为空");
+        if (VerifyUtil.stringTrimIsEmpty(param.get("connStr"))) {
+            return result.setErrorReturn("connStr为空");
         }
         if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
             return result.setErrorReturn("dbIndex为空");
@@ -157,10 +127,10 @@ public class RedisDesktopManagerController {
 
         try {
 
-            String connectionKey = param.get("connectionKey").toString();
+            String connStr = param.get("connStr").toString();
             Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString());
             String key = param.get("key").toString();
-            result = redisDesktopManagerService.loadKeyValue(connectionKey,dbIndex,key);
+            result = redisDesktopManagerService.loadKeyValue(connStr,dbIndex,key);
         } catch (Exception e) {
             result.setError(e);
         }
@@ -173,8 +143,8 @@ public class RedisDesktopManagerController {
         Result result = new Result();
         Map param = HttpServletUtil.getRequestParameter();
 
-        if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
-            return result.setErrorReturn("csId为空");
+        if (VerifyUtil.stringTrimIsEmpty(param.get("connStr"))) {
+            return result.setErrorReturn("connStr为空");
         }
         if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
             return result.setErrorReturn("dbIndex为空");
@@ -190,7 +160,7 @@ public class RedisDesktopManagerController {
         }
 
         try {
-            String csId = param.get("csId").toString().trim();
+            String connStr = param.get("connStr").toString().trim();
             Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString().trim());
             String key = param.get("key").toString().trim();
             String type = param.get("type").toString().trim();
@@ -199,7 +169,7 @@ public class RedisDesktopManagerController {
             if (!VerifyUtil.stringTrimIsEmpty(param.get("ttl"))) {
                 ttl = new Long(param.get("ttl").toString());
             }
-            result = redisDesktopManagerService.addNewKey(csId,dbIndex,key,type,value,ttl);
+            result = redisDesktopManagerService.addNewKey(connStr,dbIndex,key,type,value,ttl);
         } catch (Exception e) {
             result.setError(e);
         }
@@ -212,8 +182,8 @@ public class RedisDesktopManagerController {
         Result result = new Result();
         Map param = HttpServletUtil.getRequestParameter();
 
-        if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
-            return result.setErrorReturn("csId为空");
+        if (VerifyUtil.stringTrimIsEmpty(param.get("connStr"))) {
+            return result.setErrorReturn("connObj为空");
         }
         if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
             return result.setErrorReturn("dbIndex为空");
@@ -223,10 +193,10 @@ public class RedisDesktopManagerController {
         }
 
         try {
-            String csId = param.get("csId").toString().trim();
+            String connStr = param.get("connStr").toString();
             Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString().trim());
             String key = param.get("key").toString().trim();
-            result = redisDesktopManagerService.deleteKey(csId,dbIndex,key);
+            result = redisDesktopManagerService.deleteKey(connStr,dbIndex,key);
         } catch (Exception e) {
             result.setError(e);
         }
@@ -239,8 +209,8 @@ public class RedisDesktopManagerController {
         Result result = new Result();
         Map param = HttpServletUtil.getRequestParameter();
 
-        if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
-            return result.setErrorReturn("csId为空");
+        if (VerifyUtil.stringTrimIsEmpty(param.get("connStr"))) {
+            return result.setErrorReturn("connStr为空");
         }
         if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
             return result.setErrorReturn("dbIndex为空");
@@ -253,7 +223,7 @@ public class RedisDesktopManagerController {
         }
 
         try {
-            String csId = param.get("csId").toString().trim();
+            String connStr = param.get("connStr").toString().trim();
             Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString().trim());
             String key = param.get("key").toString().trim();
             String type = param.get("type").toString().trim();
@@ -262,7 +232,7 @@ public class RedisDesktopManagerController {
             if (!VerifyUtil.stringTrimIsEmpty(param.get("ttl"))) {
                 ttl = new Long(param.get("ttl").toString());
             }
-            result = redisDesktopManagerService.editKey(csId,dbIndex,key,type,value,ttl);
+            result = redisDesktopManagerService.editKey(connStr,dbIndex,key,type,value,ttl);
         } catch (Exception e) {
             result.setError(e);
         }
@@ -275,8 +245,8 @@ public class RedisDesktopManagerController {
         Result result = new Result();
         Map param = HttpServletUtil.getRequestParameter();
 
-        if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
-            return result.setErrorReturn("csId为空");
+        if (VerifyUtil.stringTrimIsEmpty(param.get("connStr"))) {
+            return result.setErrorReturn("connStr为空");
         }
         if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
             return result.setErrorReturn("dbIndex为空");
@@ -289,11 +259,11 @@ public class RedisDesktopManagerController {
         }
 
         try {
-            String csId = param.get("csId").toString().trim();
+            String connStr = param.get("connStr").toString().trim();
             Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString().trim());
             String key = param.get("key").toString().trim();
             String newKey = param.get("newKey").toString().trim();
-            result = redisDesktopManagerService.renameKey(csId,dbIndex,key,newKey);
+            result = redisDesktopManagerService.renameKey(connStr,dbIndex,key,newKey);
         } catch (Exception e) {
             result.setError(e);
         }
@@ -306,8 +276,8 @@ public class RedisDesktopManagerController {
         Result result = new Result();
         Map param = HttpServletUtil.getRequestParameter();
 
-        if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
-            return result.setErrorReturn("csId为空");
+        if (VerifyUtil.stringTrimIsEmpty(param.get("connStr"))) {
+            return result.setErrorReturn("connStr为空");
         }
         if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
             return result.setErrorReturn("dbIndex为空");
@@ -321,11 +291,11 @@ public class RedisDesktopManagerController {
 
         try {
 
-            String csId = param.get("csId").toString().trim();
+            String connStr = param.get("connStr").toString().trim();
             Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString().trim());
             String key = param.get("key").toString().trim();
             Integer ttl = Integer.valueOf(param.get("ttl").toString());
-            result = redisDesktopManagerService.setTTL(csId,dbIndex,key,ttl);
+            result = redisDesktopManagerService.setTTL(connStr,dbIndex,key,ttl);
         } catch (Exception e) {
             result.setError(e);
         }
@@ -338,8 +308,8 @@ public class RedisDesktopManagerController {
         Result result = new Result();
         Map param = HttpServletUtil.getRequestParameter();
 
-        if (VerifyUtil.stringTrimIsEmpty(param.get("csId"))) {
-            return result.setErrorReturn("csId为空");
+        if (VerifyUtil.stringTrimIsEmpty(param.get("connStr"))) {
+            return result.setErrorReturn("connStr为空");
         }
         if (VerifyUtil.stringTrimIsEmpty(param.get("dbIndex"))) {
             return result.setErrorReturn("dbIndex为空");
@@ -350,12 +320,12 @@ public class RedisDesktopManagerController {
 
         try {
 
-            String csId = param.get("csId").toString().trim();
+            String connStr = param.get("connStr").toString().trim();
             Integer dbIndex = Integer.valueOf(param.get("dbIndex").toString().trim());
             String key = param.get("key").toString().trim();
             String type = param.get("type").toString().trim();
             String scanKey = param.get("scanKey").toString();
-            result = redisDesktopManagerService.kvScan(csId,dbIndex,key,type,scanKey);
+            result = redisDesktopManagerService.kvScan(connStr,dbIndex,key,type,scanKey);
         } catch (Exception e) {
             result.setError(e);
         }
