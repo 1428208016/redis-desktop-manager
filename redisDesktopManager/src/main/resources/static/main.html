@@ -33,9 +33,6 @@
         <div class="col-md-2 col-sm-2">
             <button class="btn btn-default" onclick="openConnectionAdd('add')">添加连接</button>
         </div>
-        <div class="col-md-10 col-sm-10">
-            <a href="#" onclick="javascript:history.go(-1)" style="display: inline-block;float:right;">返回</a>
-        </div>
     </div>
     <div id="row2">
         <div class="col-md-2 col-sm-2" id="connectionList"></div>
@@ -144,27 +141,17 @@
         </div>
     </div>
 
-
-
-<!--        <div class="col-md-12 col-sm-12">-->
-<!--            <button class="btn btn-default">btn-default</button>-->
-<!--            <button class="btn btn-link">btn-link</button>-->
-<!--            <button class="btn btn-info">btn-info</button>-->
-<!--            <button class="btn btn-primary">btn-primary</button>-->
-<!--            <button class="btn btn-success">btn-success</button>-->
-<!--            <button class="btn btn-danger">btn-danger</button>-->
-<!--            <button class="btn btn-warning">btn-warning</button>-->
-<!--            <button class="btn btn-block">btn-block</button>-->
-<!--        </div>-->
-
 <script>
 
     $(function(){
-        load();
+        if(typeof(Storage)=="undefined") {
+            message.error("抱歉! 不支持 web 存储。");
+        }
+        // loadConnectionList();
     });
 
     // 打开添加连接界面
-    function openConnectionAdd(type,id){
+    function openConnectionAdd(type,connKey){
         var title = "添加连接";
         if (type == "edit") {
             title = "编辑连接";
@@ -175,9 +162,9 @@
             maxmin: true,
             // shadeClose: true, //点击遮罩关闭层
             area : ['400px' , '420px'],
-            content: "redis_desktop_manager_connection_edit.html?csId="+id,
+            content: "connection_edit.html?connKey="+connKey,
             end:function () {
-                load();
+                loadConnectionList();
             }
         });
     }
@@ -189,7 +176,7 @@
         }, function(index, layero){
             loading();
             $.ajax({
-                url:"../../redisDesktopManager/delete?tm="+ new Date().getTime(),
+                url:"../redisDesktopManager/delete?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
                     csId:csId
@@ -198,7 +185,7 @@
                 success:function (res) {
                     if(res.code == 200){
                         message.success();
-                        load();
+                        loadConnectionList();
                     } else {
                         message.error(res.message);
                     }
@@ -213,9 +200,9 @@
     }
 
     // 加载连接列表
-    function load(){
+    function loadConnectionList(){
         $.ajax({
-            url:"../../redisDesktopManager/findConnectionByUserId?tm="+ new Date().getTime(),
+            url:"../redisDesktopManager/findConnectionByUserId?tm="+ new Date().getTime(),
             type:"POST",
             dataType:"JSON",
             success:function (res) {
@@ -265,7 +252,7 @@
         }
         loading();
         $.ajax({
-            url:"../../redisDesktopManager/connectionRedis?tm="+ new Date().getTime(),
+            url:"../redisDesktopManager/connectionRedis?tm="+ new Date().getTime(),
             type:"POST",
             data:{
                 "csId":csId
@@ -332,7 +319,7 @@
         }
         loading();
         $.ajax({
-            url:"../../redisDesktopManager/scan?tm="+ new Date().getTime(),
+            url:"../redisDesktopManager/scan?tm="+ new Date().getTime(),
             type:"POST",
             data:{
                 connectionKey:currentSelectConnection,
@@ -381,7 +368,7 @@
         }
         loading();
         $.ajax({
-            url:"../../redisDesktopManager/loadKeyValue?tm="+ new Date().getTime(),
+            url:"../redisDesktopManager/loadKeyValue?tm="+ new Date().getTime(),
             type:"POST",
             data:{
                 connectionKey:currentSelectConnection,
@@ -497,7 +484,7 @@
         }, function(index, layero){
             loading();
             $.ajax({
-                url:"../../redisDesktopManager/deleteKey?tm="+ new Date().getTime(),
+                url:"../redisDesktopManager/deleteKey?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
                     csId:currentSelectConnection,
@@ -660,7 +647,7 @@
         }, function(index, layero){
             loading();
             $.ajax({
-                url:"../../redisDesktopManager/editKey?tm="+ new Date().getTime(),
+                url:"../redisDesktopManager/editKey?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
                     csId:currentSelectConnection,
@@ -816,7 +803,7 @@
         }, function(pass, index){
             loading();
             $.ajax({
-                url:"../../redisDesktopManager/renameKey?tm="+ new Date().getTime(),
+                url:"../redisDesktopManager/renameKey?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
                     csId:currentSelectConnection,
@@ -857,7 +844,7 @@
         }, function(pass, index){
             loading();
             $.ajax({
-                url:"../../redisDesktopManager/setTTL?tm="+ new Date().getTime(),
+                url:"../redisDesktopManager/setTTL?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
                     csId:currentSelectConnection,
@@ -893,7 +880,7 @@
         var scanKey = $("#kv-scan-key").val();
         loading();
         $.ajax({
-            url:"../../redisDesktopManager/kvScan?tm="+ new Date().getTime(),
+            url:"../redisDesktopManager/kvScan?tm="+ new Date().getTime(),
             type:"POST",
             data:{
                 csId:currentSelectConnection,

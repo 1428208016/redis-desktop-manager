@@ -8,13 +8,6 @@ import java.util.Map;
 public interface RedisDesktopManagerService {
 
     /**
-     * 保存\编辑连接
-     * @param map
-     * @return
-     */
-    int saveOrEdit(Map map);
-
-    /**
      * 查询连接
      * @param csId
      * @return

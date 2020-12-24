@@ -1,5 +1,6 @@
 package com.lingzhen.rdm.controller;
 
+import com.lingzhen.myproject.common.util.UuidUtil;
 import com.lingzhen.rdm.pojo.Result;
 import com.lingzhen.rdm.service.RedisDesktopManagerService;
 import com.lingzhen.rdm.util.HttpServletUtil;
@@ -19,52 +20,21 @@ public class RedisDesktopManagerController {
     @Autowired
     private RedisDesktopManagerService redisDesktopManagerService;
 
-    @RequestMapping("saveOrEdit")
+    @RequestMapping("getNewUUID")
     @ResponseBody
-    public Result saveOrEdit(){
+    public Result getNewUUID(){
         Result result = new Result();
-        Map param = HttpServletUtil.getRequestParameter();
-
-        if (VerifyUtil.stringTrimIsEmpty(param.get("connectionName"))) {
-            return result.setErrorReturn("连接名称为空");
-        }
-        if (VerifyUtil.stringTrimIsEmpty(param.get("address"))) {
-            return result.setErrorReturn("连接地址为空");
-        }
-        if (VerifyUtil.stringTrimIsEmpty(param.get("port"))) {
-            return result.setErrorReturn("连接端口为空");
-        }
-        if (VerifyUtil.stringTrimIsEmpty(param.get("auth"))) {
-            return result.setErrorReturn("连接密码为空");
-        }
 
         try {
-            String address = param.get("address").toString().trim().toLowerCase();
-            if ("localhost".equals(address) || "127.0.0.1".equals(address)) {
-                return result.setErrorReturn("不支持该连接地址");
-            }
-            int i = redisDesktopManagerService.saveOrEdit(param);
+            result.setData(UuidUtil.getUuid());
         } catch (Exception e) {
             result.setError(e);
         }
         return result;
     }
 
-    @RequestMapping("findConnectionById")
-    @ResponseBody
-    public Result findConnectionById(){
-        Result result = new Result();
 
-        try {
-            Map param = HttpServletUtil.getRequestParameter();
-            String csId = param.get("csId").toString();
-            Map data = redisDesktopManagerService.findConnectionById(csId);
-            result.setData(data);
-        } catch (Exception e) {
-            result.setError(e);
-        }
-        return result;
-    }
+
 
     @RequestMapping("findConnectionByUserId")
     @ResponseBody
@@ -96,9 +66,6 @@ public class RedisDesktopManagerController {
             }
             if (VerifyUtil.stringTrimIsEmpty(param.get("port"))) {
                 return result.setErrorReturn("连接端口为空");
-            }
-            if (VerifyUtil.stringTrimIsEmpty(param.get("auth"))) {
-                return result.setErrorReturn("连接密码为空");
             }
             result = redisDesktopManagerService.testConnection(param);
         } catch (Exception e) {

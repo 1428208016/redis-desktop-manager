@@ -19,7 +19,7 @@
 </head>
 <body>
     <div class="container-fluid" id="dataForm">
-        <input id="csId" type="hidden">
+        <input id="connKey" type="hidden">
         <div  class="row">
             <div class="col-md-12 col-sm-12">
                 连接名：<input type="text" name="connectionName">
@@ -53,88 +53,125 @@
     </div>
 
 <script>
+    // 连接集合
+    var CONNECTION_LIST_KEY = "_redisDistopManager_connection_list";
     $(function (){
-        var csId = getUrlParam("csId");
-        if (strNotNull(csId)) {
-            $("#csId").val(csId);
-            loadData(csId);
+
+        var connKey = getUrlParam("connKey");
+        if (strNotNull(connKey)) {
+            $("#connKey").val(connKey);
+            loadConnData(connKey);
         }
     });
 
-    function loadData(csId){
+    function loadConnData(connKey){
+        loading();
+        var str = localStorage.getItem(connKey);
+        if (strNotNull(str)) {
+            var data = JSON.parse(str);
+            $("[name=connectionName]").val(data.connectionName);
+            $("[name=address]").val(data.address);
+            $("[name=port]").val(data.port);
+            $("[name=auth]").val(data.auth);
+            $("[name=databaseDiscoveryLimit]").val(data.databaseDiscoveryLimit);
+        }
+    }
+
+    function testConnection(){
         loading();
         $.ajax({
-            url:"../../redisDesktopManager/findConnectionById?tm="+ new Date().getTime(),
+            url:"redisDesktopManager/testConnection?tm="+ new Date().getTime(),
             type:"POST",
             data:{
-                csId:csId
+                connectionName:$("[name=connectionName]").val(),
+                address:$("[name=address]").val(),
+                port:$("[name=port]").val(),
+                auth:$("[name=auth]").val()
             },
             dataType:"JSON",
             success:function (res) {
                 loadingClose();
                 if(res.code == 200){
-                    loadFormData(res.data);
+                    message.success("连接成功！");
+                } else {
+                    message.error(res.message,3000);
                 }
             },error:function (res) {
                 message.error();
             }
         });
     }
-function testConnection(){
-    loading();
-    $.ajax({
-        url:"../../redisDesktopManager/testConnection?tm="+ new Date().getTime(),
-        type:"POST",
-        data:{
-            connectionName:$("[name=connectionName]").val(),
-            address:$("[name=address]").val(),
-            port:$("[name=port]").val(),
-            auth:$("[name=auth]").val()
-        },
-        dataType:"JSON",
-        success:function (res) {
-            loadingClose();
-            if(res.code == 200){
-                message.success("连接成功！");
-            } else {
-                message.error(res.message,3000);
-            }
-        },error:function (res) {
-            message.error();
-        }
-    });
-}
 
-function save(){
-    loading();
-    $.ajax({
-        url:"../../redisDesktopManager/saveOrEdit?tm="+ new Date().getTime(),
-        type:"POST",
-        data:{
-            csId:$("#csId").val(),
-            connectionName:$("[name=connectionName]").val(),
-            address:$("[name=address]").val(),
-            port:$("[name=port]").val(),
-            auth:$("[name=auth]").val(),
-            databaseDiscoveryLimit:$("[name=databaseDiscoveryLimit]").val()
-        },
-        dataType:"JSON",
-        success:function (res) {
-            if(res.code == 200){
-                message.success();
-                setTimeout(function (){
-                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                    parent.layer.close(index);
-                },800);
-            } else {
-            loadingClose();
-                message.error(res.message);
-            }
-        },error:function (res) {
-            message.error();
+    function save(){
+        var connectionName = $("[name=connectionName]").val();
+        if (!strNotNull(connectionName)) {
+            message.error("连接名称为空");
+            return ;
         }
-    });
-}
+        var address = $("[name=address]").val();
+        if (!strNotNull(address)) {
+            message.error("连接地址为空");
+            return ;
+        }
+        var port = $("[name=port]").val();
+        if (!strNotNull(port)) {
+            message.error("连接端口为空");
+            return ;
+        }
+        var auth = $("[name=auth]").val();
+        var databaseDiscoveryLimit = $("[name=databaseDiscoveryLimit]").val();
+
+        var connObj = {
+            connectionName:connectionName,
+            address:address,
+            port:port,
+            auth:auth,
+            databaseDiscoveryLimit:databaseDiscoveryLimit
+        }
+        var connKey = $("#connKey").val();
+        if (strNotNull(connKey)) {
+            localStorage.setItem(connKey,JSON.stringify(connObj));
+
+            setTimeout(function (){
+                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                parent.layer.close(index);
+            },800);
+        } else {
+            loading();
+            $.ajax({
+                url:"redisDesktopManager/getNewUUID?tm="+ new Date().getTime(),
+                type:"POST",
+                data:{},
+                dataType:"JSON",
+                success:function (res) {
+                    if(res.code == 200){
+                        // 连接数据
+                        localStorage.setItem(res.data,JSON.stringify(connObj));
+                        // 连接集合数据
+                        var connArr = localStorage.getItem(CONNECTION_LIST_KEY);
+                        if (strNotNull(connArr)) {
+                            localStorage.setItem(CONNECTION_LIST_KEY,connArr+","+res.data);
+                        } else {
+                            localStorage.setItem(CONNECTION_LIST_KEY,res.data);
+                        }
+                        message.success();
+
+                        setTimeout(function (){
+                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        },800);
+                    } else {
+                        message.error(res.message,3000);
+                    }
+                },error:function (res) {
+                    message.error();
+                },complete:function () {
+                    loadingClose();
+                }
+            });
+        }
+
+    }
 </script>
 </body>
 </html>

@@ -22,25 +22,11 @@
             <version>2.0.0-alpha1</version>
         </dependency>
 
-        <!-- Java web token -->
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>3.10.3</version>
-        </dependency>
-
         <!-- fastJSON -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.73</version>
-        </dependency>
-
-        <!-- javax邮件 -->
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.6.2</version>
         </dependency>
 
     </dependencies>

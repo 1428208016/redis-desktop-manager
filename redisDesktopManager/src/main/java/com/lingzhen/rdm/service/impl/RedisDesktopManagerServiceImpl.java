@@ -2,6 +2,7 @@ package com.lingzhen.rdm.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.lingzhen.myproject.common.util.DateUtil;
+import com.lingzhen.myproject.common.util.UuidUtil;
 import com.lingzhen.rdm.pojo.Result;
 import com.lingzhen.rdm.service.RedisDesktopManagerService;
 import com.lingzhen.rdm.util.HttpServletUtil;
@@ -16,32 +17,6 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
 
     // 连接map
     private Map<String, Jedis> connectionMap = new HashMap<>();
-
-    @Override
-    public int saveOrEdit(Map map) {
-        // defaultFilter默认值
-        if (VerifyUtil.stringTrimIsEmpty(map.get("defaultFilter"))) {
-            map.put("defaultFilter","*");
-        }
-        // databaseDiscoveryLimit默认值与限制
-        if (VerifyUtil.stringTrimIsEmpty(map.get("databaseDiscoveryLimit"))) {
-            map.put("databaseDiscoveryLimit","20");
-        } else {
-            Integer databaseDiscoveryLimit = Integer.valueOf(map.get("databaseDiscoveryLimit").toString());
-            if (databaseDiscoveryLimit <= 0 || databaseDiscoveryLimit > 255) {
-                map.put("databaseDiscoveryLimit",20);
-            }
-        }
-        map.put("userId", HttpServletUtil.getUserId());
-        if (VerifyUtil.stringTrimIsEmpty(map.get("csId"))) {
-            // 新增
-            map.put("createDate",DateUtil.getDate());
-            map.put("createTime",DateUtil.getTime());
-        } else {
-            // 修改
-        }
-        return 1;
-    }
 
     @Override
     public Map findConnectionById(String csId) {
@@ -63,19 +38,24 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         try {
             String host = map.get("address").toString();
             Integer port = Integer.valueOf(map.get("port").toString());
-            String auth = map.get("auth").toString();
-
             JedisShardInfo jedisShardInfo = new JedisShardInfo(host,port);
-            jedisShardInfo.setPassword(auth);
             Jedis jedis = new Jedis(jedisShardInfo);
-            String str = jedis.auth(auth);
-            if (!"OK".equals(str)) {
-                result.setErrorReturn(str);
+            String str;
+            if (!VerifyUtil.stringTrimIsEmpty(map.get("auth"))) {
+                String auth = map.get("auth").toString();
+                str = jedis.auth(auth);
+                if (!"OK".equals(str)) {
+                    result.setErrorReturn(str);
+                }
+            } else {
+                String _key = "redisDesktopManager_" + UuidUtil.getUuid();
+                jedis.set(_key,"hello");
+                jedis.del(_key);
             }
+            jedis.close();
         } catch (Exception e) {
             result.setError("连接失败，"+e.getMessage());
         }
-
         return result;
     }
 
