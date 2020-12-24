@@ -17,8 +17,6 @@
 
     <modules>
         <module>common</module>
-        <module>enlightenmentStar</module>
-        <module>lifefolder</module>
     </modules>
 
     <properties>
@@ -26,9 +24,5 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
     </properties>
-
-    <dependencies>
-
-    </dependencies>
 
 </project>
