@@ -23,4 +23,3 @@ docker build .
 #Jenkins默认情况下执行shell脚本是使用非登录方式，然而非登录方式不会加载 /etc/profile 文件，在 Execute shell 中 添加如 #!/bin/sh -l 命令修改为登录方式即可解决问题。
 
 34567891011121314
-QQQ1
