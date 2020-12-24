@@ -14,10 +14,6 @@
     <databaseIdProvider></databaseIdProvider>
     <mappers></mappers>
 -->
-<!--    <settings>-->
-<!--        <setting name="logImpl" value="org.apache.ibatis.logging.slf4j.Slf4jImpl"/>-->
-<!--    </settings>-->
-
     <settings>
         <setting name="logImpl" value="SLF4J"/>
     </settings>
@@ -25,11 +21,5 @@
         <typeAlias type="java.util.Map" alias="map"></typeAlias>
         <typeAlias type="java.lang.String" alias="string"></typeAlias>
     </typeAliases>
-
-<!--    <plugins>-->
-<!--        <plugin interceptor="com.lingzhen.myproject.englishword.plugin.ListPagePlugin">-->
-<!--            <property name="sqlId" value=".*listPage" />-->
-<!--        </plugin>-->
-<!--    </plugins>-->
 
 </configuration>

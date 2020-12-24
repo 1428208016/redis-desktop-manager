@@ -10,13 +10,14 @@
         <version>2.3.3.RELEASE</version>
     </parent>
 
-    <groupId>com.lingzhen.my-project</groupId>
+    <groupId>com.lingzhen.rdm</groupId>
     <artifactId>master</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <modules>
         <module>common</module>
+        <module>redisDesktopManager</module>
     </modules>
 
     <properties>

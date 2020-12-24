@@ -3,7 +3,6 @@ package com.lingzhen.rdm.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.lingzhen.myproject.common.util.DateUtil;
 import com.lingzhen.rdm.mapper.UserMapper;
-import com.lingzhen.rdm.service.StoreService;
 import com.lingzhen.rdm.service.UserService;
 import com.lingzhen.rdm.util.HttpServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
-
-    @Autowired
-    private StoreService storeService;
 
     @Override
     public Map findById(Long userId) {
@@ -48,9 +44,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int initAccount(Long userId) {
-        // 初始化项目
-        storeService.buyProject(userId,"1");
-
         return 1;
     }
 
