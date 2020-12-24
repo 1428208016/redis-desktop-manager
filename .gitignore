@@ -5,6 +5,3 @@
 #maven
 **/target/**
 
-#project
-filefolder_log/**
-

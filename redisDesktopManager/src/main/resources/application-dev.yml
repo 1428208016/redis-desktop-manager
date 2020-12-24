@@ -4,38 +4,13 @@ server:
     context-path: /rdm
 
 spring:
-  datasource:
-    #url: jdbc:mysql://101.37.78.234:3306/life?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&allowMultiQueries=true
-    url: jdbc:mysql://101.37.78.234:3306/life
-    username: root
-    password: Jingzhidb123!
   #配置热部署
   devtools:
     restart:
       enabled: true
-  #文件上传
-  servlet:
-    multipart:
-      max-file-size: 1024MB
-  redis:
-    host: 101.37.78.234
-    port: 6379
-    password: lingzhen.
-
-#mybatis配置
-#http://mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/
-mybatis:
-  config-location: classpath:mybatis-config.xml
-  mapper-locations[0]: classpath:mapper/*.xml
-  mapper-locations[1]: classpath:mapper/**/*.xml
 
 #springboot-日志
 #https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-custom-log-levels
 logging:
   level:
     com.lingzhen.rdm: debug
-  file:
-    path: "filefolder_log"
-
-# 文件上传地址
-fileUploadPath: F:/03project/temp/

@@ -2,12 +2,10 @@ package com.lingzhen.rdm.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.lingzhen.myproject.common.util.DateUtil;
-import com.lingzhen.rdm.mapper.RedisDesktopManagerMapper;
 import com.lingzhen.rdm.pojo.Result;
 import com.lingzhen.rdm.service.RedisDesktopManagerService;
 import com.lingzhen.rdm.util.HttpServletUtil;
 import com.lingzhen.rdm.util.VerifyUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.*;
 
@@ -15,12 +13,6 @@ import java.util.*;
 
 @Service
 public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerService {
-
-    @Autowired
-    private RedisDesktopManagerMapper redisDesktopManagerMapper;
-
-//    @Autowired
-//    private RedisComponent redisComponent;
 
     // 连接map
     private Map<String, Jedis> connectionMap = new HashMap<>();
@@ -45,11 +37,10 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
             // 新增
             map.put("createDate",DateUtil.getDate());
             map.put("createTime",DateUtil.getTime());
-            return redisDesktopManagerMapper.save(map);
         } else {
             // 修改
-            return redisDesktopManagerMapper.edit(map);
         }
+        return 1;
     }
 
     @Override
@@ -57,12 +48,13 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         Map selMap = new HashMap();
         selMap.put("userId",HttpServletUtil.getUserId());
         selMap.put("csId",csId);
-        return redisDesktopManagerMapper.findById(selMap);
+        return null;
     }
 
     @Override
     public List findConnectionByUserId(Long userId) {
-        return redisDesktopManagerMapper.findConnectionByUserId(userId);
+//        return redisDesktopManagerMapper.findConnectionByUserId(userId);
+        return null;
     }
 
     @Override
@@ -92,7 +84,8 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         Map map = new HashMap();
         map.put("csId",csId);
         map.put("userId",HttpServletUtil.getUserId());
-        return redisDesktopManagerMapper.delete(map);
+//        return redisDesktopManagerMapper.delete(map);
+        return 1;
     }
 
     @Override
@@ -521,11 +514,11 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         Map relMap = new HashMap();
         relMap.put("userId",userId);
         relMap.put("csId",csId);
-        Map data = redisDesktopManagerMapper.findById(relMap);
+//        Map data = redisDesktopManagerMapper.findById(relMap);
 
         Map map = new HashMap();
-        map.put("addressName",data.get("connectionName"));
-        map.put("addressUrl",data.get("address"));
+//        map.put("addressName",data.get("connectionName"));
+//        map.put("addressUrl",data.get("address"));
         map.put("database",database);
         map.put("operation",operation);
         map.put("time",time);
@@ -534,7 +527,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         map.put("remark",remark);
         map.put("createDate",DateUtil.getDate());
         map.put("createTime",DateUtil.getTime());
-        redisDesktopManagerMapper.addOperationLog(map);
+//        redisDesktopManagerMapper.addOperationLog(map);
     }
 
 }

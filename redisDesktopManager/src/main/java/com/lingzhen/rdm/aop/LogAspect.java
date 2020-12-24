@@ -2,10 +2,8 @@ package com.lingzhen.rdm.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -17,7 +15,7 @@ public class LogAspect {
     // .. 所有子包
     // (..)：匹配任何参数matches any number (zero or more)
     // execution(modifiers-pattern? ret-type-pattern declaring-type-pattern? name-pattern(param-pattern) throws-pattern?)
-    @Pointcut("execution(* com.lingzhen.rdm.service.UserService.*(..))")
+    @Pointcut("execution(* com.lingzhen.rdm.service.RedisDesktopManagerService.*(..))")
     public void logPointcut(){}
 
 
@@ -33,20 +31,5 @@ public class LogAspect {
         System.out.println();
         System.out.println("--LogAspect END---");
     }
-
-    @AfterThrowing(pointcut = "com.lingzhen.rdm.aop.LogAspect.logPointcut()",
-        throwing = "e")
-    public void afterThrowing(JoinPoint joinPoint, DataAccessException e) {
-        Object[] obj = joinPoint.getArgs();
-        System.out.println("类："+joinPoint.getSignature().getDeclaringTypeName()+"."+joinPoint.getSignature().getName());
-        System.out.print("参数：");
-        for (Object temp : obj) {
-            System.out.print(temp+",");
-        }
-        System.out.println();
-        System.out.println("异常："+e.getMessage());
-        System.out.println("--LogAspect Throwing---");
-    }
-
 
 }

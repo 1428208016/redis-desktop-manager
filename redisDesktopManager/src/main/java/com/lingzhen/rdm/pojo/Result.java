@@ -45,11 +45,6 @@ public class Result {
         this.code = code;
     }
 
-    public void setResult(ResultInfo resultInfo) {
-        this.code = resultInfo.getCode();
-        this.message = resultInfo.getMessage();
-    }
-
     public String getMessage() {
         return message;
     }
