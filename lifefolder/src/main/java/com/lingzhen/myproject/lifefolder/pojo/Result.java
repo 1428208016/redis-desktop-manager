@@ -28,6 +28,10 @@ public class Result {
         this.setError("操作失败");
     }
 
+    public void setError(Exception e) {
+        this.setError(e.getMessage());
+    }
+
     public void setError(String message) {
         this.code = Result.ERROR;
         this.message = message;

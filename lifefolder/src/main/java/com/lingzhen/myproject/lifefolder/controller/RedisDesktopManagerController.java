@@ -46,7 +46,7 @@ public class RedisDesktopManagerController {
             }
             int i = redisDesktopManagerService.saveOrEdit(param);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -62,7 +62,7 @@ public class RedisDesktopManagerController {
             Map data = redisDesktopManagerService.findConnectionById(csId);
             result.setData(data);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -77,7 +77,7 @@ public class RedisDesktopManagerController {
             List data = redisDesktopManagerService.findConnectionByUserId(userId);
             result.setData(data);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -103,7 +103,7 @@ public class RedisDesktopManagerController {
             }
             result = redisDesktopManagerService.testConnection(param);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -121,7 +121,7 @@ public class RedisDesktopManagerController {
             String csId = param.get("csId").toString();
             redisDesktopManagerService.delete(csId);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -139,7 +139,7 @@ public class RedisDesktopManagerController {
             String csId = param.get("csId").toString();
             result = redisDesktopManagerService.connectionRedis(csId);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -168,7 +168,7 @@ public class RedisDesktopManagerController {
             List<String> data = redisDesktopManagerService.scan(connectionKey,dbIndex,key);
             result.setData(data);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -196,7 +196,7 @@ public class RedisDesktopManagerController {
             String key = param.get("key").toString();
             result = redisDesktopManagerService.loadKeyValue(connectionKey,dbIndex,key);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -235,7 +235,7 @@ public class RedisDesktopManagerController {
             }
             result = redisDesktopManagerService.addNewKey(csId,dbIndex,key,type,value,ttl);
         } catch (Exception e) {
-            result.setError(e.getMessage());
+            result.setError(e);
         }
         return result;
     }
@@ -262,7 +262,7 @@ public class RedisDesktopManagerController {
             String key = param.get("key").toString().trim();
             result = redisDesktopManagerService.deleteKey(csId,dbIndex,key);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -298,7 +298,7 @@ public class RedisDesktopManagerController {
             }
             result = redisDesktopManagerService.editKey(csId,dbIndex,key,type,value,ttl);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -329,7 +329,7 @@ public class RedisDesktopManagerController {
             String newKey = param.get("newKey").toString().trim();
             result = redisDesktopManagerService.renameKey(csId,dbIndex,key,newKey);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -361,7 +361,7 @@ public class RedisDesktopManagerController {
             Integer ttl = Integer.valueOf(param.get("ttl").toString());
             result = redisDesktopManagerService.setTTL(csId,dbIndex,key,ttl);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
@@ -391,7 +391,7 @@ public class RedisDesktopManagerController {
             String scanKey = param.get("scanKey").toString();
             result = redisDesktopManagerService.kvScan(csId,dbIndex,key,type,scanKey);
         } catch (Exception e) {
-            result.setError();
+            result.setError(e);
         }
         return result;
     }
