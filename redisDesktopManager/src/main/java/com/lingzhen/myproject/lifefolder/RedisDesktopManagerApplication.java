@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("com.lingzhen.myproject.lifefolder.mapper")
-public class LifefolderApplication {
+public class RedisDesktopManagerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LifefolderApplication.class, args);
+		SpringApplication.run(RedisDesktopManagerApplication.class, args);
 	}
 
 }
