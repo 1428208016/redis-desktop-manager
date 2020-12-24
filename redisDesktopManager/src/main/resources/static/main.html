@@ -14,6 +14,7 @@
     <script src="plugin/toastr/toastr.min.js"></script>
     <script src="plugin/layer/3.1.1/layer.js"></script>
     <script src="js/common.js"></script>
+    <script src="js/rdm.js"></script>
 
     <style>
         .layui-layer-prompt .layui-layer-input {
@@ -147,7 +148,7 @@
         if(typeof(Storage)=="undefined") {
             message.error("抱歉! 不支持 web 存储。");
         }
-        // loadConnectionList();
+        loadConnectionList();
     });
 
     // 打开添加连接界面
@@ -169,61 +170,48 @@
         });
     }
 
+    // 加载连接列表
+    function loadConnectionList(){
+        var list = localStorage.getItem(CONNECTION_LIST_KEY);
+        if (strNotNull(list)) {
+            $("#connectionList").html("");
+            $.each(list.split(","),function (i,temp){
+                var data = JSON.parse(localStorage.getItem(temp));
+                var html = '<div onclick="connectionSelected(this)" ondblclick="connectionRedis(\''+temp+'\',this)" onselectstart="return false;">' +
+                    '<img src="image/favicon.png" height="16" width="16"/> '
+                    + data.connectionName +
+                    '   <div class="editor">' +
+                    '       <span class="glyphicon glyphicon-edit" aria-hidden="true" onclick="openConnectionAdd(\'edit\',\''+temp+'\')"></span>' +
+                    '       <span class="glyphicon glyphicon-trash" aria-hidden="true" onclick="deleteConnection(\''+temp+'\')"></span>' +
+                    '   </div>'+
+                    '</div>';
+                $("#connectionList").append(html);
+            });
+        }
+    }
+
     // 删除连接
-    function deleteConnection(csId) {
+    function deleteConnection(connKey) {
         var _i = layer.confirm('确认删除该连接吗？', {
             btn: ['确认', '取消']
         }, function(index, layero){
-            loading();
-            $.ajax({
-                url:"../redisDesktopManager/delete?tm="+ new Date().getTime(),
-                type:"POST",
-                data:{
-                    csId:csId
-                },
-                dataType:"JSON",
-                success:function (res) {
-                    if(res.code == 200){
-                        message.success();
-                        loadConnectionList();
-                    } else {
-                        message.error(res.message);
+            // 删除list里面的
+            var list = localStorage.getItem(CONNECTION_LIST_KEY);
+            if (strNotNull(list)) {
+                var newList = "";
+                $.each(list.split(","),function (i,temp){
+                    if (connKey != temp) {
+                        newList += temp+",";
                     }
-                },error:function (res) {
-                    message.error();
-                },complete(XHR, TS) {
-                    loadingClose();
-                    layer.close(_i);
-                }
-            });
-        });
-    }
-
-    // 加载连接列表
-    function loadConnectionList(){
-        $.ajax({
-            url:"../redisDesktopManager/findConnectionByUserId?tm="+ new Date().getTime(),
-            type:"POST",
-            dataType:"JSON",
-            success:function (res) {
-                $("#connectionList").html("");
-                if (res.code == 200) {
-                    $.each(res.data,function(i,temp){
-                        var html = '<div onclick="connectionSelected(this)" ondblclick="connectionRedis('+temp.csId+',this)" onselectstart="return false;">' +
-                            '<img src="image/favicon.png" height="16" width="16"/> '
-                            + temp.connectionName +
-                            '   <div class="editor">' +
-                            '       <span class="glyphicon glyphicon-edit" aria-hidden="true" onclick="openConnectionAdd(\'edit\','+temp.csId+')"></span>' +
-                            '       <span class="glyphicon glyphicon-trash" aria-hidden="true" onclick="deleteConnection('+temp.csId+')"></span>' +
-                            '   </div>'+
-                            '</div>';
-
-                        $("#connectionList").append(html);
-                    });
-                }
-            },error:function (res) {
-                message.error();
+                });
+                localStorage.setItem(CONNECTION_LIST_KEY,newList.substr(0,newList.length-1));
             }
+            // 删除key
+            localStorage.removeItem(connKey);
+            message.success();
+            layer.close(_i);
+            // 再加载
+            loadConnectionList();
         });
     }
 
@@ -245,7 +233,7 @@
     // 连接redis
     var currentSelectConnection;
     var currentSelectConnectionName;
-    function connectionRedis(csId,_this){
+    function connectionRedis(connKey,_this){
         var connectionKey = $(_this).data("connectionKey");
         if (strNotNull(connectionKey)) {
             return ;
@@ -255,7 +243,7 @@
             url:"../redisDesktopManager/connectionRedis?tm="+ new Date().getTime(),
             type:"POST",
             data:{
-                "csId":csId
+                "connKey":connKey
             },
             dataType:"JSON",
             success:function (res) {
@@ -464,7 +452,7 @@
             maxmin: true,
             // shadeClose: true, //点击遮罩关闭层
             area : ['800px' , '620px'],
-            content: "redis_desktop_manager_data_add.html?csId="+currentSelectConnection+"&dbIndex="+currentDBIndex,
+            content: "redis_desktop_manager_data_add.html?connKey="+currentSelectConnection+"&dbIndex="+currentDBIndex,
             end:function () {
                 scan();
             }
@@ -487,7 +475,7 @@
                 url:"../redisDesktopManager/deleteKey?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
-                    csId:currentSelectConnection,
+                    connKey:currentSelectConnection,
                     dbIndex:currentDBIndex,
                     key:key
                 },
@@ -650,7 +638,7 @@
                 url:"../redisDesktopManager/editKey?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
-                    csId:currentSelectConnection,
+                    connKey:currentSelectConnection,
                     dbIndex:currentDBIndex,
                     key:key,
                     type:type,
@@ -806,7 +794,7 @@
                 url:"../redisDesktopManager/renameKey?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
-                    csId:currentSelectConnection,
+                    connKey:currentSelectConnection,
                     dbIndex:currentDBIndex,
                     key:key,
                     newKey:pass
@@ -847,7 +835,7 @@
                 url:"../redisDesktopManager/setTTL?tm="+ new Date().getTime(),
                 type:"POST",
                 data:{
-                    csId:currentSelectConnection,
+                    connKey:currentSelectConnection,
                     dbIndex:currentDBIndex,
                     key:key,
                     ttl:pass
@@ -883,7 +871,7 @@
             url:"../redisDesktopManager/kvScan?tm="+ new Date().getTime(),
             type:"POST",
             data:{
-                csId:currentSelectConnection,
+                connKey:currentSelectConnection,
                 dbIndex:currentDBIndex,
                 key:key,
                 type:type,

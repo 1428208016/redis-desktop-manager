@@ -10,6 +10,7 @@
     <script src="plugin/toastr/toastr.min.js"></script>
     <script src="plugin/layer/3.1.1/layer.js"></script>
     <script src="js/common.js"></script>
+    <script src="js/rdm.js"></script>
 
     <style>
         input {
@@ -53,8 +54,6 @@
     </div>
 
 <script>
-    // 连接集合
-    var CONNECTION_LIST_KEY = "_redisDistopManager_connection_list";
     $(function (){
 
         var connKey = getUrlParam("connKey");
@@ -65,7 +64,6 @@
     });
 
     function loadConnData(connKey){
-        loading();
         var str = localStorage.getItem(connKey);
         if (strNotNull(str)) {
             var data = JSON.parse(str);
@@ -132,6 +130,7 @@
         if (strNotNull(connKey)) {
             localStorage.setItem(connKey,JSON.stringify(connObj));
 
+            message.success();
             setTimeout(function (){
                 var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                 parent.layer.close(index);
