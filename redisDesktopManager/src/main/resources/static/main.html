@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <title>Redis Distop Manager</title>
     <!-- Basic -->
-    <link rel="stylesheet" href="../../plugin/bootstrap/3.3.7/css/bootstrap.css">
-    <link rel="stylesheet" href="../../plugin/toastr/toastr.min.css">
-    <link rel="stylesheet" href="../../css/redisdesktopmanager/redis_desktop_manager.css">
+    <link rel="stylesheet" href="plugin/bootstrap/3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="plugin/toastr/toastr.min.css">
+    <link rel="stylesheet" href="css/rdm.css">
 
 
-    <script src="../../js/jquery-3.5.1.js"></script>
-    <script src="../../plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="../../plugin/toastr/toastr.min.js"></script>
-    <script src="../../plugin/layer/3.1.1/layer.js"></script>
-    <script src="../../js/common.js"></script>
+    <script src="js/jquery-3.5.1.js"></script>
+    <script src="plugin/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="plugin/toastr/toastr.min.js"></script>
+    <script src="plugin/layer/3.1.1/layer.js"></script>
+    <script src="js/common.js"></script>
 
     <style>
         .layui-layer-prompt .layui-layer-input {
@@ -223,7 +223,7 @@
                 if (res.code == 200) {
                     $.each(res.data,function(i,temp){
                         var html = '<div onclick="connectionSelected(this)" ondblclick="connectionRedis('+temp.csId+',this)" onselectstart="return false;">' +
-                            '<img src="../../image/redisdesktopmanager/favicon.png" height="16" width="16"/> '
+                            '<img src="image/favicon.png" height="16" width="16"/> '
                             + temp.connectionName +
                             '   <div class="editor">' +
                             '       <span class="glyphicon glyphicon-edit" aria-hidden="true" onclick="openConnectionAdd(\'edit\','+temp.csId+')"></span>' +
