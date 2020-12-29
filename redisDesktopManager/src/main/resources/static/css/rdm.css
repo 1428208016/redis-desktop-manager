@@ -101,8 +101,8 @@ html,body{
 }
 
 #kv-dataDiv {
-    min-height: 480px;
-    max-height: 480px;
+    /*min-height: 480px;*/
+    /*max-height: 480px;*/
     overflow-y: auto;
     overflow-x: hidden;
     border:1px solid #EBEBEB;
@@ -128,18 +128,6 @@ html,body{
     /* 自动换行 */
     word-wrap: break-word;
     word-break: break-all;
-}
-
-#operationLog {
-    position: absolute;
-    left: 15px;
-    right: 15px;
-    bottom: 0px;
-    min-height: 220px;
-    max-height: 300px;
-}
-#operationLog table{
-    border: 1px solid #CCC;
 }
 
 .float-r {float: right;}
