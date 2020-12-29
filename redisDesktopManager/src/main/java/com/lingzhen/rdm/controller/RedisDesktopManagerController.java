@@ -1,9 +1,9 @@
 package com.lingzhen.rdm.controller;
 
-import com.lingzhen.myproject.common.util.UuidUtil;
 import com.lingzhen.rdm.pojo.Result;
 import com.lingzhen.rdm.service.RedisDesktopManagerService;
 import com.lingzhen.rdm.util.HttpServletUtil;
+import com.lingzhen.rdm.util.UuidUtil;
 import com.lingzhen.rdm.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

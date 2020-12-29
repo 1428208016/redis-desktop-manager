@@ -1,6 +1,5 @@
 package com.lingzhen.rdm.util;
 
-import com.lingzhen.myproject.common.util.JWTUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -16,30 +15,6 @@ import java.util.Map;
  * @author lingz
  */
 public class HttpServletUtil {
-
-    public static Long getUserId() {
-        Long userId = null;
-        String token = getToken();
-        if (!"".equals(token) && JWTUtil.verifyToken(token)) {
-            userId = Long.valueOf(JWTUtil.getValue(token));
-        }
-        return userId;
-    }
-
-    public static String getToken() {
-        String token = "";
-        HttpServletRequest request = HttpServletUtil.getHttpServletRequest();
-        Cookie[] cookies = request.getCookies();
-        if (null != cookies && cookies.length > 0) {
-            for (Cookie cookie : cookies) {
-                if (JWTUtil.TOKEN.equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
-                }
-            }
-        }
-        return token;
-    }
 
     /**
      * 得到HttpServletRequest对象

@@ -13,6 +13,14 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
+
+        <!-- fastJSON -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.73</version>
+        </dependency>
+
         <!-- jedis连接 -->
         <dependency>
             <groupId>redis.clients</groupId>

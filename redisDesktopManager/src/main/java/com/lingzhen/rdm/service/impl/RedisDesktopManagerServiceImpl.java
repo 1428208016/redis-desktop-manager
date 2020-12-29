@@ -1,9 +1,9 @@
 package com.lingzhen.rdm.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.lingzhen.myproject.common.util.UuidUtil;
 import com.lingzhen.rdm.pojo.Result;
 import com.lingzhen.rdm.service.RedisDesktopManagerService;
+import com.lingzhen.rdm.util.UuidUtil;
 import com.lingzhen.rdm.util.VerifyUtil;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.*;
@@ -16,11 +16,11 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
     @Override
     public Result testConnection(Map map) {
         Result result = new Result();
+        String host = map.get("address").toString();
+        Integer port = Integer.valueOf(map.get("port").toString());
+        JedisShardInfo jedisShardInfo = new JedisShardInfo(host,port);
+        Jedis jedis = new Jedis(jedisShardInfo);
         try {
-            String host = map.get("address").toString();
-            Integer port = Integer.valueOf(map.get("port").toString());
-            JedisShardInfo jedisShardInfo = new JedisShardInfo(host,port);
-            Jedis jedis = new Jedis(jedisShardInfo);
             String str;
             if (!VerifyUtil.stringTrimIsEmpty(map.get("auth"))) {
                 String auth = map.get("auth").toString();
@@ -33,9 +33,14 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
                 jedis.set(_key,"hello");
                 jedis.del(_key);
             }
-            jedis.close();
         } catch (Exception e) {
             result.setError("连接失败，"+e.getMessage());
+        } finally {
+            try {
+                if (null != jedis) {
+                    jedis.close();
+                }
+            } catch (Exception e) {}
         }
         return result;
     }
@@ -43,17 +48,20 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
     // 获取Jedis连接
     private Jedis getJedis(String str) {
         Map data = JSON.parseObject(str);
-
-        JedisShardInfo jedisShardInfo = new JedisShardInfo(data.get("address").toString(),Integer.valueOf(data.get("port").toString()));
-        Jedis jedis = new Jedis(jedisShardInfo);
-        if (data.get("auth").toString().length() > 0) {
-            // 验证
-            String auth = data.get("auth").toString();
-            jedisShardInfo.setPassword(auth);
-            String retMsg = jedis.auth(auth);
-            if (!"OK".equals(retMsg)) {
-                return null;
+        Jedis jedis = null;
+        try {
+            JedisShardInfo jedisShardInfo = new JedisShardInfo(data.get("address").toString(),Integer.valueOf(data.get("port").toString()));
+            jedis = new Jedis(jedisShardInfo);
+            if (data.get("auth").toString().length() > 0) {
+                // 验证
+                String auth = data.get("auth").toString();
+                jedisShardInfo.setPassword(auth);
+                String retMsg = jedis.auth(auth);
+                if (!"OK".equals(retMsg)) {
+                    return null;
+                }
             }
+        } catch (Exception e) {
         }
         return jedis;
     }
@@ -113,32 +121,39 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
     @Override
     public Result connectionRedis(String connKey, String objStr) {
         Result result = new Result();
-        Map data = JSON.parseObject(objStr);
         Jedis jedis = this.getJedis(objStr);
         if (null == jedis) {
             return result.setErrorReturn("连接出错！");
         }
 
-        // 查询databases
-        List databaseList = new ArrayList();
-        List<String> databases = jedis.configGet("databases");
-        if (null != databases && databases.size() >= 2) {
-            int index = Integer.valueOf(databases.get(1));
-            int databaseDiscoveryLimit = Integer.valueOf(data.get("databaseDiscoveryLimit").toString());
-            for (int i = 0;i < index && i < databaseDiscoveryLimit; i++) {
-                Map _data = new HashMap();
-                _data.put("dbName","db"+i);
+        try {
+            Map data = JSON.parseObject(objStr);
+            // 查询databases
+            List databaseList = new ArrayList();
+            List<String> databases = jedis.configGet("databases");
+            if (null != databases && databases.size() >= 2) {
+                int index = Integer.valueOf(databases.get(1));
+                int databaseDiscoveryLimit = Integer.valueOf(data.get("databaseDiscoveryLimit").toString());
+                for (int i = 0;i < index && i < databaseDiscoveryLimit; i++) {
+                    Map _data = new HashMap();
+                    _data.put("dbName","db"+i);
 
-                jedis.select(i);
-                _data.put("size",jedis.dbSize());
-                databaseList.add(_data);
+                    jedis.select(i);
+                    _data.put("size",jedis.dbSize());
+                    databaseList.add(_data);
+                }
             }
+            Map retMap = new HashMap();
+            retMap.put("connectionKey",connKey);
+            retMap.put("connectionName",data.get("connectionName"));
+            retMap.put("list",databaseList);
+            result.setData(retMap);
+        } catch (Exception e) {
+        } finally {
+            try {
+                jedis.close();
+            } catch (Exception e) {}
         }
-        Map retMap = new HashMap();
-        retMap.put("connectionKey",connKey);
-        retMap.put("connectionName",data.get("connectionName"));
-        retMap.put("list",databaseList);
-        result.setData(retMap);
 
         return result;
     }
@@ -271,22 +286,18 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         Result result = new Result();
 
         Jedis jedis = this.getJedis(connStr);
+        if (null == jedis) {
+            return result.setErrorReturn("连接出错！");
+        }
         try {
-            if (null == jedis) {
-                return result.setErrorReturn("连接出错！");
-            }
-
             // 选择数据库
             jedis.select(dbIndex);
 
             jedis.del(key);
-
         } catch (Exception e) {
         } finally {
             try {
-                if (null != jedis) {
-                    jedis.close();
-                }
+                jedis.close();
             } catch (Exception e) {}
         }
 
@@ -298,11 +309,10 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         Result result = new Result();
 
         Jedis jedis = this.getJedis(connStr);
+        if (null == jedis) {
+            return result.setErrorReturn("连接出错！");
+        }
         try {
-            if (null == jedis) {
-                return result.setErrorReturn("连接出错！");
-            }
-
             // 选择数据库
             jedis.select(dbIndex);
 
@@ -386,9 +396,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         } catch (Exception e) {
         } finally {
             try {
-                if (null != jedis) {
-                    jedis.close();
-                }
+                jedis.close();
             } catch (Exception e) {}
         }
 
@@ -400,11 +408,10 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         Result result = new Result();
 
         Jedis jedis = this.getJedis(connStr);
+        if (null == jedis) {
+            return result.setErrorReturn("连接出错！");
+        }
         try {
-            if (null == jedis) {
-                return result.setErrorReturn("连接出错！");
-            }
-
             // 选择数据库
             jedis.select(dbIndex);
             // 重命名
@@ -412,13 +419,10 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
             if (reply == 0) {
                 result.setError("新Key已存在！");
             }
-
         } catch (Exception e) {
         } finally {
             try {
-                if (null != jedis) {
-                    jedis.close();
-                }
+                jedis.close();
             } catch (Exception e) {}
         }
 
@@ -430,11 +434,10 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         Result result = new Result();
 
         Jedis jedis = this.getJedis(connStr);
+        if (null == jedis) {
+            return result.setErrorReturn("连接出错！");
+        }
         try {
-            if (null == jedis) {
-                return result.setErrorReturn("连接出错！");
-            }
-
             // 选择数据库
             jedis.select(dbIndex);
             // 重命名
@@ -443,13 +446,10 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
             } else {
                 jedis.expire(key,ttl);
             }
-
         } catch (Exception e) {
         } finally {
             try {
-                if (null != jedis) {
-                    jedis.close();
-                }
+                jedis.close();
             } catch (Exception e) {}
         }
 
@@ -461,11 +461,10 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         Result result = new Result();
 
         Jedis jedis = this.getJedis(connStr);
+        if (null == jedis) {
+            return result.setErrorReturn("连接出错！");
+        }
         try {
-            if (null == jedis) {
-                return result.setErrorReturn("连接出错！");
-            }
-
             // 选择数据库
             jedis.select(dbIndex);
 
@@ -538,9 +537,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         } catch (Exception e) {
         } finally {
             try {
-                if (null != jedis) {
-                    jedis.close();
-                }
+                jedis.close();
             } catch (Exception e) {}
         }
 
