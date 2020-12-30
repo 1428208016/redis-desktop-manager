@@ -28,12 +28,26 @@
             right: 0px;
             bottom: 0px;
         }
+        #topBar {
+            text-align: right;
+            height: 35px;
+            line-height: 35px;
+        }
+        #topBar a {
+            cursor:pointer;
+        }
+
     </style>
 </head>
 <body>
     <div class="row" style="margin: 0px;">
         <div class="col-md-2 col-sm-2">
             <button class="btn btn-default" onclick="openConnectionAdd('add')">添加连接</button>
+        </div>
+        <div class="col-md-6 col-sm-6"></div>
+        <div class="col-md-4 col-sm-4" id="topBar">
+            <span><a href="#" onclick="openFeedback()">反馈</a></span>
+            <span><a href="#" onclick="openAbout()">关于</a></span>
         </div>
     </div>
     <div id="row2">
@@ -114,6 +128,15 @@
         </div>
     </div>
 
+    <div id="about" style="display: none;">
+        <div style="text-align: center;padding:10px;">
+            <h4>这是一个简单的Redis桌面管理小程序</h4>
+            <p>我们用H5 localStorage来存储你的redis连接信息，服务器端并不会保存。</p>
+            <p> 并且它是开源的，在Github上：<a href="https://github.com/1428208016/redis-desktop-manager" target="_Blank" >https://github.com/1428208016/redis-desktop-manager</a> </p>
+            <h4><img src="image/jetbrains_logo.png" height="284" width="284" onclick="window.open('https://www.jetbrains.com/?from=redis-desktop-manager');" style="cursor: pointer;"/>
+                <span onclick="window.open('https://www.jetbrains.com/?from=redis-desktop-manager');" style="cursor: pointer;">感谢JetBrains Team对我们的支持</span></h4>
+        </div>
+    </div>
 <script>
 
     $(function(){
@@ -866,6 +889,67 @@
             }
         });
     }
+
+    // 打开反馈页面
+    var openFeedbackIndex;
+    function openFeedback(){
+        var html = '<p><textarea id="feedbackText" style="width: 100%;min-height: 300px;resize: none;"></textarea></p>';
+        html += '<p style="text-align: center;"><button class="btn btn-success" style="margin-right: 5px;" onclick="feedback()">提交</button>' +
+            '<button class="btn btn-default " onclick="javascript:layer.close(layer.index);">取消</button></p>';
+        //自定页
+        openFeedbackIndex = layer.open({
+            type: 1,
+            skin: 'layui-layer-demo', //样式类名
+            title:"反馈",
+            // closeBtn: 0, //不显示关闭按钮
+            area: ['620px', '410px'], //宽高
+            anim: 2,
+            shadeClose: true, //开启遮罩关闭
+            content: html
+        });
+    }
+
+    // 反馈
+    function feedback(){
+        var feedbackText = $("#feedbackText").val();
+        if (!strNotNull(feedbackText) || feedbackText.length < 6) {
+            message.warning("字数太少啦~");
+            return ;
+        }
+        loading();
+        $.ajax({
+            url:"redisDesktopManager/feedback?tm="+ new Date().getTime(),
+            type:"POST",
+            data:{
+                feedbackText:feedbackText
+            },
+            dataType:"JSON",
+            success:function (res) {
+                if (res.code == 200) {
+                    message.success("操作成功~");
+                    layer.close(openFeedbackIndex);
+                } else {
+                    message.warning("操作失败了！");
+                }
+            },error:function (res) {
+                message.error();
+            },complete(XHR, TS) {
+                loadingClose();
+            }
+        });
+    }
+
+    // 打开关于界面
+    function openAbout(){
+        layer.open({
+            type: 1,
+            shade: false,
+            title: false, //不显示标题
+            area: ['620px', '420px'], //宽高
+            content: $("#about").html()
+        });
+    }
+
 
 </script>
 </body>

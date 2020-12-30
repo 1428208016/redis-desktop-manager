@@ -332,9 +332,23 @@ public class RedisDesktopManagerController {
         return result;
     }
 
+    @RequestMapping("feedback")
+    @ResponseBody
+    public Result feedback(){
+        Result result = new Result();
+        Map param = HttpServletUtil.getRequestParameter();
 
-
-
+        if (VerifyUtil.stringTrimIsEmpty(param.get("feedbackText"))) {
+            return result.setErrorReturn("feedbackText为空");
+        }
+        try {
+            String feedbackText = param.get("feedbackText").toString().trim();
+            redisDesktopManagerService.feedback(feedbackText);
+        } catch (Exception e) {
+            result.setError(e);
+        }
+        return result;
+    }
 
 
 

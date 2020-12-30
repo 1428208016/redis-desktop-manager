@@ -3,6 +3,7 @@ package com.lingzhen.rdm.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.lingzhen.rdm.pojo.Result;
 import com.lingzhen.rdm.service.RedisDesktopManagerService;
+import com.lingzhen.rdm.util.NetworkRequestOperator;
 import com.lingzhen.rdm.util.UuidUtil;
 import com.lingzhen.rdm.util.VerifyUtil;
 import org.springframework.stereotype.Service;
@@ -542,5 +543,25 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
         }
 
         return result;
+    }
+
+    final String ORIGIN_URL = "http://101.37.78.234:8080/lingzhen/redisDesktopManager/feedback";
+    final String VERSION = "1.0";
+    @Override
+    public void feedback(String feedbackText) {
+        try {
+            Map body = new HashMap();
+            body.put("feedbackText",feedbackText);
+            body.put("version",VERSION);
+
+            NetworkRequestOperator nro = new NetworkRequestOperator();
+            Map header = new HashMap();
+            header.put("content-type","application/json;charset=utf-8");
+            nro.setHeaders(header);
+            String str = nro.post(ORIGIN_URL,JSON.toJSONString(body));
+            System.out.println(str);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

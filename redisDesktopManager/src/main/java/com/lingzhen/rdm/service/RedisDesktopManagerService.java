@@ -102,4 +102,10 @@ public interface RedisDesktopManagerService {
      */
     Result kvScan(String connStr, Integer dbIndex, String key, String type, String scanKey);
 
+    /**
+     * 反馈
+     * @param feedbackText
+     */
+    void feedback(String feedbackText);
+
 }
