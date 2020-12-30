@@ -1,4 +1,6 @@
 # Redis Desktop Manager
  redis Desktop Manager Of Web 
+ 
+这是一个简单的Redis桌面管理小程序
 
-注意，redis连接信息使用html5 localStorage 存储在本地~
+我们用H5 localStorage来存储你的redis连接信息，服务器端并不会保存。
