@@ -1,0 +1,15 @@
+#!/bin/bash -il
+mvn clean package
+cd redisDesktopManager/target
+rm -rf /home/workspace/redisDesktopManager/redisDesktopManager-1.0-SNAPSHOT.jar
+cp redisDesktopManager-1.0-SNAPSHOT.jar /home/workspace/redisDesktopManager/redisDesktopManager-1.0-SNAPSHOT.jar
+cd /home/workspace/redisDesktopManager
+(docker stop redis-desktop-manager || echo '继续执行1') && (docker container rm redis-desktop-manager || echo '继续执行2') && \
+docker build -t redis-desktop-manager . && docker container run  \
+		--name redis-desktop-manager \
+        --detach \
+        --publish 8081:8081 \
+        --mount type=bind,source=/etc/localtime,target=/etc/localtime \
+        --mount type=bind,source=/etc/timezone,target=/etc/timezone \
+        --mount type=bind,source=/home/data/project/redisDesktopManager/,target=/home/data/project/redisDesktopManager/ \
+        redis-desktop-manager
