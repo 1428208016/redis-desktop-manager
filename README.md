@@ -1,5 +1,5 @@
 # Redis Desktop Manager
- redis Desktop Manager Of Web 
+ redis Desktop Manager of web 
  
 这是一个简单的Redis桌面管理小程序
 
