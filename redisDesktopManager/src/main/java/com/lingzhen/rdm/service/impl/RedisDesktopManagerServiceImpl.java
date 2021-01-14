@@ -134,7 +134,10 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
             List<String> databases = jedis.configGet("databases");
             if (null != databases && databases.size() >= 2) {
                 int index = Integer.valueOf(databases.get(1));
-                int databaseDiscoveryLimit = Integer.valueOf(data.get("databaseDiscoveryLimit").toString());
+                int databaseDiscoveryLimit = 20;
+                if (!VerifyUtil.stringTrimIsEmpty(data.get("databaseDiscoveryLimit"))) {
+                    databaseDiscoveryLimit = Integer.valueOf(data.get("databaseDiscoveryLimit").toString());
+                }
                 for (int i = 0;i < index && i < databaseDiscoveryLimit; i++) {
                     Map _data = new HashMap();
                     _data.put("dbName","db"+i);
@@ -150,6 +153,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
             retMap.put("list",databaseList);
             result.setData(retMap);
         } catch (Exception e) {
+            result.setError("系统异常："+e.getMessage());
         } finally {
             try {
                 jedis.close();
@@ -204,6 +208,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
             retMap.put("data",data);
             result.setData(retMap);
         } catch (Exception e) {
+            result.setError("系统异常："+e.getMessage());
         } finally {
             try {
                 if (null != jedis) {
@@ -271,6 +276,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
                 jedis.expire(key,ttl.intValue());
             }
         } catch (Exception e) {
+            result.setError("系统异常："+e.getMessage());
         } finally {
             try {
                 if (null != jedis) {
@@ -296,6 +302,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
 
             jedis.del(key);
         } catch (Exception e) {
+            result.setError("系统异常："+e.getMessage());
         } finally {
             try {
                 jedis.close();
@@ -395,6 +402,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
                 jedis.expire(key,ttl.intValue());
             }
         } catch (Exception e) {
+            result.setError("系统异常："+e.getMessage());
         } finally {
             try {
                 jedis.close();
@@ -421,6 +429,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
                 result.setError("新Key已存在！");
             }
         } catch (Exception e) {
+            result.setError("系统异常："+e.getMessage());
         } finally {
             try {
                 jedis.close();
@@ -448,6 +457,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
                 jedis.expire(key,ttl);
             }
         } catch (Exception e) {
+            result.setError("系统异常："+e.getMessage());
         } finally {
             try {
                 jedis.close();
@@ -536,6 +546,7 @@ public class RedisDesktopManagerServiceImpl implements RedisDesktopManagerServic
             result.setData(retList);
 
         } catch (Exception e) {
+            result.setError("系统异常："+e.getMessage());
         } finally {
             try {
                 jedis.close();
